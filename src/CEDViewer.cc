@@ -106,8 +106,16 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       int size  ( std::atoi( _drawCollections[ index++ ].c_str() ) ) ; 
       
       
-      LCCollection* col = evt->getCollection( colName ) ;
-      
+      LCCollection* col = 0 ;
+      try{
+
+	col = evt->getCollection( colName ) ;
+
+      }catch(DataNotAvailableException &e){
+	// if collection doesn't exist go to next
+        continue ;
+      }
+
       if( col->getTypeName() == LCIO::CLUSTER ){
 	for( int i=0 ; i< col->getNumberOfElements() ; i++ ){
 	  
@@ -177,7 +185,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  // float      charge = mcp->getCharge (); 
 	  float charge =  float( HepPDT::ParticleID( mcp->getPDG() ).threeCharge() / 3.00 )   ;
 	  
-	  if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+ 	  if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+	  //	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
 	  //if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
 	  // FIXME: need definition of stable particles (partons, decays in flight,...)
 	  
@@ -191,7 +200,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  double y = mcp->getVertex()[1] ;
 	  double z = mcp->getVertex()[2] ;	  
 
-	  if( std::abs( charge ) > 0.0001  ) { 
+	  if( std::fabs( charge ) > 0.0001  ) { 
 	    
 	    MarlinCED::drawHelix( 4.0 , charge, x, y, z, 
 				  px, py, pz, marker , size , 0x7af774  ,
