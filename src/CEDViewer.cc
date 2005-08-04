@@ -161,7 +161,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  ml = marker | ( 9 << CED_LAYER_SHIFT ) ;
 
  	  MarlinCED::drawHelix( bField , charge, rx, ry, rz , 
- 				px, py, pz, ml , size , 0xffffff ,
+ 				px, py, pz, ml , size ,  0xffffff ,
 				0.0, padLayout.getPlaneExtent()[1]+100. , 
 				gearTPC.getMaxDriftLength()+100. ) ;
 
