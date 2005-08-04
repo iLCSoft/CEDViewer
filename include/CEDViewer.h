@@ -11,7 +11,10 @@ using namespace lcio ;
 using namespace marlin ;
 
 /** Cluster viewer based on CED by A. Zhelezov.
+ *  @author F.Gaede, DESY
+ *  @version $Id: CEDViewer.h,v 1.2 2005-08-04 13:45:21 gaede Exp $ 
  */
+
 class CEDViewer : public Processor {
   
  public:
