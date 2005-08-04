@@ -176,7 +176,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 
     std::cout << std::endl;
     std::cout << " +++++++++++++++++++++++++++" << std::endl;
-    std::cout << "       Event Number : " << _nEvt << std::endl;
+    std::cout << " Generic Viewer : event number " << _nEvt << std::endl;
     std::cout << std::endl;
 
     _mcpList.clear();
@@ -190,32 +190,6 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 	    MCParticle * mcp = 
 		dynamic_cast<MCParticle*>(mcpcol->getElementAt(ielem));
 	    _mcpList[mcp] = ielem;
-	    /*	    std::cout << "Particle : " << ielem 
-		      << " ; PDG : " << mcp->getPDG()
-		      << " ; Energy : " << mcp->getEnergy() 
-		      << " ; Charge : " << mcp->getCharge() 
-		      << " ; Mass   : " << mcp->getMass() 
-		      << std::endl; */
-	    if (abs(mcp->getCharge()) > 0.) {
-	      HelixClass * helix = new HelixClass();
-	      float ver[3];
-	      float mom[3];
-	      float charg = (float)mcp->getCharge();
-	      for (int ii=0; ii<3; ++ii) {
-		ver[ii] = (float)mcp->getVertex()[ii];
-		mom[ii] = (float)mcp->getMomentum()[ii];
-	      }
-	      helix->Initialize_VP(ver,mom,charg,_bField);
-	      /* std::cout << "Track parameters ---> " << std::endl;
-	      std::cout << "d0 = " << helix->getD0()
-			<< " ; z0 = " << helix->getZ0()
-			<< " ; omega = " << helix->getOmega()
-			<< " ; tanlam = " << helix->getTanLambda()
-			<< " ; tan(phi0)  = " << tan(helix->getPhi0())
-			<< " ; pt = " << helix->getPXY()
-			<< std::endl; */
-	      delete helix;
-	    } 
 	}
     }
     catch(DataNotAvailableException &e) {
@@ -333,19 +307,15 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		  float x = (float)hit->getPosition()[0];
 		  float y = (float)hit->getPosition()[1];
 		  float z = (float)hit->getPosition()[2];
-		  ced_hit(x,y,z, 
-			  2 | (_layerSimTrackerHit<<CED_LAYER_SHIFT),30,color);
+		  ced_hit(x,y,z,_layerSimTrackerHit<<CED_LAYER_SHIFT,2,color);
 		}	    
 	    }
 	    catch(DataNotAvailableException &e) {}
-	    //   ced_send_event();
 	}
     }
 
 // Drawing Simulated Calorimeter Hits
     if (_layerSimCaloHit >= 0) {
-      float totenergy = 0.0;
-      int tothits = 0;
       for ( unsigned int icol = 0; 
 	    icol < _simCaloHitCollections.size(); ++ icol) {
 	try {
@@ -356,21 +326,18 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 	    SimCalorimeterHit * hit = 
 	      dynamic_cast<SimCalorimeterHit*>( col->getElementAt(ielem));
 	    int counter = 0;
-	    totenergy += hit->getEnergy();
 	    if (hit->getNMCContributions() > 0) {
 	      MCParticle * par = hit->getParticleCont(0);
 	      counter = _mcpList[par];
 	    }
 	    else {
 	      counter = 0;
-	    }
-	    
-	    tothits++;
+	    }	    
 	    int color = returnColor(counter);
 	    float x = (float)hit->getPosition()[0];
 	    float y = (float)hit->getPosition()[1];
 	    float z = (float)hit->getPosition()[2];
-	    ced_hit(x,y,z, _layerSimCaloHit<<CED_LAYER_SHIFT,3,color);
+	    ced_hit(x,y,z, _layerSimCaloHit<<CED_LAYER_SHIFT,2,color);
 	  }
 	}
 	catch(DataNotAvailableException &e) {}	
@@ -405,7 +372,6 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 
 // Drawing Calorimeter Hits
     if (_layerCaloHit >= 0) {
-      int tothits = 0;
 	for ( unsigned int icol = 0; 
 	      icol < _caloHitCollections.size(); ++ icol) {
 	    try {
@@ -418,13 +384,11 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		  float y = (float)hit->getPosition()[1];
 		  float z = (float)hit->getPosition()[2];
 		  ced_hit(x,y,z, _layerCaloHit<<CED_LAYER_SHIFT,2,0xFFFFFF);
-		  tothits++;
 		}	    
 	    }
 	    catch(DataNotAvailableException &e) {}
 	    //   ced_send_event();
 	}      
-	std::cout << "Total number of calo hits : " << tothits << std::endl;
     }
 
 
@@ -485,13 +449,6 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 	  if (nTracks > 0 ) {
 	    Track * track = trackVec[0];
 	    TrackerHitVec hitvec = track->getTrackerHits();
-	    std::cout << "track parameters --->" << std::endl;
-	    std::cout << "d0 = " << track->getD0()
-		      << " ; z0 = " << track->getZ0() 
-		      << " ; omega = " << track->getOmega() 
-		      << " ; tanlam = " << track->getTanLambda()
-		      << " ; tan(phi0) = " << tan(track->getPhi()) 
-		      << std::endl;
 	    int nHits = (int)hitvec.size();
 	    for (int iHit = 0; iHit < nHits; ++iHit) {
 	      TrackerHit * hit = hitvec[iHit];
@@ -501,7 +458,6 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 	      ced_hit(x,y,z,_layerReco<<CED_LAYER_SHIFT,2,color);
 	    }
 	  }
-	  //   ced_send_event();
 	}
 
 	std::cout << std::endl;
@@ -581,6 +537,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 	    LCCollection * col = 
 	      evt->getCollection(_clustersCollection.c_str());
 	    int nelem = col->getNumberOfElements();
+	    std::cout << "Generic Viewer : number of reconstructed clusters = " << nelem << std::endl;
 	    for (int iclust(0); iclust < nelem; ++iclust) {
 		Cluster * cluster = 
 		  dynamic_cast<Cluster*>(col->getElementAt(iclust));
@@ -703,20 +660,12 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 	try {
 	    LCCollection * col = evt->getCollection(_tracksCollection.c_str());
 	    int nelem = col->getNumberOfElements();
-	    std::cout << "Number of Tracks : " << nelem << std::endl;
+	    std::cout << "Generic Viewer : number of reconstructed tracks = " << nelem << std::endl;
 	    for (int iclust(0); iclust < nelem; ++iclust) {
 		Track * track = 
 		  dynamic_cast<Track*>(col->getElementAt(iclust));
 		TrackerHitVec hitvec = track->getTrackerHits();
 		int nhits = (int)hitvec.size();
-		std::cout << iclust << " : # hits = " << nhits << std::endl;
-		std::cout << " Track parameters ---> " << std::endl; 
-		std::cout << "d0 = " << track->getD0()
-			  << " ; z0 = " << track->getZ0() 
-			  << " ; omega = " << track->getOmega() 
-			  << " ; tanlam = " << track->getTanLambda()
-			  << " ; tan(phi0) = " << tan(track->getPhi()) 
-			  << std::endl;
 		float * ah = new float[nhits];
 		float * xh = new float[nhits];
 		float * yh = new float[nhits];
@@ -761,32 +710,16 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		float r0 = par[2];
 		float bz = par[3];
 		float phi0 = par[4];
-		std::cout << "Chi2 Of Fit " << chi2 << std::endl;
 		HelixClass * helix = new HelixClass();
 		helix->Initialize_BZ(x0, y0, r0, 
 				     bz, phi0, _bField,signPz,
 				     zBegin);
-		std::cout << "d0 = " << helix->getD0()
+		std::cout << "Track " << iclust << " ;  d0 = " << helix->getD0()
 			  << " ; z0 = " << helix->getZ0() 
 			  << " ; omega = " << helix->getOmega() 
 			  << " ; tanlam = " << helix->getTanLambda()
 			  << " ; tan(phi0) = " << tan(helix->getPhi0()) 
 			  << std::endl;		
-
-		/*		for (int ihit = 0; ihit < nhits; ++ihit) {
-		  float xPoint[3];
-		  xPoint[0] = xh[ihit];
-		  xPoint[1] = yh[ihit];
-		  xPoint[2] = zh[ihit];
-		  float Distance[3];
-		  helix->getDistanceToPoint(xPoint,Distance);
-		  std::cout << ihit 
-			    << " " << Distance[0]
-			    << " " << Distance[1]
-			    << " " << Distance[2]
-			    << std::endl;
-		}*/
-
 		//   ced_send_event();
 		if (chi2 > 0. && chi2 < 10.) {
 		  for (int iz(0); iz < 500; ++iz) {
@@ -796,7 +729,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		    float y1 = y0 + r0*sin(bz*z1+phi0);
 		    float x2 = x0 + r0*cos(bz*z2+phi0);
 		    float y2 = y0 + r0*sin(bz*z2+phi0);			
-		    ced_line(x1,y1,z1,x2,y2,z2,_layerTrueTracks<<CED_LAYER_SHIFT,1,0xFFFFFF);
+		    ced_line(x1,y1,z1,x2,y2,z2,_layerTracks<<CED_LAYER_SHIFT,1,0xFFFFFF);
 		    
 		  }		
 		}
