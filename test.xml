@@ -1,0 +1,54 @@
+
+<marlin>
+ <execute>
+  <processor name="MyHEP_RecordProcessor"/>  
+  <processor name="MyCEDViewer"/>  
+ </execute>
+
+ <global>
+  <parameter name="LCIOInputFiles">dd_rec.slcio </parameter>
+  <parameter name="LCIOInputFiles">../tt500_all_set1_12.slcio </parameter>
+<parameter name="MaxRecordNumber" value="5001" />  
+  <parameter name="SupressCheck" value="false" />  
+ </global>
+
+
+ <processor name="MyCEDViewer" type="CEDViewer">
+ <!--CEDViewer: event display of LCIO objects  - based on CED by A.Zhelezov.-->
+  <!--collection to be displayed ( ColName, marker type[0-2], size-->
+  <parameter name="DrawCollection" type="StringVec"> TPC_Tracks 0 2</parameter>
+  <parameter name="DrawCollection" type="StringVec"> MCParticle 0 1</parameter>
+  <parameter name="DrawCollection" type="StringVec"> tpc 1 4</parameter>
+  <parameter name="DrawCollection" type="StringVec"> TPCTrackerHits 1 4</parameter>
+</processor>
+
+ <processor name="MyHEP_RecordProcessor" type="HEP_RecordProcessor">
+ <!--HEP record balance and drawing-->
+</processor>
+
+ <processor name="MySimpleFastMCProcessor" type="SimpleFastMCProcessor">
+ <!--SimpleFastMCProcessor creates ReconstrcutedParticles from MCParticles according to the resolution given in the steering file.-->
+  <!--Resolution of charged particles in polar angle range:  d(1/P)  th_min  th_max-->
+  <parameter name="ChargedResolution" type="FloatVec">5e-05 0 1.5708  </parameter>
+  <!--Name of the MCParticle input collection-->
+  <parameter name="InputCollectionName" type="string">MCParticle </parameter>
+  <!--No reconstructed particles are produced for smaller momenta (in [GeV])-->
+  <parameter name="MomentumCut" type="float">0.001 </parameter>
+  <!--Resolution dE/E=A+B/sqrt(E/GeV) of neutral hadrons in polar angle range: A  B th_min  th_max-->
+  <parameter name="NeutralHadronResolution" type="FloatVec">0.04 0.5 0 1.5708  </parameter>
+  <!--Resolution dE/E=A+B/sqrt(E/GeV) of photons in polar angle range: A  B th_min  th_max-->
+  <parameter name="PhotonResolution" type="FloatVec">0.01 0.1 0 1.5708  </parameter>
+</processor>
+
+ <processor name="MyStdHepReader" type="StdHepReader">
+ <!--Reads StdHep files as input and creates LCIO events with MCParticle collections. Make sure to not specify any LCIOInputFiles in the steering in order to read StdHep files.-->
+  <!--input file-->
+  <parameter name="StdHepFileName" type="string">input.stdhep </parameter>
+</processor>
+
+ <processor name="MyTestProcessor" type="TestProcessor">
+ <!--Simple processor to test the marlin application. Prints run and event number.-->
+</processor>
+
+
+</marlin>
