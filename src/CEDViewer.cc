@@ -18,6 +18,11 @@
 #include <math.h>
 #include <cmath>
 
+#include <marlin/Global.h>
+#include <gear/GEAR.h>
+#include <gear/TPCParameters.h>
+#include <gear/PadRowLayout2D.h>
+
 using namespace lcio ;
 using namespace marlin ;
 
@@ -88,6 +93,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 //   ced_new_event();  
 //-----------------------------------------------------------------------
 
+  const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
+  const gear::PadRowLayout2D& padLayout = gearTPC.getPadLayout() ;
 
   if( parameterSet( "DrawCollection" ) ) {
     
@@ -154,7 +161,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  ml = marker | ( 9 << CED_LAYER_SHIFT ) ;
 
  	  MarlinCED::drawHelix( bField , charge, rx, ry, rz , 
- 				px, py, pz, ml , size , 0xffffff ) ;
+ 				px, py, pz, ml , size , 0xffffff ,
+				0.0, padLayout.getPlaneExtent()[1]+100. , 
+				gearTPC.getMaxDriftLength()+100. ) ;
 
 
 	} // track
@@ -177,11 +186,17 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  double px = mcp->getMomentum()[0]; 
 	  double py = mcp->getMomentum()[1]; 
 	  double pz = mcp->getMomentum()[2];
-	  
+
+	  double x = mcp->getVertex()[0] ;
+	  double y = mcp->getVertex()[1] ;
+	  double z = mcp->getVertex()[2] ;	  
+
 	  if( std::abs( charge ) > 0.0001  ) { 
 	    
-	    MarlinCED::drawHelix( 4.0 , charge, 0., 0., 0., 
-				  px, py, pz, marker , size , 0x7af774 ) ;
+	    MarlinCED::drawHelix( 4.0 , charge, x, y, z, 
+				  px, py, pz, marker , size , 0x7af774  ,
+				  0.0,  padLayout.getPlaneExtent()[1]+100. ,
+				  gearTPC.getMaxDriftLength()+100. ) ;	    
 	    
 	  } else { // neutral
 	    
