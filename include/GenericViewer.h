@@ -12,12 +12,56 @@ using namespace marlin ;
 
 
 /** Viewer Processor <br>
- *  This processor displays reconstructed particles. <br>
- *  User has to specify the name of collection <br> 
- *  of reconstructed particles with <br>
- *  processor parameter ParticleCollection <br>
+ *  This processor displays collections of LCIO objects, <br>
+ *  including SimCalorimeterHits, SimTrackerHits, <br>
+ *  CalorimeterHits, TrackerHits, reconstructed Tracks, <br>
+ *  reconstructed Clusters and reconstructed particle flow objects. <br>
+ *  Display of a given collection is manipulated with numeric keys <br>
+ *  associated with toggle layers. <br>
+ *  Processor also draws wire-frame sketch of the detector. <br>
+ *  A current event is displayed in the window panel activated by C Event <br>
+ *  Display (CED) program glced. You have to launch this program before <br>
+ *  starting Marlin. <br>
+ *  The user should specify the name of collections to be displayed <br>
+ *  via processor parameters described below. <br>
+ *  @param SimCaloHitCollections : names of SimCalorimeterHit 
+ *  collections to be displayed <br>
+ *  @param LayerSimCaloHit : toggle layer for SimCalorimeterHits <br>
+ *  @param SimTrackerHitCollections : SimTrackerHit collections
+ *  to be displayed <br>
+ *  @param LayerSimTrackerHit : toggle layer for SimTrackerHits <br>
+ *  @param CaloHitCollections : names of CalorimeterHit 
+ *  collections to be displayed <br>
+ *  @param LayerCaloHit : toggle layer for CalorimeterHits <br>
+ *  @param TrackerHitCollections : names of TrackerHit collections
+ *  to be displayed <br>
+ *  @param LayerTrackerHit : toggle layer for TrackerHits <br>
+ *  @param TrueTrackCollection : True Monte Carlo track collection name  
+ *  to be displayed <br>
+ *  @param LayerTrueTracks : toggle layer for True Monte Carlo tracks <br>
+ *  @param TrueClusterCollection : name of true MC cluster collection
+ *  to be displayed <br>
+ *  @param LayerTrueClusters : toggle layer for true MC clusters <br>
+ *  @param TrackCollection : name of reconstructed track collection 
+ *  collections to be displayed <br>
+ *  @param LayerTracks : toggle layer for reconstructed tracks <br>
+ *  @param ClusterCollection : name of reconstructed Cluster collection
+ *  to be displayed <br>
+ *  @param LayerClusters : toggle layer for reconstructed clusters <br>
+ *  @param ParticleCollection : name of reconstructed Particle collection
+ *  to be displayed <br>
+ *  @param LayerReco : toggle layer for reconstructed Particles <br>
+ *  @param DetectorModel : detector model <br>
+ *   0 - LDC model (Mokka program, models D09, D10, D12) <br>
+ *   1 - SiD model (SLIC program) <br>
+ *   2 - GLD model (Jupiter program) <br>
+ *  @param MagneticField : Magnetic field in Tesla <br>
+ *  <br>
+ *  If toggle layer is set to -1, corresponding collection is not displayed <br>
+ *  <br>
+ *  <br>
  *  @author A.Raspereza, DESY
- *  @version $Id: GenericViewer.h,v 1.1 2005-08-04 13:45:21 gaede Exp $ 
+ *  @version $Id: GenericViewer.h,v 1.2 2005-10-21 06:55:40 rasp Exp $ 
  */
 class GenericViewer : public Processor {
   
