@@ -61,7 +61,7 @@ using namespace marlin ;
  *  <br>
  *  <br>
  *  @author A.Raspereza, DESY
- *  @version $Id: GenericViewer.h,v 1.2 2005-10-21 06:55:40 rasp Exp $ 
+ *  @version $Id: GenericViewer.h,v 1.3 2005-10-28 11:59:42 owendt Exp $ 
  */
 class GenericViewer : public Processor {
   
@@ -111,6 +111,8 @@ class GenericViewer : public Processor {
   int _layerReco;
 
   int _detModel;
+
+  int _waitForKeyboard;
 
   std::map<MCParticle *, int > _mcpList;
   
