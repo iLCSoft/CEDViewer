@@ -153,6 +153,11 @@ GenericViewer::GenericViewer() : Processor("GenericViewer") {
 			     _bField,
 			     (float)4.0);
 
+  registerProcessorParameter("WaitForKeyboard",
+			     "Wait for Keyboard before proceed",
+			     _waitForKeyboard,
+			     (int)1);
+
 }
 
 void GenericViewer::init() {
@@ -748,7 +753,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 //     getchar();
 
 //++++++++++++++++++++++++++++++++++++
-  MarlinCED::draw(this) ;
+    MarlinCED::draw( this, _waitForKeyboard ) ;
 //++++++++++++++++++++++++++++++++++++
 
     _nEvt++;
