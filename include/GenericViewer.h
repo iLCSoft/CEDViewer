@@ -51,17 +51,23 @@ using namespace marlin ;
  *  @param ParticleCollection : name of reconstructed Particle collection
  *  to be displayed <br>
  *  @param LayerReco : toggle layer for reconstructed Particles <br>
+ *  <br>
+ *  If a layer toggle is set to -1, the corresponding collection is not displayed <br>
+ *  <br>
  *  @param DetectorModel : detector model <br>
  *   0 - LDC model (Mokka program, models D09, D10, D12) <br>
  *   1 - SiD model (SLIC program) <br>
  *   2 - GLD model (Jupiter program) <br>
  *  @param MagneticField : Magnetic field in Tesla <br>
+ *  @param WaitForKeyboard : toggle to wait for keyboard input or not <br>
+ *                           0 - the GenericViewer processor does not wait after 
+ *                               the display of the current event <br>
+ *                           1 - the GenericViewer processor waits for a keyboard 
+ *                               (std) input after each event. This is the default.
  *  <br>
- *  If toggle layer is set to -1, corresponding collection is not displayed <br>
- *  <br>
- *  <br>
- *  @author A.Raspereza, DESY
- *  @version $Id: GenericViewer.h,v 1.3 2005-10-28 11:59:42 owendt Exp $ 
+ *
+ *  @authors A.Raspereza (DESY), O.Wendt (DESY)
+ *  @version $Id: GenericViewer.h,v 1.4 2005-11-04 16:50:26 owendt Exp $ 
  */
 class GenericViewer : public Processor {
   
