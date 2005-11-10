@@ -154,7 +154,7 @@ void draw_MC_Photons(LCEvent * evt, float ecut){
     if(idpdg == 111) { //  Pi_0s    
 	if (enr > ecut) {//  All Pi0s with E > 20 MeV
 	  add = 100. + 2000.*log(1.+enr);
-	  /**
+	  /*
 	     std::cout <<" PI_0 # "<< i <<'\t'<<" Energy = "<<enr<<'\t'
 	     <<",   Mom = "<<mom[0]<<",  "<<mom[1]<<",  "<<mom[2]
 	     << std::endl;
@@ -184,7 +184,7 @@ void draw_MC_Photons(LCEvent * evt, float ecut){
       if(idpdg == 111) { //  Pi_0s    
 	if (enr > ecut) {//  All Pi0s with E > 20 MeV
 	  add = 100. + 2000.*log(1.+enr);
-	  /**
+	  /*
 	     std::cout <<" PI_0 # "<< i <<'\t'<<" Energy = "<<enr<<'\t'
 	     <<",   Mom = "<<mom[0]<<",  "<<mom[1]<<",  "<<mom[2]
 	     << std::endl;
@@ -212,7 +212,7 @@ void draw_MC_Photons(LCEvent * evt, float ecut){
       if(idpdg == 22) { 
 	if (enr > ecut) {//  All gammas with E > 20 MeV
 	  add = 10. + 300.*log(1.+enr);
-	  /**
+	  /*
 	     std::cout <<" Photon # "<< i <<'\t'<<" Energy = "<<enr<<'\t'
 	     <<",   Mom = "<<mom[0]<<",  "<<mom[1]<<",  "<<mom[2]
 	     << std::endl;
@@ -279,7 +279,7 @@ void draw_MC_Neutral_Hadrons(LCEvent * evt, float ecut){
 	 ) {
 	if (enr > ecut) {//  neut. hadr. with E > 20 MeV
 	  add = 50. + 300.*log(1.+enr);
-	  /**
+	  /*
 	     std::cout <<" Neut. hadron # "<< idpdg <<'\t'<<" Energy = "<<enr<<'\t'
 	     <<",   Mom = "<<mom[0]<<",  "<<mom[1]<<",  "<<mom[2]
 	     << std::endl;
@@ -670,7 +670,7 @@ void print_MC_Particles(LCEvent * evt, float ecut){
 //-----------------------------------------------------------------------
 //            Print  Pi zeros
 //-----------------------------------------------------------------------
-/**
+/*
   for(int i=0; i<mcpCol->getNumberOfElements() ; i++){
     MCParticle* imc = dynamic_cast<MCParticle*> ( mcpCol->getElementAt( i ) ) ;
     idpdg = imc-> getPDG (); 
