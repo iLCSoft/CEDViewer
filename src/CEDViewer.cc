@@ -18,6 +18,11 @@
 #include <math.h>
 #include <cmath>
 
+#include <marlin/Global.h>
+#include <gear/GEAR.h>
+#include <gear/TPCParameters.h>
+#include <gear/PadRowLayout2D.h>
+
 using namespace lcio ;
 using namespace marlin ;
 
@@ -88,6 +93,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 //   ced_new_event();  
 //-----------------------------------------------------------------------
 
+  const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
+  const gear::PadRowLayout2D& padLayout = gearTPC.getPadLayout() ;
 
   if( parameterSet( "DrawCollection" ) ) {
     
@@ -99,8 +106,16 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       int size  ( std::atoi( _drawCollections[ index++ ].c_str() ) ) ; 
       
       
-      LCCollection* col = evt->getCollection( colName ) ;
-      
+      LCCollection* col = 0 ;
+      try{
+
+	col = evt->getCollection( colName ) ;
+
+      }catch(DataNotAvailableException &e){
+	// if collection doesn't exist go to next
+        continue ;
+      }
+
       if( col->getTypeName() == LCIO::CLUSTER ){
 	for( int i=0 ; i< col->getNumberOfElements() ; i++ ){
 	  
@@ -154,7 +169,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  ml = marker | ( 9 << CED_LAYER_SHIFT ) ;
 
  	  MarlinCED::drawHelix( bField , charge, rx, ry, rz , 
- 				px, py, pz, ml , size , 0xffffff ) ;
+ 				px, py, pz, ml , size ,  0xffffff ,
+				0.0, padLayout.getPlaneExtent()[1]+100. , 
+				gearTPC.getMaxDriftLength()+100. ) ;
 
 
 	} // track
@@ -168,7 +185,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  // float      charge = mcp->getCharge (); 
 	  float charge =  float( HepPDT::ParticleID( mcp->getPDG() ).threeCharge() / 3.00 )   ;
 	  
-	  if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+ 	  if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+	  //	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
 	  //if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
 	  // FIXME: need definition of stable particles (partons, decays in flight,...)
 	  
@@ -177,11 +195,17 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  double px = mcp->getMomentum()[0]; 
 	  double py = mcp->getMomentum()[1]; 
 	  double pz = mcp->getMomentum()[2];
-	  
-	  if( std::abs( charge ) > 0.0001  ) { 
+
+	  double x = mcp->getVertex()[0] ;
+	  double y = mcp->getVertex()[1] ;
+	  double z = mcp->getVertex()[2] ;	  
+
+	  if( std::fabs( charge ) > 0.0001  ) { 
 	    
-	    MarlinCED::drawHelix( 4.0 , charge, 0., 0., 0., 
-				  px, py, pz, marker , size , 0x7af774 ) ;
+	    MarlinCED::drawHelix( 4.0 , charge, x, y, z, 
+				  px, py, pz, marker , size , 0x7af774  ,
+				  0.0,  padLayout.getPlaneExtent()[1]+100. ,
+				  gearTPC.getMaxDriftLength()+100. ) ;	    
 	    
 	  } else { // neutral
 	    
