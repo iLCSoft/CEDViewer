@@ -201,7 +201,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           } // hits
 	  
           // draw the helix:
-          double bField = 4.0 ;
+          double bField = gearTPC.getDoubleVal("tpcBField") ;
+
 
           double pt = bField * 3e-4 / std::abs( trk->getOmega() ) ;
           double charge = ( trk->getOmega() > 0. ?  1. : -1. ) ;
@@ -209,6 +210,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           double px = pt * std::cos(  trk->getPhi() ) ;
           double py = pt * std::sin(  trk->getPhi() ) ;
           double pz = pt * trk->getTanLambda() ;
+
 
           double rx = trk->getReferencePoint()[0] ;
           double ry = trk->getReferencePoint()[1] ;
@@ -244,13 +246,16 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           double py = mcp->getMomentum()[1]; 
           double pz = mcp->getMomentum()[2];
 
+
           double x = mcp->getVertex()[0] ;
           double y = mcp->getVertex()[1] ;
           double z = mcp->getVertex()[2] ;	  
 
           if( std::fabs( charge ) > 0.0001  ) { 
 	    
-            MarlinCED::drawHelix( 4.0 , charge, x, y, z, 
+         double bField = gearTPC.getDoubleVal("tpcBField") ;
+
+            MarlinCED::drawHelix( bField , charge, x, y, z, 
                                   px, py, pz, marker , size , 0x7af774  ,
                                   0.0,  padLayout.getPlaneExtent()[1]+100. ,
                                   gearTPC.getMaxDriftLength()+100. ) ;	    
