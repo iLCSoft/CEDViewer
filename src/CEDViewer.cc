@@ -17,6 +17,11 @@
 #include "CLHEP/HepPDT/ParticleID.hh"
 #include "CLHEP/Vector/ThreeVector.h"
 
+// fix for transition from CLHEP 1.8 to 1.9
+namespace CLHEP{}
+using namespace CLHEP ;
+
+
 #include <math.h>
 #include <cmath>
 
