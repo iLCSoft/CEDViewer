@@ -40,63 +40,72 @@ GenericViewer::GenericViewer() : Processor("GenericViewer") {
   simCaloHitCollections.push_back(std::string("hcalFeRPC1_HcalEndCaps"));
 
 
-  registerProcessorParameter( "SimCaloHitCollections" , 
-			      "Sim Calo Hit Collection Names" ,
-			      _simCaloHitCollections ,
-			       simCaloHitCollections);
-
+  registerInputCollections( LCIO::SIMCALORIMETERHIT,
+			    "SimCaloHitCollections" , 
+			    "Sim Calo Hit Collection Names" ,
+			    _simCaloHitCollections ,
+			    simCaloHitCollections);
+  
   std::vector<std::string> caloHitCollections;
   caloHitCollections.push_back(std::string("ECAL"));
   caloHitCollections.push_back(std::string("HCAL"));
 
-  registerProcessorParameter("CaloHitCollections" , 
-			     "Calo Hit Collection Names" , 
-			     _caloHitCollections , 
-			     caloHitCollections);
+  registerInputCollections( LCIO::CALORIMETERHIT,
+			    "CaloHitCollections" , 
+			    "Calo Hit Collection Names" , 
+			    _caloHitCollections , 
+			    caloHitCollections);
   
   std::vector<std::string> simTrackerHitCollections;
   simTrackerHitCollections.push_back("tpc03_TPC");
 
-  registerProcessorParameter("SimTrackerHitCollections" , 
-			     "Sim Tracker Hit Collection Names" , 
-			     _simTrackerHitCollections , 
-			     simTrackerHitCollections);
-
+  registerInputCollections( LCIO::SIMTRACKERHIT,
+			    "SimTrackerHitCollections" , 
+			    "Sim Tracker Hit Collection Names" , 
+			    _simTrackerHitCollections , 
+			    simTrackerHitCollections);
+  
   std::vector<std::string> trackerHitCollections;
   trackerHitCollections.push_back("TPCTrackerHits");
 
-  registerProcessorParameter("TrackerHitCollections" , 
-			     "Tracker Hit Collection Names" , 
-			     _trackerHitCollections , 
-			     trackerHitCollections);
+  registerInputCollections( LCIO::TRACKERHIT,
+			    "TrackerHitCollections" , 
+			    "Tracker Hit Collection Names" , 
+			    _trackerHitCollections , 
+			    trackerHitCollections);
+  
+  
+  registerInputCollection( LCIO::CLUSTER,
+			   "TrueClusterCollection" , 
+			   "True Cluster Collection Name" , 
+			   _trueClustersCollection , 
+			   std::string("TrueClusters"));
 
   
-  registerProcessorParameter("TrueClusterCollection" , 
-			     "True Cluster Collection Name" , 
-			     _trueClustersCollection , 
-			     std::string("TrueClusters"));
-
+  registerInputCollection( LCIO::CLUSTER,
+			   "ClusterCollection" , 
+			   "Cluster Collection Name" , 
+			   _clustersCollection , 
+			   std::string("ClustersAR"));
   
-  registerProcessorParameter("ClusterCollection" , 
-			     "Cluster Collection Name" , 
-			     _clustersCollection , 
-			     std::string("ClustersAR"));
-
   
-  registerProcessorParameter("TrueTrackCollection" , 
-			     "True Track Collection Name" , 
-			     _trueTracksCollection , 
-			     std::string("TrueTracks"));
+  registerInputCollection( LCIO::TRACK,
+			   "TrueTrackCollection" , 
+			   "True Track Collection Name" , 
+			   _trueTracksCollection , 
+			   std::string("TrueTracks"));
   
-  registerProcessorParameter("TrackCollection" , 
-			     "Track Collection Name" , 
-			     _tracksCollection , 
-			     std::string("TPC_Tracks"));
+  registerInputCollection( LCIO::TRACK,
+			   "TrackCollection" , 
+			   "Track Collection Name" , 
+			   _tracksCollection , 
+			   std::string("TPC_Tracks"));
 
-  registerProcessorParameter("ParticleCollection" , 
-			     "Particle Collection Name" , 
-			     _particleCollection , 
-			     std::string("RecoParticles"));
+  registerInputCollection( LCIO::RECONSTRUCTEDPARTICLE,
+			   "ParticleCollection" , 
+			   "Particle Collection Name" , 
+			   _particleCollection , 
+			   std::string("RecoParticles"));
 
   registerProcessorParameter("LayerCaloHit", 
 			     "Layer for Calo Hits",
