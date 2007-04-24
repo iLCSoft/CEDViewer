@@ -25,10 +25,6 @@ INSTALL( DIRECTORY "${${PROJECT_NAME}_SOURCE_DIR}/include"
 # require proper c++
 ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
 
-# need long long for int64 for now
-#FIXME: should establish wether we are on a 32bit or 64 bit machine ....
-ADD_DEFINITIONS( -Wno-long-long )
-
 # get list of all source files in this directory
 AUX_SOURCE_DIRECTORY( . lib_srcs )
 
