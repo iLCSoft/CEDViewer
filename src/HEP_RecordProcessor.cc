@@ -32,7 +32,7 @@ namespace marlin{
   int    My_iabs(int a){return a < 0.0 ? -a: a;}
 
 // ?????   7 should be a global constant  ????
-  Phys_Geom_Database HEP_PGDB(7); 
+  PGdb HEP_PGDB(7); 
     
   HEP_RecordProcessor aHEP_RecordProcessor ;
   HEP_RecordProcessor::HEP_RecordProcessor() : Processor("HEP_RecordProcessor") {
