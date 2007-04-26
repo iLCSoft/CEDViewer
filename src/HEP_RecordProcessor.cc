@@ -13,6 +13,10 @@
 
 // #include <ced_cli.h>
 #include "MarlinCED.h"
+#include <gear/GEAR.h>
+#include <gear/TPCParameters.h>
+#include <gearimpl/TPCParametersImpl.h>
+#include <gearimpl/FixedPadSizeDiskLayout.h>
 
 
 namespace marlin{
@@ -32,7 +36,8 @@ namespace marlin{
   int    My_iabs(int a){return a < 0.0 ? -a: a;}
 
 // ?????   7 should be a global constant  ????
-  PGdb HEP_PGDB(7); 
+//  PGdb HEP_PGDB(7); 
+  PGdb HEP_PGDB; 
     
   HEP_RecordProcessor aHEP_RecordProcessor ;
   HEP_RecordProcessor::HEP_RecordProcessor() : Processor("HEP_RecordProcessor") {
@@ -131,9 +136,16 @@ void HEP_RecordProcessor::end(){
 //-----------------------------------------------------------------------
 void draw_MC_Photons(LCEvent * evt, float ecut){
 //-----------------------------------------------------------------------
-  double TPC_z           = HEP_PGDB.p_tpc_z_size();
-  double TPC_out         = HEP_PGDB.p_tpc_out_rad();
+
+//   double TPC_z           = HEP_PGDB.p_tpc_z_size();
+//   double TPC_out         = HEP_PGDB.p_tpc_out_rad();
   
+  const gear::TPCParameters  &pTPC      = Global::GEAR->getTPCParameters();
+  const gear::PadRowLayout2D &padLayout = pTPC.getPadLayout();
+  const gear::DoubleVec      &planeExt  = padLayout.getPlaneExtent();
+  double TPC_z           = pTPC.getMaxDriftLength() ;
+  double TPC_out         = planeExt[1]; 
+
   double add =  300.;          // Length of the photon "tracks"
   double tz = TPC_z   + 250.;  // to start close to ECAL surface
   double to = TPC_out + 100.;  // to start close to ECAL surface
@@ -253,8 +265,15 @@ void draw_MC_Photons(LCEvent * evt, float ecut){
 //-----------------------------------------------------------------------
 void draw_MC_Neutral_Hadrons(LCEvent * evt, float ecut){
 //-----------------------------------------------------------------------
-  double TPC_z           = HEP_PGDB.p_tpc_z_size();
-  double TPC_out         = HEP_PGDB.p_tpc_out_rad();
+//   double TPC_z           = HEP_PGDB.p_tpc_z_size();
+//   double TPC_out         = HEP_PGDB.p_tpc_out_rad();
+  
+  const gear::TPCParameters  &pTPC      = Global::GEAR->getTPCParameters();
+  const gear::PadRowLayout2D &padLayout = pTPC.getPadLayout();
+  const gear::DoubleVec      &planeExt  = padLayout.getPlaneExtent();
+  double TPC_z           = pTPC.getMaxDriftLength() ;
+  double TPC_out         = planeExt[1]; 
+
   
   double add =  300.;          // Length of the hadron "tracks"
   double tz = TPC_z   + 350.;  // to start close to ECAL surface
