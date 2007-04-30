@@ -1,0 +1,15 @@
+================================
+
+ release notes for CEDViewer
+
+================================
+
+ --------
+| v00-02 |
+ --------
+ 
+  - added cmake support (epxerimental)
+  - renamed Physical_Geometricaal_database to PGdb (see MarlinUtil)
+
+
+
