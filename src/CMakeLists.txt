@@ -23,7 +23,8 @@ INSTALL( DIRECTORY "${${PROJECT_NAME}_SOURCE_DIR}/include"
 ####################################################################################################
 
 # require proper c++
-ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
+# FIXME -pedantic flag crashes under sl4
+ADD_DEFINITIONS( "-Wall -ansi" )
 
 # get list of all source files in this directory
 AUX_SOURCE_DIRECTORY( . lib_srcs )
