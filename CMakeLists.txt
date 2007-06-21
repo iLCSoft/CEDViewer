@@ -33,6 +33,7 @@ SET( ${PROJECT_NAME}_PATCH_LEVEL 1 )
 
 # project options
 OPTION( BUILD_SHARED_LIBS "Set this to OFF to build static libraries " ON )
+OPTION( INSTALL_DOC "Set to ON to install Documentation" ON )
 
 # project dependencies
 # e.g. SET( ${PROJECT_NAME}_DEPENDS "Marlin MarlinUtil LCIO GEAR CLHEP GSL RAIDA" )
@@ -46,17 +47,17 @@ ENDIF()
 
 # set default install prefix to project root directory
 IF( CMAKE_INSTALL_PREFIX STREQUAL "/usr/local" )
-    SET( CMAKE_INSTALL_PREFIX "${${PROJECT_NAME}_SOURCE_DIR}" )
+    SET( CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}" )
 ENDIF()
 
 
 ### INCLUDES #################################################################
 
 #include directories
-INCLUDE_DIRECTORIES( "${${PROJECT_NAME}_SOURCE_DIR}/include" )
+INCLUDE_DIRECTORIES( "${CMAKE_SOURCE_DIR}/include" )
 
 # install include files
-INSTALL( DIRECTORY "${${PROJECT_NAME}_SOURCE_DIR}/include"
+INSTALL( DIRECTORY "${CMAKE_SOURCE_DIR}/include"
         DESTINATION .
         PATTERN "*~" EXCLUDE
         PATTERN "*CVS*" EXCLUDE )
@@ -82,7 +83,6 @@ AUX_SOURCE_DIRECTORY( src library_sources )
 ##########################################################################################
 
 
-
 # library *nix style versioning
 SET( ${PROJECT_NAME}_VERSION
     "${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION}.${${PROJECT_NAME}_PATCH_LEVEL}" )
@@ -98,9 +98,9 @@ SET( CMAKE_INSTALL_RPATH_USE_LINK_PATH 1 )
 MARK_AS_ADVANCED( CMAKE_INSTALL_RPATH_USE_LINK_PATH )
 
 # output directories
-SET( EXECUTABLE_OUTPUT_PATH "${${PROJECT_NAME}_BINARY_DIR}/bin" CACHE PATH
+SET( EXECUTABLE_OUTPUT_PATH "${CMAKE_BINARY_DIR}/bin" CACHE PATH
     "EXECUTABLE_OUTPUT_PATH" FORCE )
-SET( LIBRARY_OUTPUT_PATH "${${PROJECT_NAME}_BINARY_DIR}/lib" CACHE PATH
+SET( LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/lib" CACHE PATH
     "LIBRARY_OUTPUT_PATH" FORCE )
 MARK_AS_ADVANCED( EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH )
 
@@ -138,21 +138,51 @@ INSTALL( TARGETS lib_${PROJECT_NAME} DESTINATION lib PERMISSIONS
         GROUP_READ GROUP_EXECUTE
         WORLD_READ WORLD_EXECUTE )
 
+# DOCUMENTATION
+FIND_PACKAGE( Doxygen )
+IF( DOXYGEN_FOUND )
+    ADD_CUSTOM_COMMAND(
+        OUTPUT  "${CMAKE_SOURCE_DIR}/doc/html"
+        COMMAND "${DOXYGEN_EXECUTABLE}"
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/doc"
+        COMMENT "Building API Documentation..."
+        VERBATIM )
+    
+    ADD_CUSTOM_TARGET( doc DEPENDS
+        "${CMAKE_SOURCE_DIR}/doc/html" )
+ELSE()
+    MESSAGE( SEND_ERROR "Doxygen not found in your system!!" )
+    IF( INSTALL_DOC )
+        MESSAGE( STATUS "INSTALL_DOC forced to OFF" )
+        SET( INSTALL_DOC OFF )
+    ENDIF()
+ENDIF()
+
+# install documentation
+IF( INSTALL_DOC )
+    # make sure doxygen is executed (make doc) before make install
+    INSTALL( CODE "EXEC_PROGRAM(${CMAKE_BUILD_TOOL} ${CMAKE_BINARY_DIR} ARGS doc)" )
+
+    # install documentation
+    INSTALL( DIRECTORY "${CMAKE_SOURCE_DIR}/doc"
+            DESTINATION .
+            PATTERN "*CVS*" EXCLUDE )
+ENDIF()
+
 # create uninstall configuration file 
-CONFIGURE_FILE( "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-                "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+CONFIGURE_FILE( "${CMAKE_SOURCE_DIR}/cmake_uninstall.cmake.in"
+                "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake"
                 IMMEDIATE @ONLY )
 
 # create uninstall target
-ADD_CUSTOM_TARGET( uninstall
-  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" )
+ADD_CUSTOM_TARGET( uninstall "${CMAKE_COMMAND}" -P "${CMAKE_BINARY_DIR}/cmake_uninstall.cmake" )
 
 # create configuration file from .in file
-CONFIGURE_FILE( "${${PROJECT_NAME}_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
-                "${${PROJECT_NAME}_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY )
+CONFIGURE_FILE( "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
+                "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake" @ONLY )
 
 # install configuration file
-INSTALL( FILES "${${PROJECT_NAME}_BINARY_DIR}/${PROJECT_NAME}Config.cmake" DESTINATION . )
+INSTALL( FILES "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake" DESTINATION . )
 
 # display status message for important variables
 MESSAGE( STATUS )
@@ -163,6 +193,7 @@ MESSAGE( STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}" )
 MESSAGE( STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}" )
 MESSAGE( STATUS "${PROJECT_NAME}_DEPENDS = \"${${PROJECT_NAME}_DEPENDS}\"" )
 MESSAGE( STATUS "BUILD_WITH = \"${BUILD_WITH}\"" )
+MESSAGE( STATUS "INSTALL_DOC = ${INSTALL_DOC}" )
 MESSAGE( STATUS "Change a value with: cmake -D<Variable>=<Value>" )
 MESSAGE( STATUS "-------------------------------------------------------------------------------" )
 MESSAGE( STATUS )
@@ -177,6 +208,8 @@ SET( CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING
     "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE )
 SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" CACHE PATH
     "Path to custom CMake Modules" FORCE )
+SET( INSTALL_DOC "${INSTALL_DOC}" CACHE BOOL
+    "Set to ON to install Documentation" FORCE )
 
 # export library dependencies (keep this as the last line in the file)
 EXPORT_LIBRARY_DEPENDENCIES( "${PROJECT_NAME}LibDeps.cmake" )
