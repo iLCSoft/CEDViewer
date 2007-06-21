@@ -62,7 +62,8 @@ INSTALL( DIRECTORY "${CMAKE_SOURCE_DIR}/include"
         PATTERN "*~" EXCLUDE
         PATTERN "*CVS*" EXCLUDE )
 
-### SOURCES #################################################################
+
+### SOURCES ##################################################################
 
 # require proper c++
 # FIXME -pedantic flag crashes under sl4
@@ -76,6 +77,39 @@ ADD_DEFINITIONS( "-Wall -ansi" )
 
 # get list of all source files
 AUX_SOURCE_DIRECTORY( src library_sources )
+
+
+### DOCUMENTATION ############################################################
+
+FIND_PACKAGE( Doxygen )
+IF( DOXYGEN_FOUND )
+    ADD_CUSTOM_COMMAND(
+        OUTPUT  "${CMAKE_SOURCE_DIR}/doc/html"
+        COMMAND "${DOXYGEN_EXECUTABLE}"
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/doc"
+        COMMENT "Building API Documentation..."
+        VERBATIM )
+    
+    ADD_CUSTOM_TARGET( doc DEPENDS
+        "${CMAKE_SOURCE_DIR}/doc/html" )
+ELSE()
+    MESSAGE( SEND_ERROR "Doxygen not found in your system!!" )
+    IF( INSTALL_DOC )
+        MESSAGE( STATUS "INSTALL_DOC forced to OFF" )
+        SET( INSTALL_DOC OFF )
+    ENDIF()
+ENDIF()
+
+# install documentation
+IF( INSTALL_DOC )
+    # make sure doxygen is executed (make doc) before make install
+    INSTALL( CODE "EXEC_PROGRAM(${CMAKE_BUILD_TOOL} ${CMAKE_BINARY_DIR} ARGS doc)" )
+
+    # install documentation
+    INSTALL( DIRECTORY "${CMAKE_SOURCE_DIR}/doc"
+            DESTINATION .
+            PATTERN "*CVS*" EXCLUDE )
+ENDIF()
 
 
 ##########################################################################################
@@ -137,37 +171,6 @@ INSTALL( TARGETS lib_${PROJECT_NAME} DESTINATION lib PERMISSIONS
         OWNER_READ OWNER_WRITE OWNER_EXECUTE
         GROUP_READ GROUP_EXECUTE
         WORLD_READ WORLD_EXECUTE )
-
-# DOCUMENTATION
-FIND_PACKAGE( Doxygen )
-IF( DOXYGEN_FOUND )
-    ADD_CUSTOM_COMMAND(
-        OUTPUT  "${CMAKE_SOURCE_DIR}/doc/html"
-        COMMAND "${DOXYGEN_EXECUTABLE}"
-        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/doc"
-        COMMENT "Building API Documentation..."
-        VERBATIM )
-    
-    ADD_CUSTOM_TARGET( doc DEPENDS
-        "${CMAKE_SOURCE_DIR}/doc/html" )
-ELSE()
-    MESSAGE( SEND_ERROR "Doxygen not found in your system!!" )
-    IF( INSTALL_DOC )
-        MESSAGE( STATUS "INSTALL_DOC forced to OFF" )
-        SET( INSTALL_DOC OFF )
-    ENDIF()
-ENDIF()
-
-# install documentation
-IF( INSTALL_DOC )
-    # make sure doxygen is executed (make doc) before make install
-    INSTALL( CODE "EXEC_PROGRAM(${CMAKE_BUILD_TOOL} ${CMAKE_BINARY_DIR} ARGS doc)" )
-
-    # install documentation
-    INSTALL( DIRECTORY "${CMAKE_SOURCE_DIR}/doc"
-            DESTINATION .
-            PATTERN "*CVS*" EXCLUDE )
-ENDIF()
 
 # create uninstall configuration file 
 CONFIGURE_FILE( "${CMAKE_SOURCE_DIR}/cmake_uninstall.cmake.in"
