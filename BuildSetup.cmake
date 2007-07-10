@@ -51,7 +51,6 @@ SET( CMAKE_MODULE_PATH "${ILC_HOME}/CMakeModules/v01-00"
 # Project Options
 ###############################################
 
-#SET( BUILD_SHARED_LIBS OFF CACHE BOOL "Set to OFF to build static libraries" FORCE )
 #SET( INSTALL_DOC OFF CACHE BOOL "Set to OFF to skip build/install Documentation" FORCE )
 
 # set cmake build type
@@ -61,6 +60,8 @@ SET( CMAKE_MODULE_PATH "${ILC_HOME}/CMakeModules/v01-00"
 ###############################################
 # Advanced Options
 ###############################################
+
+#SET( BUILD_SHARED_LIBS OFF CACHE BOOL "Set to OFF to build static libraries" FORCE )
 
 # installation path for CEDViewer
 #SET( CMAKE_INSTALL_PREFIX "/foo/bar" CACHE STRING "Where to install CEDViewer" FORCE )
