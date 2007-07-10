@@ -1,7 +1,7 @@
 #############################################################################
 # cmake build setup for CEDViewer
 #
-# For building lcio with cmake type:
+# For building CEDViewer with cmake type:
 # (1) $ mkdir build
 # (2) $ cd build
 # (3) $ cmake -C ../BuildSetup.cmake ..
