@@ -5,11 +5,23 @@
 ================================
 
  --------
+| v00-03 |
+ -------
+
+      - cmake is now default build tool:  (J.Engels)
+        # edit BuildSetup.cmake as needed
+        mkdir build ; cd build
+        cmake -C ../BuildSetup.cmake ..
+        make install
+     -> creates plugin library $CEDViewer/lib/libCEDViewer.so
+
+
+ --------
 | v00-02 |
  --------
  
   - added cmake support (epxerimental)
-  - renamed Physical_Geometricaal_database to PGdb (see MarlinUtil)
+  - renamed Physical_Geometrical_database to PGdb (see MarlinUtil)
 
 
 
