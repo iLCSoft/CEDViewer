@@ -14,7 +14,11 @@
 
 // #include <ced_cli.h>
 #include "MarlinCED.h"
+#ifdef USE_SEPARATE_HEPPDT
+#include "HepPDT/ParticleID.hh"
+#else
 #include "CLHEP/HepPDT/ParticleID.hh"
+#endif
 #include "CLHEP/Vector/ThreeVector.h"
 
 // fix for transition from CLHEP 1.8 to 1.9
