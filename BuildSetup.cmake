@@ -44,7 +44,7 @@ SET( GSL_HOME "${ILC_HOME}/gsl/1.8"
     CACHE PATH "Path to GSL" FORCE )
 
 # CMake Modules Path
-SET( CMAKE_MODULE_PATH "${ILC_HOME}/CMakeModules/v01-04"
+SET( CMAKE_MODULE_PATH "${ILC_HOME}/CMakeModules/v01-04-01"
     CACHE PATH "Path to CMake Modules" FORCE )
 
 ###############################################
