@@ -14,11 +14,6 @@
 
 // #include <ced_cli.h>
 #include "MarlinCED.h"
-#ifdef USE_SEPARATE_HEPPDT
-#include "HepPDT/ParticleID.hh"
-#else
-#include "CLHEP/HepPDT/ParticleID.hh"
-#endif
 #include "CLHEP/Vector/ThreeVector.h"
 
 // fix for transition from CLHEP 1.8 to 1.9
@@ -241,8 +236,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  
           MCParticle* mcp = dynamic_cast<MCParticle*> ( col->getElementAt( i ) ) ;
 	  
-          // float      charge = mcp->getCharge (); 
-          float charge =  float( HepPDT::ParticleID( mcp->getPDG() ).threeCharge() / 3.00 )   ;
+          float charge = mcp->getCharge (); 
 	  
           if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
           //	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
