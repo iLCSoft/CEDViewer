@@ -4,13 +4,19 @@
 
 ================================
 
- ---------
-| v00-05  |
- ---------
+ --------
+| v00-05 |
+ --------
+   - VertexViewer processor added   (A.Raspereza)
+     allows detailed vertex views in r-phi plane
+ 
+   - impoved cmake file (J.Engels)
 
- ---------
-| v00-04  |
- ---------
+   - minor fixes
+
+ --------
+| v00-04 |
+ --------
  
  - removed HepPDT dependency
  
