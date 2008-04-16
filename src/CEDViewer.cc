@@ -26,6 +26,7 @@ using namespace CLHEP ;
 
 #include <marlin/Global.h>
 #include <gear/GEAR.h>
+#include <gear/BField.h>
 #include <gear/TPCParameters.h>
 #include <gear/PadRowLayout2D.h>
 
@@ -104,9 +105,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
   if( parameterSet( "DrawCollection" ) ) {
     
+
     unsigned index = 0 ;
     while( index < _drawCollections.size() ){
       
+
       std::string colName(   _drawCollections[ index++ ] ) ; 
       int marker( std::atoi( _drawCollections[ index++ ].c_str() ) ) ; 
       int size  ( std::atoi( _drawCollections[ index++ ].c_str() ) ) ; 
@@ -132,10 +135,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           if( e > emax) emax = e  ;
           else if( e < emin )  emin = e ;
         }
-        std::cout << " ---  CEDViewer::processEvent "
-                  << " nClu: " << col->getNumberOfElements() 
-                  << ", Emin: " << emin << " GeV , Emax: " << emax << " GeV " << std::endl ; 
-
+        streamlog_out( DEBUG )  << " nClu: " << col->getNumberOfElements() 
+                                << ", Emin: " << emin << " GeV , Emax: " << emax << " GeV " << std::endl ; 
+        
         for( int i=0 ; i< col->getNumberOfElements() ; i++ ){
           
           Cluster* clu = dynamic_cast<Cluster*>( col->getElementAt(i) ) ;
@@ -205,7 +207,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           } // hits
 	  
           // draw the helix:
-          double bField = gearTPC.getDoubleVal("tpcBField") ;
+          double bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ; 
+          //double bField = gearTPC.getDoubleVal("tpcBField") ;
 
 
           double pt = bField * 3e-4 / std::abs( trk->getOmega() ) ;
@@ -232,15 +235,23 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
       } else if( col->getTypeName() == LCIO::MCPARTICLE ){
 	
+        streamlog_out( DEBUG ) << "  drawing MCParticle collection " << std::endl ;
+
         for(int i=0; i<col->getNumberOfElements() ; i++){
 	  
           MCParticle* mcp = dynamic_cast<MCParticle*> ( col->getElementAt( i ) ) ;
 	  
           float charge = mcp->getCharge (); 
 	  
-          if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+          streamlog_out( DEBUG ) << "  drawing MCParticle pdg " 
+                                 << mcp->getPDG() 
+                                 << " genstat: " << mcp->getGeneratorStatus() 
+                                 << std::endl ;
+
+
+          //if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
           //	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
-          //if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
+          if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
           // FIXME: need definition of stable particles (partons, decays in flight,...)
 	  
           if ( mcp->getEnergy() < 0.001 ) continue ;           // ECut ?
@@ -256,7 +267,15 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
           if( std::fabs( charge ) > 0.0001  ) { 
 	    
-         double bField = gearTPC.getDoubleVal("tpcBField") ;
+
+            double bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ; 
+            //gearTPC.getDoubleVal("tpcBField") ;
+
+            //            ml = marker | ( 7 << CED_LAYER_SHIFT ) ;
+
+          streamlog_out( DEBUG ) << "  drawing MCParticle helix for p_t " 
+                                 << sqrt(px*px+py*py)
+                                 << std::endl ;
 
             MarlinCED::drawHelix( bField , charge, x, y, z, 
                                   px, py, pz, marker , size , 0x7af774  ,
@@ -349,10 +368,10 @@ void CEDViewer::check( LCEvent * evt ) {
 
 void CEDViewer::end(){ 
   
-//   std::cout << "CEDViewer::end()  " << name() 
-// 	    << " processed " << _nEvt << " events in " << _nRun << " runs "
-// 	    << std::endl ;
-
+  streamlog_out(DEBUG) << "end() :" << " processed " << _nEvt 
+                       << " events in " << _nRun << " runs "
+                       << std::endl ;
+  
 }
 
 #endif
