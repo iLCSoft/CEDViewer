@@ -23,6 +23,7 @@ using namespace CLHEP ;
 
 #include <math.h>
 #include <cmath>
+#include <cstdlib>
 
 #include <marlin/Global.h>
 #include <gear/GEAR.h>
