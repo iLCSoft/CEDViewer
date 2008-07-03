@@ -16,11 +16,19 @@
 #include <UTIL/LCRelationNavigator.h>
 #include "HelixClass.h"
 #include <math.h>
-//#include <ced_cli.h>
+#include <ced_cli.h>
 
-#include "MarlinCED.h"
+//#include "MarlinCED.h"
 
 #include "marlin/Global.h"
+
+//Gear
+#include <gear/GEAR.h>
+#include <gear/TPCParameters.h>
+#include <gear/CalorimeterParameters.h>
+#include <gear/LayerLayout.h>
+#include <gear/VXDParameters.h>
+#include <gear/VXDLayerLayout.h>
 #include <gear/BField.h>
 
 using namespace lcio ;
@@ -54,50 +62,45 @@ VertexViewer::VertexViewer() : Processor("VertexViewer") {
 
   _description = "Vertex Drawing Utility" ;
   
-  registerInputCollection( LCIO::TRACK,
-			   "TrueTrackCollection" , 
-			   "True Track Collection Name" , 
-			   _trueTracksCollection , 
-			   std::string("TrueTracks"));
-  
-  registerInputCollection( LCIO::LCRELATION,
-			   "TrueTrackMCPRelCollection" , 
-			   "True Track MCP Relation Collection Name" , 
-			   _trueTracksMCPCollection , 
-			   std::string("TrueTracksMCP"));
-  
+  registerProcessorParameter("TrueTrackCollection" , 
+			     "True Track Collection Name" , 
+			     _trueTracksCollection , 
+			     std::string("TrueTracks"));
+
+  registerProcessorParameter("TrueTrackMCPRelCollection" , 
+			     "True Track MCP Relation Collection Name" , 
+			     _trueTracksMCPCollection , 
+			     std::string("TrueTracksMCP"));
+
   std::vector<std::string> collections;
   collections.push_back(std::string("VTXTrackerHits"));
   collections.push_back(std::string("FTDTrackerHits"));
+  collections.push_back(std::string("SITTrackerHits"));
+  collections.push_back(std::string("TPCTrackerHits"));
+
+  std::vector<std::string> simCollections;
+  simCollections.push_back(std::string("VXDCollection"));
   
-  std::vector<std::string> simCalorimeterDefaultCollections;
-  simCalorimeterDefaultCollections.push_back(std::string("SEcal01_EcalBarrel"));
-  simCalorimeterDefaultCollections.push_back(std::string("SEcal01_EcalEndcap"));
+  registerProcessorParameter("TrackerHitCollection" , 
+			     "TrackerHit Collection Name" , 
+			     _trackerHitCollection , 
+			     collections);
+
+  registerProcessorParameter("SimTrakerHitCollection",
+			     "SimTrakerHit Collection Name",
+			     _simTrackerHitCollection,
+			     simCollections);
   
-  registerInputCollections( LCIO::TRACKERHIT,
-			    "TrackerHitCollection" , 
-			    "TrackerHit Collection Name" , 
-			    _trackerHitCollection , 
-			    collections);
-  
-  registerInputCollections( LCIO::SIMCALORIMETERHIT,
-			    "SimCalorimeterHitCollection",
-			    "SimCalorimeterHit Collection Name",
-			    _simCalorimeterHitCollection,
-			    simCalorimeterDefaultCollections);
-  
-  registerInputCollection( LCIO::TRACK,
-			   "TrackCollection" , 
-			   "Track Collection Name" , 
-			   _tracksCollection , 
-			   std::string("SiTracks"));
-  
-  registerInputCollection( LCIO::LCRELATION,
-			   "TrackMCPRelCollection" , 
-			   "Track MCP Rel Collection Name" , 
-			   _tracksMCPCollection , 
-			   std::string("SiTracksMCP"));
-  
+  registerProcessorParameter("TrackCollection" , 
+			     "Track Collection Name" , 
+			     _tracksCollection , 
+			     std::string("SiTracks"));
+
+  registerProcessorParameter("TrackMCPRelCollection" , 
+			     "Track MCP Rel Collection Name" , 
+			     _tracksMCPCollection , 
+			     std::string("SiTracksMCP"));
+
   registerProcessorParameter("LayerTrueTracks", 
 			     "Layer for True Tracks",
 			     _layerTrueTracks, 
@@ -113,9 +116,9 @@ VertexViewer::VertexViewer() : Processor("VertexViewer") {
 			     _layerTracks, 
 			     (int)-1);
 
-  registerProcessorParameter("LayerSimCalorimeterHits", 
-			     "Layer for SimCalorimeterHits",
-			     _layerSimCalorimeterHits, 
+  registerProcessorParameter("LayerSimTrackerHits", 
+			     "Layer for SimTrackerHits",
+			     _layerSimTrackerHits, 
 			     (int)-1);
 
   registerProcessorParameter("CutOnD0",
@@ -128,6 +131,11 @@ VertexViewer::VertexViewer() : Processor("VertexViewer") {
 			     _cutOnZ0,
 			     float(1e+20));
 
+  registerProcessorParameter("DetectorModel",
+           "Detector Model",
+           _detModel,
+           (int)0);
+
 }
 
 void VertexViewer::init() {
@@ -135,10 +143,10 @@ void VertexViewer::init() {
     _nRun = -1;
     _nEvt = 0;
 
-    MarlinCED::init(this) ;
-    //     ced_client_init("localhost",7286);
-    //     ced_register_elements();
-    
+    //    MarlinCED::init(this) ;
+    ced_client_init("localhost",7286);
+    ced_register_elements();
+
 }
 
 
@@ -154,36 +162,99 @@ void VertexViewer::processEvent( LCEvent * evt ) {
     std::cout << " Vertex Viewer : event number " << _nEvt << std::endl;
     std::cout << std::endl;
 
-    //-----------------------------------------------------------------------
-    // Reset drawing buffer and START drawing collection
-    MarlinCED::newEvent(this, -1 ) ;
-    //    ced_new_event();  
-    //-----------------------------------------------------------------------
+    //    _bField = Global::parameters->getFloatVal("BField");
+    _bField = Global::GEAR->getBField().at( gear::Vector3D( 0., 0., 0.) ).z() ;
 
-    _bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ; 
-    //_bField = Global::parameters->getFloatVal("BField");
     
+    ced_new_event();  
 
-    std::cout << "Number of planar materials = " << fkddes2_.nplmat << std::endl;
-//     const float Pi = acos(-1.);
-//     const float deg2rad = Pi / 180.;
-    float laCosphi, laSinphi;
-//     float laPhi;
-    float x0,y0,x1,y1;
-
-    //Draw ladder lines
-    for (int i=0; i<fkddes2_.nplmat; i++)
+    //Draw Vertex detector
+    if (_detModel = 1)
     {
-      laCosphi=float(cos(fkddes2_.phiplmat[i]));
-      laSinphi=float(sin(fkddes2_.phiplmat[i]));
-      x0 = 100.*(fkddes2_.xplmat[i] + (laSinphi*0.5*fkddes2_.widplmat[i]));
-      y0 = 100.*(fkddes2_.yplmat[i] - (laCosphi*0.5*fkddes2_.widplmat[i]));
-      x1 = 100.*(fkddes2_.xplmat[i] - (laSinphi*0.5*fkddes2_.widplmat[i]));
-      y1 = 100.*(fkddes2_.yplmat[i] + (laCosphi*0.5*fkddes2_.widplmat[i]));
+      const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters();
+      const gear::CalorimeterParameters& gearEcalBarrel = Global::GEAR->getEcalBarrelParameters();
+      const gear::CalorimeterParameters& gearEcalEndcap = Global::GEAR->getEcalEndcapParameters();
+      const gear::LayerLayout& gearEcalBarrelLayerLayout = gearEcalBarrel.getLayerLayout();
+      const gear::LayerLayout& gearEcalEndcapLayerLayout = gearEcalEndcap.getLayerLayout();
+      const gear::CalorimeterParameters& gearHcalBarrel = Global::GEAR->getHcalBarrelParameters();
+      const gear::CalorimeterParameters& gearHcalEndcap = Global::GEAR->getHcalEndcapParameters();
+      const gear::LayerLayout& gearHcalBarrelLayerLayout = gearHcalBarrel.getLayerLayout();
+      const gear::LayerLayout& gearHcalEndcapLayerLayout = gearHcalEndcap.getLayerLayout();
+  
+      const gear::VXDParameters& vxdDetector = Global::GEAR->getVXDParameters();
+      const gear::VXDLayerLayout& vxdLayerLayout = vxdDetector.getVXDLayerLayout();
+  
+      const double Pi = acos(-1.);
+      const double deg2rad = Pi / 180.;
+      const double rad2deg = 180. / Pi;
+  
+  
+      //Vertex detector
+      int nLayersVTX = vxdLayerLayout.getNLayers();
+      int nLadders = 0;
+      float ladder_phi0, ladder_distance, ladder_thickness, ladder_width, ladder_length, ladder_offset;
+      float sensitive_distance, sensitive_thickness, sensitive_width, sensitive_length, sensitive_offset;
+      float x0,y0,x1,y1;
+  
+      for (int i=0; i<nLayersVTX; i++) {
+        nLadders = vxdLayerLayout.getNLadders(i);
+  
+        ladder_phi0 = float(vxdLayerLayout.getPhi0(i));
+        ladder_distance = float(vxdLayerLayout.getLadderDistance(i));
+        ladder_thickness = float(vxdLayerLayout.getLadderThickness(i));
+        ladder_width = float(vxdLayerLayout.getLadderWidth(i));
+        ladder_length = float (vxdLayerLayout.getLadderLength(i));
+        ladder_offset = float (vxdLayerLayout.getLadderOffset(i));
+  
+        sensitive_distance = float(vxdLayerLayout.getSensitiveDistance(i));
+        sensitive_thickness = float(vxdLayerLayout.getSensitiveThickness(i));
+        sensitive_width = float(vxdLayerLayout.getSensitiveWidth(i));
+        sensitive_length = float(vxdLayerLayout.getSensitiveLength(i));
+        sensitive_offset = float (vxdLayerLayout.getSensitiveOffset(i));
+  
+        float ft_xplmat,ft_yplmat;
+  
+        ladder_distance += 0.5* ladder_thickness;
+        sensitive_distance += 0.5* sensitive_thickness;
 
-      ced_line(x0,y0,0.0,x1,y1,0.0,0,0,0xffffff);
+        ladder_length = 10.0*ladder_length;
+  
+        if (nLadders >= 3)
+        {
+          //Realistic ladder structure
+          float currPhi;
+          float angleLadders = 2*Pi / nLadders;
+          float cosphi, sinphi;
+  
+          for (int j=0; j<nLadders; ++j) {
+  
+	    currPhi = ladder_phi0 + (angleLadders * j);
+            cosphi = cos(currPhi);
+            sinphi = sin(currPhi);
+  
+            ft_xplmat = (sensitive_distance*cosphi - ladder_offset*sinphi);
+            ft_yplmat = (sensitive_distance*sinphi + ladder_offset*cosphi);
+  
+            x0 = 10.0*(ft_xplmat + (sinphi*0.5*ladder_width));
+            y0 = 10.0*(ft_yplmat - (cosphi*0.5*ladder_width));
+            x1 = 10.0*(ft_xplmat - (sinphi*0.5*ladder_width));
+            y1 = 10.0*(ft_yplmat + (cosphi*0.5*ladder_width));
+  
+            ced_line(x0,y0,0.0,x1,y1,0.0,0,0,0xffffff); 
+            ced_line(x0,y0,-ladder_length,x1,y1,-ladder_length,0,0,0xffffff);
+            ced_line(x0,y0,ladder_length,x1,y1,ladder_length,0,0,0xffffff);
+            ced_line(x0,y0,-ladder_length,x0,y0,ladder_length,0,0,0xffffff);
+            ced_line(x1,y1,-ladder_length,x1,y1,ladder_length,0,0,0xffffff);
+          }
+        }
+        else
+        {
+          ced_geocylinder(10.0*ladder_distance,24,0.0,ladder_length,-ladder_length,0xffffff);
+        }
+      }
     }
 
+//---------------------------------------------------------------------------
 
     LCCollection * MCPartCol = evt->getCollection("MCParticle");
     int nPart = MCPartCol->getNumberOfElements();
@@ -199,31 +270,6 @@ void VertexViewer::processEvent( LCEvent * evt ) {
       // 	       part->getMomentum()[2],
       // 	       part->getEnergy());
       int pdg = part->getPDG();
-
-      float charge = part->getCharge() ;
-
-      float x = part->getVertex()[0] ;
-      float y = part->getVertex()[1] ;
-      float z = part->getVertex()[2] ;
-
-      float px = part->getMomentum()[0] ;
-      float py = part->getMomentum()[1] ;
-      float pz = part->getMomentum()[2] ;
-
-      int marker = 7 << CED_LAYER_SHIFT ;
-
-      
-      int size(1) ;
-
-      
-      MarlinCED::drawHelix( _bField , charge, x, y, z, 
-			    px, py, pz, marker , size , 0x7af774  ,
-			    0.0,  100. ,
-			    2000. ) ;	    
-      
-      
-
-
       if (fabs(pdg)>=400 && fabs(pdg)<600) {
 	std::cout << " PDG = " << pdg 
 		  << "(x,y,z) = " 
@@ -233,11 +279,8 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	float x = part->getEndpoint()[0];
 	float y = part->getEndpoint()[1];
 	float z = part->getEndpoint()[2];	 
-	ced_hit(20.*x,20.*y,20.*z,_layerTrueTracks<<CED_LAYER_SHIFT,10,0xffffff);
+	//	ced_hit(20.*x,20.*y,20.*z,_layerTrueTracks<<CED_LAYER_SHIFT,10,0xffffff);
       }
-
-     
-
     }
     
     std::cout << std::endl;
@@ -279,20 +322,19 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	  std::cout << "Collection " << _trackerHitCollection[iCol].c_str() 
 		    << " ; # of hits = " << nelem << std::endl; 
 	  for (int ielem = 0; ielem < nelem; ++ielem) {
-	    
 	    TrackerHit * hit = 
 	      dynamic_cast<TrackerHit*>( col->getElementAt(ielem));
 	    float x = (float)hit->getPosition()[0];
 	    float y = (float)hit->getPosition()[1];
 	    float z = (float)hit->getPosition()[2];
-	    //	    std::cout << ielem << " " << x << " " << y << " " << z << std::endl;
+      //std::cout << x << " " << y << " " << z << std::endl;
 	    ced_hit(10.*x,10.*y,10.*z, 
-		    _layerTrackerHits<<CED_LAYER_SHIFT,3,0x7cf774);
+		    _layerTrackerHits<<CED_LAYER_SHIFT,6,0x7cf774);
 	  }	
 	}
 	catch(DataNotAvailableException &e) {}
       }
-     //    ced_send_event();
+      ced_send_event();
     }
 
 
@@ -399,12 +441,12 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	      //					  track->getOmega(),track->getTanLambda(),_bField);
 	      zmin = float(part->getVertex()[2]);
 	      zmax = float(part->getEndpoint()[2]);
-// 	      float tmax = (zmax - zmin)/mom[2];
-// 	      float dt = tmax/1000;
+	      float tmax = (zmax - zmin)/mom[2];
+	      float dt = tmax/1000;
 	      x0 = float(part->getVertex()[0]);
 	      y0 = float(part->getVertex()[1]);
 	      r0 = helix->getRadius();
-// 	      float pxy = sqrt(mom[0]*mom[0]+mom[1]*mom[1]);
+	      float pxy = sqrt(mom[0]*mom[0]+mom[1]*mom[1]);
 	      float xc = helix->getXC();
 	      float yc = helix->getYC();
 	      phi0 = atan2(y0-yc,x0-xc);
@@ -413,10 +455,10 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 		int nHitsFTD = track->getSubdetectorHitNumbers()[1];
 		int nHitsSIT = track->getSubdetectorHitNumbers()[2];
 		int nHitsTPC = track->getSubdetectorHitNumbers()[3];	    		
- 		printf(" %2i     %3i   %3i   %3i  %4i  %9.3f %9.3f   %7.2f   %7.2f   %7.2f   %5i",
+ 		printf(" %2i     %3i   %3i   %3i  %4i  %9.3f %9.3f   %7.2f   %7.2f   %7.2f   %5i\n",
  		       iclust, nHitsVTX, nHitsFTD, nHitsSIT, nHitsTPC, track->getD0(), track->getZ0(), 
  		       part->getMomentum()[0],part->getMomentum()[1],part->getMomentum()[2],part->getPDG());
- 		std::cout << "     " << part ;
+		// 		std::cout << "     " << part ;
 		if (ObjTrack[obj] == NULL)
 		  std::cout << "   *** " ;
 		std::cout << std::endl;
@@ -436,21 +478,19 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	      }      
 
 	      //	      if (chi2 > 0. && chi2 < 10000.) {
-
-// 		for (int it=0; it < 1000; ++it) {
-// 		  float t1 = it*dt;
-// 		  float t2 = t1 + dt;
-// 		  float z1 = zmin + t1*mom[2];
-// 		  float z2 = zmin + t2*mom[2];
-// 		  float x1 = xc + r0*cos(-charge*pxy*t1/r0+phi0);
-// 		  float y1 = yc + r0*sin(-charge*pxy*t1/r0+phi0);
-// 		  float x2 = xc + r0*cos(-charge*pxy*t2/r0+phi0);
-// 		  float y2 = yc + r0*sin(-charge*pxy*t2/r0+phi0);			
-// 		  ced_line(10.*x1,10.*y1,10.*z1,10.*x2,10.*y2,10.*z2,
-// 			   _layerTrueTracks<<CED_LAYER_SHIFT,2,color);
+		for (int it=0; it < 1000; ++it) {
+		  float t1 = it*dt;
+		  float t2 = t1 + dt;
+		  float z1 = zmin + t1*mom[2];
+		  float z2 = zmin + t2*mom[2];
+		  float x1 = xc + r0*cos(-charge*pxy*t1/r0+phi0);
+		  float y1 = yc + r0*sin(-charge*pxy*t1/r0+phi0);
+		  float x2 = xc + r0*cos(-charge*pxy*t2/r0+phi0);
+		  float y2 = yc + r0*sin(-charge*pxy*t2/r0+phi0);			
+		  ced_line(10.*x1,10.*y1,10.*z1,10.*x2,10.*y2,10.*z2,
+			   _layerTrueTracks<<CED_LAYER_SHIFT,2,color);
 		  
-// 		}		
-
+		}		
 		//	      }
 	      delete shapes;
 	      delete helix;
@@ -458,9 +498,9 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	      delete[] yh;
 	      delete[] zh;
 	      delete[] ah;
-	     //    ced_send_event();	      
+	      ced_send_event();	      
 	    }
-	    std::cout << "===========================================================================================================" << std::endl;
+	    printf("===========================================================================================================\n");
 	    std::cout << "Statistics (True Tracks) ---> " << std::endl;
 	    printf("Total  4P --> Px = %7.2f  Py = %7.2f  Pz = %7.2f  E = %7.2f\n",
 		   totPx,totPy,totPz,totEn);
@@ -517,14 +557,18 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	    float * zh = new float[nhits];
 	    float zmin = 1.0E+10;
 	    float zmax = -1.0E+10;
- 	    int nHitsVTX = track->getSubdetectorHitNumbers()[0];
+  	    int nHitsVTX = track->getSubdetectorHitNumbers()[0];
  	    int nHitsFTD = track->getSubdetectorHitNumbers()[1];
  	    int nHitsSIT = track->getSubdetectorHitNumbers()[2];
  	    int nHitsTPC = track->getSubdetectorHitNumbers()[3];
- 	    int nHitsVTXInFit = track->getSubdetectorHitNumbers()[4];
- 	    int nHitsFTDInFit = track->getSubdetectorHitNumbers()[5];
- 	    int nHitsSITInFit = track->getSubdetectorHitNumbers()[6];
- 	    int nHitsTPCInFit = track->getSubdetectorHitNumbers()[7];
+	    int nHitsSET = track->getSubdetectorHitNumbers()[4];
+	    int nHitsETD = track->getSubdetectorHitNumbers()[5];
+ 	    int nHitsVTXInFit = track->getSubdetectorHitNumbers()[6];
+ 	    int nHitsFTDInFit = track->getSubdetectorHitNumbers()[7];
+ 	    int nHitsSITInFit = track->getSubdetectorHitNumbers()[8];
+ 	    int nHitsTPCInFit = track->getSubdetectorHitNumbers()[9];
+ 	    int nHitsSETInFit = track->getSubdetectorHitNumbers()[10];
+ 	    int nHitsETDInFit = track->getSubdetectorHitNumbers()[11];
 
 	    float xprev = 0.;
 	    float yprev = 0.;
@@ -541,8 +585,8 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	      float x = (float)hit->getPosition()[0];
 	      float y = (float)hit->getPosition()[1];
 	      float z = (float)hit->getPosition()[2];
-	      ced_hit(10.*x,10.*y,10.*z,_layerTracks<<CED_LAYER_SHIFT,3,color);
-	      //	      ced_line(10.*x,10.*y,10.*z,10.*xprev,10.*yprev,10.*zprev,_layerTracks<<CED_LAYER_SHIFT,1,color);
+	      ced_hit(10.*x,10.*y,10.*z,_layerTracks<<CED_LAYER_SHIFT,6,color);
+	      ced_line(10.*x,10.*y,10.*z,10.*xprev,10.*yprev,10.*zprev,_layerTracks<<CED_LAYER_SHIFT,2,color);
 	      if (PT<1.2&&nHitsTPC>180) {
 		ced_hit(10.*x,10.*y,10.*z,_layerTracks<<CED_LAYER_SHIFT,6,color);
 	      }
@@ -572,29 +616,29 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	      zEnd   = zmin;
 	    }
 	    //	    float signPz = zEnd - zBegin;		
-// 	    float dz = (zmax - zmin) / 100.;
+	    float dz = (zmax - zmin) / 100.;
 	    float par[5];
 	    float dpar[5];
 	    float chi2;
 	    float distmax;
 	    shapes->FitHelix(500, 0, 1, par, dpar, chi2, distmax);
-// 	    float x0 = par[0];
-// 	    float y0 = par[1];
-// 	    float r0 = par[2];
-// 	    float bz = par[3];
-// 	    float phi0 = par[4];
+	    float x0 = par[0];
+	    float y0 = par[1];
+	    float r0 = par[2];
+	    float bz = par[3];
+	    float phi0 = par[4];
 	    if (fabs(track->getD0())<_cutOnD0&&fabs(track->getZ0())<_cutOnZ0) {
 	      float ndf = float(track->getNdf());
 	      if (ndf<1.0)
 		ndf = 1.0;
-	      printf(" %2i  %1i(%1i) %1i(%1i) %1i(%1i) %3i(%4i) %9.3f %9.3f %7.2f %7.2f %7.2f  %3i   %4.2f  %7.3f",
+	      printf(" %2i  %1i(%1i) %1i(%1i) %1i(%1i) %3i(%4i) %9.3f %9.3f %7.2f %7.2f %7.2f  %3i   %4.2f  %7.3f\n",
 		     iclust, 
 		     nHitsVTX, nHitsVTXInFit,nHitsFTD,nHitsFTDInFit,
 		     nHitsSIT, nHitsSITInFit,nHitsTPC,nHitsTPCInFit,
 		     track->getD0(), track->getZ0(), 
 		     helix->getMomentum()[0],helix->getMomentum()[1],helix->getMomentum()[2],
 		     McpInt[obj],wght,track->getChi2()/ndf);	      
-	      std::cout << "     " << obj << std::endl;
+	      //	      std::cout << "     " << obj << std::endl;
 	      //	      if (PT<1.2&&nHitsTPC>180)
 	      //		std::cout << " * rmax = " << rmax << std::endl;
 	      //	      else 
@@ -618,15 +662,15 @@ void VertexViewer::processEvent( LCEvent * evt ) {
  		}
  	      }
 	      if (chi2 > 0. && chi2 < 10000.) {
-// 		for (int iz(0); iz < 100; ++iz) {
-// 		  float z1 = zmin + iz*dz;
-// 		  float z2 = z1 + dz;
-// 		  float x1 = x0 + r0*cos(bz*z1+phi0);
-// 		  float y1 = y0 + r0*sin(bz*z1+phi0);
-// 		  float x2 = x0 + r0*cos(bz*z2+phi0);
-// 		  float y2 = y0 + r0*sin(bz*z2+phi0);			
-// 		  ced_line(10.*x1,10.*y1,10.*z1,10.*x2,10.*y2,10.*z2,_layerTracks<<CED_LAYER_SHIFT,1,color);
-// 		}		
+		for (int iz(0); iz < 100; ++iz) {
+		  float z1 = zmin + iz*dz;
+		  float z2 = z1 + dz;
+		  float x1 = x0 + r0*cos(bz*z1+phi0);
+		  float y1 = y0 + r0*sin(bz*z1+phi0);
+		  float x2 = x0 + r0*cos(bz*z2+phi0);
+		  float y2 = y0 + r0*sin(bz*z2+phi0);			
+		  //		  ced_line(10.*x1,10.*y1,10.*z1,10.*x2,10.*y2,10.*z2,_layerTracks<<CED_LAYER_SHIFT,1,color);
+		}		
 		delete shapes;
 		delete helix;
 		delete[] xh;
@@ -634,10 +678,10 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 		delete[] zh;
 		delete[] ah;
 	      }
-	     //    ced_send_event();
+	      ced_send_event();
 	      //	      getchar();
 	  }
-	  std::cout << "====================================================================================================================== " << std::endl;
+	  printf("======================================================================================================================\n");
 	  std::cout << "Statistics (Reco Tracks) ---> " << std::endl;
 	  printf("Total 4P --> Px = %7.2f  Py = %7.2f  Pz = %7.2f  E = %7.2f\n",
 		 totPx,totPy,totPz,totEn);
@@ -645,45 +689,45 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	catch(DataNotAvailableException &e){}	
     }
 
-   //    ced_send_event();
+    ced_send_event();
     std::cout << std::endl;
 
-    // Drawing Calorimeter Hits 
-    if (_layerSimCalorimeterHits >= 0 ) {
-      int nCol = int(_simCalorimeterHitCollection.size());
+    // Drawing Sim Tracker Hits ---->
+    if (_layerSimTrackerHits >= 0 ) {
+      int nCol = int(_simTrackerHitCollection.size());
       for (int iCol=0;iCol<nCol;++iCol) {
 	try {
 	  LCCollection * col = 
-	    evt->getCollection(_simCalorimeterHitCollection[iCol].c_str()) ;
+	    evt->getCollection(_simTrackerHitCollection[iCol].c_str()) ;
 	  int nelem = col->getNumberOfElements();
-	  std::cout << "Calorimeter Collection " << _simCalorimeterHitCollection[iCol].c_str() 
+	  std::cout << "SimTrackerHit Collection " << _simTrackerHitCollection[iCol].c_str() 
 		    << " ; # of hits = " << nelem << std::endl; 
 	  for (int ielem = 0; ielem < nelem; ++ielem) {
-	    SimCalorimeterHit * hit = 
-	      dynamic_cast<SimCalorimeterHit*>( col->getElementAt(ielem));
+	    SimTrackerHit * hit = 
+	      dynamic_cast<SimTrackerHit*>( col->getElementAt(ielem));
 	    float x = (float)hit->getPosition()[0];
 	    float y = (float)hit->getPosition()[1];
 	    float z = (float)hit->getPosition()[2];
 	    ced_hit(10.*x,10.*y,10.*z, 
-		    _layerSimCalorimeterHits<<CED_LAYER_SHIFT,1,0xffbd22);
+		    _layerSimTrackerHits<<CED_LAYER_SHIFT,6,0xffbd22);
 	  }	
 	}
 	catch(DataNotAvailableException &e) {}
       }
-     //    ced_send_event();
+      ced_send_event();
     }
 
-//     std::cout << std::endl;
-//     std::cout << "================================================" << std::endl;
-//     std::cout << "== Vertex Viewer : Press any key to continue --"  << std::endl;
-//     std::cout << "================================================" << std::endl;    
-//     getchar();
-//     std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << "================================================" << std::endl;
+    std::cout << "== Vertex Viewer : Press any key to continue --"  << std::endl;
+    std::cout << "================================================" << std::endl;    
+    getchar();
+    std::cout << std::endl;
 
-    //++++++++++++++++++++++++++++++++++++
-    MarlinCED::draw(this) ;
-    //++++++++++++++++++++++++++++++++++++
-    
+//++++++++++++++++++++++++++++++++++++
+//  MarlinCED::draw(this) ;
+//++++++++++++++++++++++++++++++++++++
+
     _nEvt++;
 
 }
@@ -696,7 +740,7 @@ void VertexViewer::end(){ }
 int VertexViewer::returnColor(int counter) {
 
 	int icol =  counter % 32;
-	int kcol= 0 ;
+	int kcol;
 	if (icol==0)  kcol = 0x00ff00;
 	if (icol==1)  kcol = 0xAA00ff;
 	if (icol==2)  kcol = 0xff0000;
