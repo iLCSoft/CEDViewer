@@ -13,7 +13,7 @@ using namespace marlin ;
 
 /** Vertex Viewer Processor <br>
  *  @author A.Raspereza, DESY
- *  @version $Id: VertexViewer.h,v 1.1 2008-04-16 15:11:40 gaede Exp $ 
+ *  @version $Id: VertexViewer.h,v 1.2 2008-07-03 08:55:33 rasp Exp $ 
  */
 class VertexViewer : public Processor {
   
@@ -45,17 +45,18 @@ class VertexViewer : public Processor {
   std::string _tracksCollection;
   std::string _trueTracksMCPCollection;
   std::string _tracksMCPCollection;
-  std::vector<std::string> _simCalorimeterHitCollection;
+  std::vector<std::string> _simTrackerHitCollection;
   
   int _layerTrackerHits;
   int _layerTrueTracks;
   int _layerTracks;
-  int _layerSimCalorimeterHits;
+  int _layerSimTrackerHits;
   int returnColor(int counter);
   float _cutOnD0,_cutOnZ0;
   float _bField;
 
   int _nTPCCut;
+  int _detModel;
 
 } ;
 
