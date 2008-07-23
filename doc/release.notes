@@ -5,6 +5,13 @@
 ================================
 
  --------
+| v00-06 |
+ --------
+    - made dependent on CED directly 
+      -> need CED  >= v00-04-01  
+      -> need MarlinUtil >= v00-10 
+
+ --------
 | v00-05 |
  --------
    - VertexViewer processor added   (A.Raspereza)
