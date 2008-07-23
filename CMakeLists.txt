@@ -18,7 +18,6 @@ SET( CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE )
 # User section: modify as needed
 ####################################################################################################
 
-
 # project name
 PROJECT( CEDViewer )
 
