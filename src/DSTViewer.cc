@@ -499,19 +499,19 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 		if (colorMap < 0 || colorMap > 6) {
 			std::cout << "Error in 'DSTViewer::returnRGBClusterColor': wrong colorMap param!" << std::endl;
 		}
+        
+        // Input values in log-scale
+        float log_ene = std::log(eneCluster+1);
+        float log_min = std::log(cutoff_min+1);
+        float log_max = std::log(cutoff_max+1);
+
+        float log_delta = log_max - log_min;
+        float log_step = log_delta/(float)color_steps;
 
 		/**
 		 * Different color scales */
 		switch(scale){
 			case 'a': default: //log
-
-				// Input values in log-scale
-				float log_ene = std::log(eneCluster+1);
-				float log_min = std::log(cutoff_min+1);
-				float log_max = std::log(cutoff_max+1);
-
-				float log_delta = log_max - log_min;
-				float log_step = log_delta/(float)color_steps;
 
 				// log scale color_delta increment
 				color_delta = (int) ((log_ene-log_min)/log_step); // which colour bin does the value go to? We have [0x00,0xFF] bins
