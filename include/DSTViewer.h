@@ -17,7 +17,7 @@ using namespace marlin ;
      .....
  *  <br>
  *  @authors Szymon Daraszewicz (DESY/UOE)
- *  @version $Id: DSTViewer.h,v 1.2 2008-09-09 14:42:45 darasz Exp $ 
+ *  @version $Id: DSTViewer.h,v 1.3 2008-09-15 10:13:48 darasz Exp $ 
  */
 class DSTViewer : public Processor {
   
@@ -113,7 +113,11 @@ class DSTViewer : public Processor {
   	
   	int returnJetLayer(std::string jetColName);
   	
+  	int returnIpLayer(std::string jetColName);
+  	
   	int returnJetColor(std::string jetColName, int colNumber);
+  	
+  	int addAlphaChannelToColor(int color, int alphaChannel);
   	
   	float * returnConeColor(std::string jetColName);
 

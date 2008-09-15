@@ -167,6 +167,14 @@ int ColorMap::RGB2HEX(int red, int green, int blue){
 	return rgb;
 }
 
+// NOT TESTED! ALPHA CHANNEL
+//int ColorMap::RGBA2HEX(int red, int green, int blue, int alpha){
+//		
+//	int rgb = 0x000000; //default
+//    rgb = (alpha<<24) + (red<<16) + (green<<8) + (blue); //bit shifting
+//	return rgb;
+//}
+
 colorMapFunc ColorMap::selectColorMap(int cmp)
 {
   int max=7;

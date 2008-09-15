@@ -196,7 +196,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           Track* trk = dynamic_cast<Track*>( col->getElementAt(i) ) ;
           const TrackerHitVec& hits = trk->getTrackerHits() ;
 	  
-          int ml = marker | ( 8 << CED_LAYER_SHIFT ) ;
+          int ml = marker | ( 8 << CED_LAYER_SHIFT );
 	  
           for( TrackerHitVec::const_iterator it = hits.begin();  it != hits.end() ; it++ ) {
 	    

@@ -23,7 +23,7 @@
 using namespace lcio ;
 using namespace marlin ;
 
-/** Define the layers in the simulation */
+/** Define the key layers in the simulation */
 #define PION_LAYER		(1<<CED_LAYER_SHIFT)
 #define PHOTON_LAYER	(2<<CED_LAYER_SHIFT)
 #define NEUTRON_LAYER	(3<<CED_LAYER_SHIFT)		
@@ -33,16 +33,24 @@ using namespace marlin ;
 #define ECAL_LAYER   	(7<<CED_LAYER_SHIFT)
 #define HCAL_LAYER   	(8<<CED_LAYER_SHIFT)
 #define CLUSTER_LAYER	(9<<CED_LAYER_SHIFT)
-
+#define HIT_LAYER		(0<<CED_LAYER_SHIFT)
 /** Jet layers... */
 #define JET2_LAYER		(12<<CED_LAYER_SHIFT)
 #define JET3_LAYER		(13<<CED_LAYER_SHIFT)
 #define JET4_LAYER		(14<<CED_LAYER_SHIFT)
 #define JET5_LAYER		(15<<CED_LAYER_SHIFT)
 #define JET6_LAYER		(16<<CED_LAYER_SHIFT)
+/** momentum at ip layer */
 #define MOM_LAYER		(17<<CED_LAYER_SHIFT)
+/** Two alternative cluster representations */
 #define BACKUP_LAYER	(18<<CED_LAYER_SHIFT)
-
+#define BACKUP_LAYER2	(19<<CED_LAYER_SHIFT)
+/** Two alternative cluster representations */
+#define IP_JET2			(20<<CED_LAYER_SHIFT)
+#define IP_JET3			(21<<CED_LAYER_SHIFT)
+#define IP_JET4			(22<<CED_LAYER_SHIFT)
+#define IP_JET5			(23<<CED_LAYER_SHIFT)
+#define IP_JET6			(24<<CED_LAYER_SHIFT)
 
 DSTViewer aDSTViewer ;
 
@@ -105,6 +113,7 @@ void DSTViewer::processRunHeader( LCRunHeader* run) {
 	_nRun++ ;
 	_nEvt = 0;
 } 
+
 
 /**
  * Main function processEvent */
@@ -194,9 +203,6 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 					<< " Charge = " << charge
 					<< " E  = " << ene << std::endl;
 
-
-
-
 				int ml = marker | TPC_LAYER; // this defines the default layer 1
 				if (type == 22){
 					ml = marker | ECAL_LAYER; // photons on layer 2
@@ -212,11 +218,11 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 				MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, ml, size, color, 0.0, padLayout.getPlaneExtent()[1], 
 							gearTPC.getMaxDriftLength());
 							
-				/** Draw momentum lines from the ip */
+//				/** Draw momentum lines from the ip */
 				char Mscale = 'b'; // 'b': linear, 'a': log
 				int McolorMap = 2; //hot: 3
 				int McolorSteps = 256;
-				// float p = sqrt(px*px+py*py+pz*pz);
+				 //float p = sqrt(px*px+py*py+pz*pz);
 				float ptot_min = 0.0;
 				float ptot_max = 25.0;
 				int Mcolor = returnRGBClusterColor(ptot, ptot_min, ptot_max, McolorSteps, Mscale, McolorMap);
@@ -268,10 +274,21 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 					int colorSteps = 256;
 					int color = returnRGBClusterColor(eneCluster, ene_min, ene_max, colorSteps, scale, colorMap);
 
-
+					int hit_type = 1 | HIT_LAYER;
+					
 					int cylinder_sides = 30;
 					ced_geocylinder_r(sizes[0]/2, sizes[2], center, rotate, cylinder_sides, color, CLUSTER_LAYER);
-					ced_hit(center[0],center[1],center[2], 1, (int)(sqrt(2)*sizes[0]/4), color);
+					ced_hit(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color);
+					
+					int transparency = 0x66;
+					int rgba = addAlphaChannelToColor(color, transparency);
+					
+					ced_cluellipse_r((float)sizes[0], (float)sizes[2], center_r, rotate, BACKUP_LAYER, rgba);
+					
+					transparency = 0xCC;
+					rgba = addAlphaChannelToColor(color, transparency);
+					
+					ced_ellipsoid_r(sizes, center, rotate, BACKUP_LAYER2, rgba);
 
 					/*
 					 * End points for the arrow
@@ -331,9 +348,27 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 								
 								layer = returnJetLayer(_jetCollections[i]);
 								color = returnJetColor(_jetCollections[i], j);
+//								
+//								MarlinCED::drawHelix(bField, pv[k]->getCharge(), 0.0, 0.0, 0.0, pm[0], pm[1], pm[2], layer, 1, color, 0.0, padLayout.getPlaneExtent()[1], 
+//								gearTPC.getMaxDriftLength());
 								
-								MarlinCED::drawHelix(bField, pv[k]->getCharge(), 0.0, 0.0, 0.0, pm[0], pm[1], pm[2], layer, 1, color, 0.0, padLayout.getPlaneExtent()[1], 
-								gearTPC.getMaxDriftLength());
+												/** Draw momentum lines from the ip */
+								//char Mscale = 'b'; // 'b': linear, 'a': log
+								//int McolorMap = 2; //hot: 3
+								//int McolorSteps = 256;
+								//float ptot_min = 0.0;
+								//float ptot_max = 25.0;
+								//int Mcolor = returnRGBClusterColor(ptot, ptot_min, ptot_max, McolorSteps, Mscale, McolorMap);
+								//layer = returnJetLayer(_jetCollections[i]);
+								int LineSize = 1;
+								// start point
+								float refx = 0.0;
+								float refy = 0.0;
+								float refz = 0.0;
+								float momScale = 100;
+								int layerIp = returnIpLayer(_jetCollections[i]);
+								ced_line(refx, refy, refz, momScale*pm[0], momScale*pm[1], momScale*pm[2], layerIp, LineSize, color);
+								
 							}
 						   					   
 	    	 				double center_c[3] = {0., 0., 0. };
@@ -375,7 +410,6 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 
 			}
 			catch( DataNotAvailableException &e){}
-		//}
 
 		/*
 		 * This refreshes the view? ...
@@ -621,6 +655,33 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 		return size;
 	}
 	
+	int DSTViewer::returnIpLayer(std::string jetColName){
+		
+			int layer = BACKUP_LAYER;
+
+		if (jetColName == "Durham_2Jets"){
+			layer = IP_JET2;
+		}
+		else if (jetColName == "Durham_3Jets"){
+			layer = IP_JET3;
+		}
+		else if (jetColName == "Durham_4Jets"){
+			layer = IP_JET4;
+		}
+		else if (jetColName == "Durham_5Jets"){
+			layer = IP_JET5;
+		}
+		else if (jetColName == "Durham_6Jets"){
+			layer = IP_JET6;
+		}
+		else {
+			layer = BACKUP_LAYER;
+		}
+		
+		return layer;
+		
+	}
+	
 	int DSTViewer::returnJetLayer(std::string jetColName){
 		
 		int layer = BACKUP_LAYER;
@@ -644,7 +705,8 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 			layer = BACKUP_LAYER;
 		}
 	
-		return layer;		
+		return layer;	
+		
 	}
 	
 //	float * DSTViewer::returnConeColor(std::string jetColName){
@@ -673,6 +735,16 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 //		
 //		return RGBAcolor;
 //	}
+	
+	int DSTViewer::addAlphaChannelToColor(int color, int alphaChannel){
+		int rgba = 0xEE000000;
+		
+    	rgba = (alphaChannel<<24) + color;
+		
+		//std::cout << "color = " << rgba << std::endl;
+		
+		return rgba;
+	}
 	
 	
 	int DSTViewer::returnJetColor(std::string jetColName, int colNumber){
