@@ -171,6 +171,7 @@ void VertexViewer::processEvent( LCEvent * evt ) {
     //Draw Vertex detector
     if (_detModel = 1)
     {
+    /*
       const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters();
       const gear::CalorimeterParameters& gearEcalBarrel = Global::GEAR->getEcalBarrelParameters();
       const gear::CalorimeterParameters& gearEcalEndcap = Global::GEAR->getEcalEndcapParameters();
@@ -180,13 +181,14 @@ void VertexViewer::processEvent( LCEvent * evt ) {
       const gear::CalorimeterParameters& gearHcalEndcap = Global::GEAR->getHcalEndcapParameters();
       const gear::LayerLayout& gearHcalBarrelLayerLayout = gearHcalBarrel.getLayerLayout();
       const gear::LayerLayout& gearHcalEndcapLayerLayout = gearHcalEndcap.getLayerLayout();
+    */
   
       const gear::VXDParameters& vxdDetector = Global::GEAR->getVXDParameters();
       const gear::VXDLayerLayout& vxdLayerLayout = vxdDetector.getVXDLayerLayout();
   
       const double Pi = acos(-1.);
-      const double deg2rad = Pi / 180.;
-      const double rad2deg = 180. / Pi;
+      //const double deg2rad = Pi / 180.;
+      //const double rad2deg = 180. / Pi;
   
   
       //Vertex detector
@@ -276,9 +278,9 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 		  << part->getEndpoint()[0] << " "
 		  << part->getEndpoint()[1] << " "
 		  << part->getEndpoint()[2] << std::endl;
-	float x = part->getEndpoint()[0];
-	float y = part->getEndpoint()[1];
-	float z = part->getEndpoint()[2];	 
+	//float x = part->getEndpoint()[0];
+	//float y = part->getEndpoint()[1];
+	//float z = part->getEndpoint()[2];	 
 	//	ced_hit(20.*x,20.*y,20.*z,_layerTrueTracks<<CED_LAYER_SHIFT,10,0xffffff);
       }
     }
@@ -561,14 +563,14 @@ void VertexViewer::processEvent( LCEvent * evt ) {
  	    int nHitsFTD = track->getSubdetectorHitNumbers()[1];
  	    int nHitsSIT = track->getSubdetectorHitNumbers()[2];
  	    int nHitsTPC = track->getSubdetectorHitNumbers()[3];
-	    int nHitsSET = track->getSubdetectorHitNumbers()[4];
-	    int nHitsETD = track->getSubdetectorHitNumbers()[5];
+	    //int nHitsSET = track->getSubdetectorHitNumbers()[4];
+	    //int nHitsETD = track->getSubdetectorHitNumbers()[5];
  	    int nHitsVTXInFit = track->getSubdetectorHitNumbers()[6];
  	    int nHitsFTDInFit = track->getSubdetectorHitNumbers()[7];
  	    int nHitsSITInFit = track->getSubdetectorHitNumbers()[8];
  	    int nHitsTPCInFit = track->getSubdetectorHitNumbers()[9];
- 	    int nHitsSETInFit = track->getSubdetectorHitNumbers()[10];
- 	    int nHitsETDInFit = track->getSubdetectorHitNumbers()[11];
+ 	    //int nHitsSETInFit = track->getSubdetectorHitNumbers()[10];
+ 	    //int nHitsETDInFit = track->getSubdetectorHitNumbers()[11];
 
 	    float xprev = 0.;
 	    float yprev = 0.;
@@ -661,6 +663,7 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 			      << hitvec[ihit]->getPosition()[2] << " "  << std::endl;
  		}
  	      }
+          
 	      if (chi2 > 0. && chi2 < 10000.) {
 		for (int iz(0); iz < 100; ++iz) {
 		  float z1 = zmin + iz*dz;
@@ -670,7 +673,7 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 		  float x2 = x0 + r0*cos(bz*z2+phi0);
 		  float y2 = y0 + r0*sin(bz*z2+phi0);			
 		  //		  ced_line(10.*x1,10.*y1,10.*z1,10.*x2,10.*y2,10.*z2,_layerTracks<<CED_LAYER_SHIFT,1,color);
-		}		
+		}
 		delete shapes;
 		delete helix;
 		delete[] xh;
@@ -740,7 +743,7 @@ void VertexViewer::end(){ }
 int VertexViewer::returnColor(int counter) {
 
 	int icol =  counter % 32;
-	int kcol;
+	int kcol =  0x000000;
 	if (icol==0)  kcol = 0x00ff00;
 	if (icol==1)  kcol = 0xAA00ff;
 	if (icol==2)  kcol = 0xff0000;

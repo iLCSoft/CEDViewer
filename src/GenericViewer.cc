@@ -777,7 +777,7 @@ void GenericViewer::end(){ }
 int GenericViewer::returnColor(int counter) {
 
 	int icol =  counter % 16;
-	int kcol;
+	int kcol =  0x000000;
 	if (icol==0)  kcol = 0x00ff00;
 	if (icol==1)  kcol = 0xAA00ff;
 	if (icol==2)  kcol = 0xff0000;
