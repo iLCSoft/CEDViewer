@@ -87,6 +87,7 @@ INSTALL( DIRECTORY "${PROJECT_SOURCE_DIR}/include"
 
 # require proper c++
 ADD_DEFINITIONS( "-Wall -pedantic -ansi" )
+ADD_DEFINITIONS( "-Wno-long-long" )
 
 # get list of all source files
 AUX_SOURCE_DIRECTORY( src library_sources )
