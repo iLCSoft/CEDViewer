@@ -5,6 +5,15 @@
 ================================
 
  --------
+| v00-07 |
+ --------
+    - implemented a DSTViewer (S. Darasz):
+        draws ReconstructedParticles as helices and straight lines;
+        Clusters as Cylinders (Ellipsoids) and different jet hypotheses as cones
+    - made cmake 2.6 compliant
+    - added 32 bit compatibility build option
+    
+ --------
 | v00-06 |
  --------
     - made dependent on CED directly 
