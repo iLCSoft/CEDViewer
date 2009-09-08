@@ -186,7 +186,6 @@ void VertexViewer::processEvent( LCEvent * evt ) {
       const gear::VXDParameters& vxdDetector = Global::GEAR->getVXDParameters();
       const gear::VXDLayerLayout& vxdLayerLayout = vxdDetector.getVXDLayerLayout();
   
-      const double Pi = acos(-1.);
       //const double deg2rad = Pi / 180.;
       //const double rad2deg = 180. / Pi;
   
@@ -225,7 +224,7 @@ void VertexViewer::processEvent( LCEvent * evt ) {
         {
           //Realistic ladder structure
           float currPhi;
-          float angleLadders = 2*Pi / nLadders;
+          float angleLadders = 2*M_PI/ nLadders;
           float cosphi, sinphi;
   
           for (int j=0; j<nLadders; ++j) {
