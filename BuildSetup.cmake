@@ -51,6 +51,10 @@ SET( CMAKE_MODULE_PATH "${ILC_HOME}/CMakeModules/v01-05"
 # Project Options
 ###############################################
 
+#--- for MacOS we need to add streamlog
+#SET( BUILD_WITH "streamlog" 
+#    CACHE STRING "Build CEDViewer with these optional packages" FORCE )
+
 #SET( INSTALL_DOC OFF CACHE BOOL "Set to OFF to skip build/install Documentation" FORCE )
 
 # set cmake build type

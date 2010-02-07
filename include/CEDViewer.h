@@ -10,7 +10,13 @@
 using namespace lcio ;
 using namespace marlin ;
 
-/** Cluster viewer based on CED by A. Zhelezov.
+/** LCIO collection based viewer for CED event dislplay (A. Zhelezov).
+ *  Define the collection name, marker, size and optionally the layer number in the steering file.
+ *  For 'DrawCollection' a default layer number in CED is chosen.
+ * 
+ *  @param DrawCollection - collection to be displayed ( ColName, marker type[0-2] )
+ *  @param DrawInLayer    - collection to be displayed ( ColName, marker type[0-2], size) 
+ *
  *  @author F.Gaede, DESY
  *  @version $Id: CEDViewer.h,v 1.2 2005-08-04 13:45:21 gaede Exp $ 
  */
@@ -52,6 +58,7 @@ class CEDViewer : public Processor {
   /** Input collection name.
    */
   StringVec _drawCollections ;
+  StringVec _drawCollectionsLayer ;
   
   IntVec _colors ;
 
