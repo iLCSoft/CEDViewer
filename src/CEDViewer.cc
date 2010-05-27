@@ -10,6 +10,9 @@
 #include <EVENT/SimCalorimeterHit.h>
 #include <EVENT/SimTrackerHit.h>
 
+#include <EVENT/ReconstructedParticle.h>
+
+
 #include <UTIL/LCTypedVector.h>
 
 // #include <ced_cli.h>
@@ -135,7 +138,38 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
 //-----------------------------------------------------------------------
 // Reset drawing buffer and START drawing collection
+
+//hauke hoelbe 08.02.2010
   MarlinCED::newEvent(this) ;
+
+//--------------------------------------- //hauke
+  //MarlinCED::newEvent(this,0,evt); //need "evt" for picking!
+  CEDPickingHandler &pHandler=CEDPickingHandler::getInstance();
+  //pHandler.registerFunction(LCIO::MCPARTICLE, &CEDPickingHandler::printMCParticle);
+//  pHandler.registerFunction(LCIO::MCPARTICLE, &printDefault<EVENT::MCParticle>); //<--printDefault aus MarlinCED.h
+
+  //pHandler.registerFunction(LCIO::TRACKERHIT, &CEDPickingHandler::printTrackerHit);
+  //pHandler.registerFunction(LCIO::TRACKERHIT, &printDefault<LCIO::TRACKERHIT>);
+
+  //pHandler.registerFunction(LCIO::SIMTRACKERHIT, &CEDPickingHandler::printSimTrackerHit);
+  //pHandler.registerFunction(LCIO::CALORIMETERHIT, &CEDPickingHandler::printCalorimeterHit);
+  //pHandler.registerFunction(LCIO::SIMCALORIMETERHIT, &CEDPickingHandler::printSimCalorimeterHit);
+  //pHandler.registerFunction(LCIO::VERTEX, &CEDPickingHandler::printVertex);
+  //pHandler.registerFunction(LCIO::RECONSTRUCTEDPARTICLE, &CEDPickingHandler::printReconstructedParticle);
+  //pHandler.registerFunction(LCIO::TRACK, &CEDPickingHandler::printTrack);
+  //pHandler.registerFunction(LCIO::CLUSTER, &CEDPickingHandler::printCluster);
+
+
+
+  pHandler.update(evt); 
+
+  /*
+  CEDPickingHandler::registerFunction(LCIO::SIMTRACKERHIT, &CEDPickingHandler::printSimTrackerHit);
+  CEDPickingHandler::registerFunction(LCIO::SIMCALORIMETERHIT, &CEDPickingHandler::printSimCalorimeterHit);
+  CEDPickingHandler::update(evt); 
+*/
+
+
 //   ced_new_event();  
 //-----------------------------------------------------------------------
 
@@ -215,10 +249,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         int color =  _colors[ i % _colors.size() ] ;
         for( CalorimeterHitVec::const_iterator it = hits.begin();  it != hits.end() ; it++ ) {
           
-          ced_hit( (*it)->getPosition()[0],
+          //hauke hoelbe: add id for picking!
+          ced_hit_ID( (*it)->getPosition()[0],
                    (*it)->getPosition()[1],
                    (*it)->getPosition()[2],
-                   ml, size , color ) ;
+                   ml, size , color, clu->id() ) ;
           
         } // hits
         
@@ -226,7 +261,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         float y = clu->getPosition()[1] ;
         float z = clu->getPosition()[2] ;
 
-        ced_hit( x,y,z, ml, size*3 , color ) ;
+        //hauke hoelbe: add id for picking
+        ced_hit_ID( x,y,z, ml, size*3 , color, clu->id() ) ;
 
         Hep3Vector v(x,y,z) ;
 
@@ -249,9 +285,10 @@ void CEDViewer::processEvent( LCEvent * evt ) {
  
         Hep3Vector dp( v + d ) , dm( v - d )   ;
 
-        ced_line( dp.x() , dp.y() , dp.z(),  
+        //hauke hoelbe: need the id for picking mode!
+        ced_line_ID( dp.x() , dp.y() , dp.z(),  
                   dm.x() , dm.y() , dm.z(),
-                  ml , 1 , color );	 
+                  ml , 1 , color, clu->id() );	 
 	  
 
       } // cluster
@@ -269,10 +306,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  
         for( TrackerHitVec::const_iterator it = hits.begin();  it != hits.end() ; it++ ) {
 	    
-          ced_hit( (*it)->getPosition()[0],
+          //hauke hoelbe: add id for picking
+          ced_hit_ID( (*it)->getPosition()[0],
                    (*it)->getPosition()[1],
                    (*it)->getPosition()[2],
-                   ml , size , _colors[ i % _colors.size() ] ) ;
+                   ml , size , _colors[ i % _colors.size() ], trk->id() ) ;
 	    
         } // hits
 	  
@@ -317,19 +355,21 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  
         float charge = mcp->getCharge (); 
 	  
+        //hauke die 2 nachfolgenden zeilen war aus kommentiert
+        //if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+        // 	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
+        if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
+        // FIXME: need definition of stable particles (partons, decays in flight,...)
+	  
+        if ( mcp->getEnergy() < 0.001 ) continue ;           // ECut ?
+
         streamlog_out( DEBUG ) << "  drawing MCParticle pdg " 
                                << mcp->getPDG() 
                                << " genstat: " << mcp->getGeneratorStatus() 
                                << std::endl ;
 
 
-        //if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
-        //	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
-        if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
-        // FIXME: need definition of stable particles (partons, decays in flight,...)
-	  
-        if ( mcp->getEnergy() < 0.001 ) continue ;           // ECut ?
-	  
+        	  
         double px = mcp->getMomentum()[0]; 
         double py = mcp->getMomentum()[1]; 
         double pz = mcp->getMomentum()[2];
@@ -351,10 +391,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                                  << sqrt(px*px+py*py)
                                  << std::endl ;
 
+          //std::cout<<"Hauke: drawHelix called from cedviewer" << std::endl;
           MarlinCED::drawHelix( bField , charge, x, y, z, 
                                 px, py, pz, marker , size , 0x7af774  ,
                                 0.0,  padLayout.getPlaneExtent()[1]+100. ,
-                                gearTPC.getMaxDriftLength()+100. ) ;	    
+                                gearTPC.getMaxDriftLength()+100., mcp->id() ) ;	    
 	    
         } else { // neutral
 	    
@@ -382,9 +423,10 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           double length = ( std::abs( pt/pz) > r_max/z_max ) ?  // hit barrel or endcap ? 
             r_max * p / pt  :  z_max * p / pz  ;
 	    
-          ced_line( r_min*px/p ,  r_min*py/p ,  r_min*pz/p , 
+          //hauke hoelbe: add id for picking
+          ced_line_ID( r_min*px/p ,  r_min*py/p ,  r_min*pz/p , 
                     length*px/p ,  length*py/p ,  length*pz/p , 
-                    marker , size, color );	 
+                    marker , size, color, mcp->id() );	 
 	    
         }
       }
@@ -395,7 +437,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       layer = ( layer > -1 ? layer : SIMTRACKERHIT_LAYER ) ;
 
       LCTypedVector<SimTrackerHit> v( col ) ;
+
+//hauke hoelbe
       MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer) ;
+//      MarlinCED::drawObjectsWithPositionID(col, v.begin(), v.end() , marker, size , color, layer) ;
+
 
     } else if( col->getTypeName() == LCIO::SIMCALORIMETERHIT ){
 
@@ -442,6 +488,10 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 void CEDViewer::check( LCEvent * evt ) { 
   // nothing to check here - could be used to fill checkplots in reconstruction processor
 }
+
+void CEDViewer::printParticle(int id, LCEvent * evt){
+  std::cout << "CEDViewer::printParticle id: " << id << std::endl;
+} 
 
 
 void CEDViewer::end(){ 

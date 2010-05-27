@@ -119,6 +119,10 @@ void DSTViewer::processRunHeader( LCRunHeader* run) {
  * Main function processEvent */
 void DSTViewer::processEvent( LCEvent * evt ) { 
 
+    
+    CEDPickingHandler &pHandler=CEDPickingHandler::getInstance();
+    pHandler.update(evt); 
+
 	// Gets the GEAR global geometry params
 	const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
 	const gear::PadRowLayout2D& padLayout = gearTPC.getPadLayout() ;
@@ -215,9 +219,12 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 				int size = returnTrackSize(type);
 
 				/** Draw the helix and straight lines */
-				MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, ml, size, color, 0.0, padLayout.getPlaneExtent()[1], 
-							gearTPC.getMaxDriftLength());
+				//MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, ml, size, color, 0.0, padLayout.getPlaneExtent()[1], 
+			    //				gearTPC.getMaxDriftLength());
 							
+                MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, ml, size, color, 0.0, padLayout.getPlaneExtent()[1], 
+							gearTPC.getMaxDriftLength(), part->id() ); //hauke
+
 //				/** Draw momentum lines from the ip */
 				char Mscale = 'b'; // 'b': linear, 'a': log
 				int McolorMap = 2; //hot: 3
@@ -228,7 +235,10 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 				int Mcolor = returnRGBClusterColor(ptot, ptot_min, ptot_max, McolorSteps, Mscale, McolorMap);
 				int LineSize = 1;
 				float momScale = 100;
-				ced_line(refx, refy, refz, momScale*px, momScale*py, momScale*pz, MOM_LAYER, LineSize, Mcolor);
+				//ced_line(refx, refy, refz, momScale*px, momScale*py, momScale*pz, MOM_LAYER, LineSize, Mcolor);
+
+                //hauke
+				ced_line_ID(refx, refy, refz, momScale*px, momScale*py, momScale*pz, MOM_LAYER, LineSize, Mcolor, part->id()); //the right id?
 
 				if (nClusters > 0 ) {
 					// std::cout 	<< "nCluster > 0" << std::endl;
@@ -277,18 +287,24 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 					int hit_type = 1 | HIT_LAYER;
 					
 					int cylinder_sides = 30;
-					ced_geocylinder_r(sizes[0]/2, sizes[2], center, rotate, cylinder_sides, color, CLUSTER_LAYER);
-					ced_hit(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color);
+					ced_geocylinder_r(sizes[0]/2, sizes[2], center, rotate, cylinder_sides, color, CLUSTER_LAYER); 
+
+					//ced_hit(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color);
+                    ced_hit_ID(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color, cluster->id()); //hauke
+
 					
 					int transparency = 0x66;
 					int rgba = addAlphaChannelToColor(color, transparency);
 					
-					ced_cluellipse_r((float)sizes[0], (float)sizes[2], center_r, rotate, BACKUP_LAYER, rgba);
+					//ced_cluellipse_r((float)sizes[0], (float)sizes[2], center_r, rotate, BACKUP_LAYER, rgba);
+                    ced_cluellipse_r_ID((float)sizes[0], (float)sizes[2], center_r, rotate, BACKUP_LAYER, rgba, cluster->id()); //hauke
+
 					
 					transparency = 0xCC;
 					rgba = addAlphaChannelToColor(color, transparency);
 					
-					ced_ellipsoid_r(sizes, center, rotate, BACKUP_LAYER2, rgba);
+                    //ced_ellipsoid_r(sizes, center, rotate, BACKUP_LAYER2, rgba); 
+					ced_ellipsoid_r_ID(sizes, center, rotate, BACKUP_LAYER2, rgba, cluster->id()); //hauke
 
 					/*
 					 * End points for the arrow
@@ -309,8 +325,11 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 					float zArrowEnd = center[2] + (radius) * std::cos(theta);
 
 					// this is the direction arrow
-					ced_line(center[0],center[1],center[2], xEnd, yEnd, zEnd, CLUSTER_LAYER, sizeLine, color);					
-					ced_line(xEnd, yEnd, zEnd, xArrowEnd, yArrowEnd, zArrowEnd, CLUSTER_LAYER, sizeLine, color_arrow);
+					//ced_line(center[0],center[1],center[2], xEnd, yEnd, zEnd, CLUSTER_LAYER, sizeLine, color);					
+                    ced_line_ID(center[0],center[1],center[2], xEnd, yEnd, zEnd, CLUSTER_LAYER, sizeLine, color,cluster->id()); //hauke
+
+                    //ced_line(xEnd, yEnd, zEnd, xArrowEnd, yArrowEnd, zArrowEnd, CLUSTER_LAYER, sizeLine, color_arrow);
+					ced_line_ID(xEnd, yEnd, zEnd, xArrowEnd, yArrowEnd, zArrowEnd, CLUSTER_LAYER, sizeLine, color_arrow, cluster->id());//hauke
 
 					}
 				}
@@ -367,7 +386,8 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 								float refz = 0.0;
 								float momScale = 100;
 								int layerIp = returnIpLayer(_jetCollections[i]);
-								ced_line(refx, refy, refz, momScale*pm[0], momScale*pm[1], momScale*pm[2], layerIp, LineSize, color);
+								//ced_line(refx, refy, refz, momScale*pm[0], momScale*pm[1], momScale*pm[2], layerIp, LineSize, color);
+                                ced_line_ID(refx, refy, refz, momScale*pm[0], momScale*pm[1], momScale*pm[2], layerIp, LineSize, color, pv[k]->id()); //hauke
 								
 							}
 						   					   
@@ -383,7 +403,9 @@ void DSTViewer::processEvent( LCEvent * evt ) {
         					double scale_pt = 20;
         					double scale_mom = 25;
         					double min_pt = 50;
-    						ced_cone_r( min_pt + scale_pt*pt_norm , scale_mom*v.r() , center_c, rotation_c, layer, RGBAcolor);
+    						//ced_cone_r( min_pt + scale_pt*pt_norm , scale_mom*v.r() , center_c, rotation_c, layer, RGBAcolor);
+                            //does this make sense...
+    						ced_cone_r_ID( min_pt + scale_pt*pt_norm , scale_mom*v.r() , center_c, rotation_c, layer, RGBAcolor,jet->id()); //hauke
 
 						}
 				}

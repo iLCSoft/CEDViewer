@@ -50,6 +50,8 @@ class CEDViewer : public Processor {
   /** Called after data processing for clean up.
    */
   virtual void end() ;
+  void printParticle(int id, LCEvent * evt);
+
   
   
  protected:
