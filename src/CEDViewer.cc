@@ -221,8 +221,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       col = evt->getCollection( colName ) ;
       
     }catch(DataNotAvailableException &e){
-      // if collection doesn't exist go to next
+
+      streamlog_out( WARNING ) << " collection " << colName <<  " not found in event " 
+                               << evt->getEventNumber() "", run : << evt->getRunNumber() << " !" << std::endl ;
       continue ;
+
     }
     
     if( col->getTypeName() == LCIO::CLUSTER ){
@@ -475,6 +478,21 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
 
   } // while
+
+  streamlog_out( MESSAGE ) << " ++++++++ collections shown on layer :   +++++++++++++ " << std::endl ;
+
+  for(unsigned np=0 ; np < nCols ; ++np){
+
+    const std::string & colName = drawParameters[np].ColName ;
+//     int size =   drawParameters[np].Size ;
+//     int marker = drawParameters[np].Marker ;
+    int layer =  drawParameters[np].Layer ;
+
+    streamlog_out( MESSAGE )  << " ++++++++  " << colName <<  "\t  on layer: " << layer << std::endl ;
+  }
+  streamlog_out( MESSAGE ) << " ++++++++ use shift-[LN] for LN>10  +++++++++++++ " << std::endl ;
+
+
 
   //++++++++++++++++++++++++++++++++++++
   MarlinCED::draw(this) ;
