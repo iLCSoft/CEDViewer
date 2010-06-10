@@ -222,8 +222,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       
     }catch(DataNotAvailableException &e){
 
-      streamlog_out( WARNING ) << " collection " << colName <<  " not found in event " 
-                               << evt->getEventNumber() "", run : << evt->getRunNumber() << " !" << std::endl ;
+      streamlog_out( WARNING ) << " collection " << colName <<  " not found in event:" 
+                               << evt->getEventNumber() "   run: " << evt->getRunNumber() << " !" << std::endl ;
       continue ;
 
     }
