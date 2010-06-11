@@ -4,6 +4,15 @@
 
 ================================
 
+ --------
+| v01-00 |
+ --------
+     - new release of CEDViewer with 'picking' functionality 
+        - implemented  in CEDViewer   (GenericViewer: not yet )
+       
+     
+
+
  -----------
 | v00-07-02 |
  -----------
