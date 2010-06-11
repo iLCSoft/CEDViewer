@@ -33,6 +33,7 @@ using namespace CLHEP ;
 #include <gear/BField.h>
 #include <gear/TPCParameters.h>
 #include <gear/PadRowLayout2D.h>
+#include <gear/CalorimeterParameters.h>
 
 using namespace lcio ;
 using namespace marlin ;
@@ -104,8 +105,6 @@ void CEDViewer::init() {
   printParameters() ;
 
   MarlinCED::init(this) ;
-//   ced_client_init("localhost",7286);
-//   ced_register_elements();
   
   _colors.push_back( 0xff00ff );
   _colors.push_back( 0x00ff00 );
@@ -139,38 +138,13 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 //-----------------------------------------------------------------------
 // Reset drawing buffer and START drawing collection
 
-//hauke hoelbe 08.02.2010
   MarlinCED::newEvent(this) ;
 
-//--------------------------------------- //hauke
-  //MarlinCED::newEvent(this,0,evt); //need "evt" for picking!
+  // initialize picking
   CEDPickingHandler &pHandler=CEDPickingHandler::getInstance();
-  //pHandler.registerFunction(LCIO::MCPARTICLE, &CEDPickingHandler::printMCParticle);
-//  pHandler.registerFunction(LCIO::MCPARTICLE, &printDefault<EVENT::MCParticle>); //<--printDefault aus MarlinCED.h
-
-  //pHandler.registerFunction(LCIO::TRACKERHIT, &CEDPickingHandler::printTrackerHit);
-  //pHandler.registerFunction(LCIO::TRACKERHIT, &printDefault<LCIO::TRACKERHIT>);
-
-  //pHandler.registerFunction(LCIO::SIMTRACKERHIT, &CEDPickingHandler::printSimTrackerHit);
-  //pHandler.registerFunction(LCIO::CALORIMETERHIT, &CEDPickingHandler::printCalorimeterHit);
-  //pHandler.registerFunction(LCIO::SIMCALORIMETERHIT, &CEDPickingHandler::printSimCalorimeterHit);
-  //pHandler.registerFunction(LCIO::VERTEX, &CEDPickingHandler::printVertex);
-  //pHandler.registerFunction(LCIO::RECONSTRUCTEDPARTICLE, &CEDPickingHandler::printReconstructedParticle);
-  //pHandler.registerFunction(LCIO::TRACK, &CEDPickingHandler::printTrack);
-  //pHandler.registerFunction(LCIO::CLUSTER, &CEDPickingHandler::printCluster);
-
-
 
   pHandler.update(evt); 
 
-  /*
-  CEDPickingHandler::registerFunction(LCIO::SIMTRACKERHIT, &CEDPickingHandler::printSimTrackerHit);
-  CEDPickingHandler::registerFunction(LCIO::SIMCALORIMETERHIT, &CEDPickingHandler::printSimCalorimeterHit);
-  CEDPickingHandler::update(evt); 
-*/
-
-
-//   ced_new_event();  
 //-----------------------------------------------------------------------
 
   const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
@@ -352,16 +326,30 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	
       streamlog_out( DEBUG ) << "  drawing MCParticle collection " << std::endl ;
 
+      double ecalR =  ( Global::GEAR->getEcalBarrelParameters().getExtent()[0] +  
+                        Global::GEAR->getEcalEndcapParameters().getExtent()[1]  ) / 2. ;
+      
+      double ecalZ = std::abs ( Global::GEAR->getEcalEndcapParameters().getExtent()[2] +  
+                                Global::GEAR->getEcalEndcapParameters().getExtent()[3]  ) / 2. ;
+      
+      double hcalR =  ( Global::GEAR->getHcalBarrelParameters().getExtent()[0] +  
+                        Global::GEAR->getHcalEndcapParameters().getExtent()[1]  ) / 2. ;
+      
+      double hcalZ = std::abs ( Global::GEAR->getHcalEndcapParameters().getExtent()[2] +  
+                                Global::GEAR->getHcalEndcapParameters().getExtent()[3]  ) / 2. ;
+      
+
+
       for(int i=0; i<col->getNumberOfElements() ; i++){
 	  
         MCParticle* mcp = dynamic_cast<MCParticle*> ( col->getElementAt( i ) ) ;
 	  
         float charge = mcp->getCharge (); 
 	  
-        //hauke die 2 nachfolgenden zeilen war aus kommentiert
-        //if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+        if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+
         // 	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
-        if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
+        //if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
         // FIXME: need definition of stable particles (partons, decays in flight,...)
 	  
         if ( mcp->getEnergy() < 0.001 ) continue ;           // ECut ?
@@ -382,21 +370,25 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         double y = mcp->getVertex()[1] ;
         double z = mcp->getVertex()[2] ;	  
 
+
+        layer = ( layer > -1 ? layer : MCPARTICLE_LAYER ) ;
+        
+        int ml = marker | ( layer << CED_LAYER_SHIFT );
+        
+        
         if( std::fabs( charge ) > 0.0001  ) { 
 	    
 
           double bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ; 
-          //gearTPC.getDoubleVal("tpcBField") ;
-
-          //            ml = marker | ( 7 << CED_LAYER_SHIFT ) ;
 
           streamlog_out( DEBUG ) << "  drawing MCParticle helix for p_t " 
                                  << sqrt(px*px+py*py)
                                  << std::endl ;
 
+ 
           //std::cout<<"Hauke: drawHelix called from cedviewer" << std::endl;
           MarlinCED::drawHelix( bField , charge, x, y, z, 
-                                px, py, pz, marker , size , 0x7af774  ,
+                                px, py, pz, ml , size , 0x7af774  ,
                                 0.0,  padLayout.getPlaneExtent()[1]+100. ,
                                 gearTPC.getMaxDriftLength()+100., mcp->id() ) ;	    
 	    
@@ -407,17 +399,14 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           double z_max ;
           double r_max ;
 	    
-          if(std::abs( mcp->getPDG() )==22){
-	      
-            color = 0xf9f920;  // photon
-            r_max = 1800 ;  // somewhere in the ecal
-            z_max = 2930 ;  // somewhere in the ecal
-	      
+          if( std::abs( mcp->getPDG() ) == 22 ) {
+            color = 0xf9f920;          // photon
+            r_max = ecalR ;
+            z_max = ecalZ ;
           } else {
-		
-            color = 0xb900de  ;  // neutral hadron
-            r_max = 2500 ;  // somewhere in the hcal
-            z_max = 3600 ;  // somewhere in the hcal
+            color = 0xb900de  ;        // neutral hadron
+            r_max = hcalR ;
+            z_max = hcalZ ;  
           } 
 	    
           double pt = hypot(px,py);	 
@@ -428,9 +417,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	    
           //hauke hoelbe: add id for picking
           ced_line_ID( r_min*px/p ,  r_min*py/p ,  r_min*pz/p , 
-                    length*px/p ,  length*py/p ,  length*pz/p , 
-                    marker , size, color, mcp->id() );	 
-	    
+                       length*px/p ,  length*py/p ,  length*pz/p , 
+                       ml , size, color, mcp->id() );	 
+          
         }
       }
     } else if( col->getTypeName() == LCIO::SIMTRACKERHIT ){
