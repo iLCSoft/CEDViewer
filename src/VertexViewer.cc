@@ -169,7 +169,7 @@ void VertexViewer::processEvent( LCEvent * evt ) {
     ced_new_event();  
 
     //Draw Vertex detector
-    if (_detModel = 1)
+    if (_detModel == 1)
     {
     /*
       const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters();
@@ -617,17 +617,17 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 	      zEnd   = zmin;
 	    }
 	    //	    float signPz = zEnd - zBegin;		
-	    float dz = (zmax - zmin) / 100.;
+	    //float dz = (zmax - zmin) / 100.;
 	    float par[5];
 	    float dpar[5];
 	    float chi2;
 	    float distmax;
 	    shapes->FitHelix(500, 0, 1, par, dpar, chi2, distmax);
-	    float x0 = par[0];
-	    float y0 = par[1];
-	    float r0 = par[2];
-	    float bz = par[3];
-	    float phi0 = par[4];
+	    //float x0 = par[0];
+	    //float y0 = par[1];
+	    //float r0 = par[2];
+	    //float bz = par[3];
+	    //float phi0 = par[4];
 	    if (fabs(track->getD0())<_cutOnD0&&fabs(track->getZ0())<_cutOnZ0) {
 	      float ndf = float(track->getNdf());
 	      if (ndf<1.0)
@@ -664,15 +664,15 @@ void VertexViewer::processEvent( LCEvent * evt ) {
  	      }
           
 	      if (chi2 > 0. && chi2 < 10000.) {
-		for (int iz(0); iz < 100; ++iz) {
-		  float z1 = zmin + iz*dz;
-		  float z2 = z1 + dz;
-		  float x1 = x0 + r0*cos(bz*z1+phi0);
-		  float y1 = y0 + r0*sin(bz*z1+phi0);
-		  float x2 = x0 + r0*cos(bz*z2+phi0);
-		  float y2 = y0 + r0*sin(bz*z2+phi0);			
-		  //		  ced_line(10.*x1,10.*y1,10.*z1,10.*x2,10.*y2,10.*z2,_layerTracks<<CED_LAYER_SHIFT,1,color);
-		}
+		//for (int iz(0); iz < 100; ++iz) {
+		//  float z1 = zmin + iz*dz;
+		//  float z2 = z1 + dz;
+		//  float x1 = x0 + r0*cos(bz*z1+phi0);
+		//  float y1 = y0 + r0*sin(bz*z1+phi0);
+		//  float x2 = x0 + r0*cos(bz*z2+phi0);
+		//  float y2 = y0 + r0*sin(bz*z2+phi0);			
+		//  //		  ced_line(10.*x1,10.*y1,10.*z1,10.*x2,10.*y2,10.*z2,_layerTracks<<CED_LAYER_SHIFT,1,color);
+		//}
 		delete shapes;
 		delete helix;
 		delete[] xh;
