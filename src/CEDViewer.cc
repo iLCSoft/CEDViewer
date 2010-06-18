@@ -138,13 +138,12 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 //-----------------------------------------------------------------------
 // Reset drawing buffer and START drawing collection
 
+//hauke hoelbe 08.02.2010
   MarlinCED::newEvent(this) ;
-
-  // initialize picking
   CEDPickingHandler &pHandler=CEDPickingHandler::getInstance();
-
   pHandler.update(evt); 
 
+//   ced_new_event();  
 //-----------------------------------------------------------------------
 
   const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
@@ -385,7 +384,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                                  << sqrt(px*px+py*py)
                                  << std::endl ;
 
- 
           //std::cout<<"Hauke: drawHelix called from cedviewer" << std::endl;
           MarlinCED::drawHelix( bField , charge, x, y, z, 
                                 px, py, pz, ml , size , 0x7af774  ,
