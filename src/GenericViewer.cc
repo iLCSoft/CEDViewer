@@ -467,7 +467,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 	      float y = hit->getPosition()[1];
 	      float z = hit->getPosition()[2];	      
 	      //ced_hit(x,y,z,_layerReco<<CED_LAYER_SHIFT,2,color);
-          ced_hit_ID(x,y,z,_layerReco<<CED_LAYER_SHIFT,2,color,hit->id()); //hauke
+          ced_hit_ID(x,y,z,_layerReco<<CED_LAYER_SHIFT,2,color,part->id()); //hauke
 
 	    }
 	  }
@@ -482,7 +482,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 	      float y = (float)hit->getPosition()[1];
 	      float z = (float)hit->getPosition()[2];	      
 	      //ced_hit(x,y,z,_layerReco<<CED_LAYER_SHIFT,2,color);
-          ced_hit_ID(x,y,z,_layerReco<<CED_LAYER_SHIFT,2,color,hit->id()); //hauke
+          ced_hit_ID(x,y,z,_layerReco<<CED_LAYER_SHIFT,2,color,part->id()); //hauke
 
 	    }
 	  }
@@ -551,7 +551,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		    float z = calhit->getPosition()[2];
 		    int kcol = returnColor(color);
 		    //ced_hit(x,y,z,_layerTrueClusters<<CED_LAYER_SHIFT,2,kcol);
-            ced_hit_ID(x,y,z,_layerTrueClusters<<CED_LAYER_SHIFT,2,kcol,calhit->id()); //hauke
+            ced_hit_ID(x,y,z,_layerTrueClusters<<CED_LAYER_SHIFT,2,kcol,cluster->id()); //hauke
 
 		} 		    
 	    }
@@ -580,7 +580,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		    float z = calhit->getPosition()[2];
 		    int color = returnColor(iclust);
 		    //ced_hit(x,y,z,_layerClusters<<CED_LAYER_SHIFT,2,color);
-		    ced_hit_ID(x,y,z,_layerClusters<<CED_LAYER_SHIFT,2,color,calhit->id()); //hauke
+		    ced_hit_ID(x,y,z,_layerClusters<<CED_LAYER_SHIFT,2,color,cluster->id()); //hauke
 
 		} 		    
 	    }
@@ -641,7 +641,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		    float z = (float)hit->getPosition()[2];
 		    int kcol = returnColor(color);
 		    //ced_hit(x,y,z, _layerTrueTracks<<CED_LAYER_SHIFT,2,kcol);
-            ced_hit_ID(x,y,z, _layerTrueTracks<<CED_LAYER_SHIFT,2,kcol,hit->id()); //hauke
+            ced_hit_ID(x,y,z, _layerTrueTracks<<CED_LAYER_SHIFT,2,kcol,track->id()); //hauke
 
 		    ah[ihit] = 1.0;
 		    xh[ihit] = x;
@@ -672,9 +672,8 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		    float y1 = y0 + r0*sin(bz*z1+phi0);
 		    float x2 = x0 + r0*cos(bz*z2+phi0);
 		    float y2 = y0 + r0*sin(bz*z2+phi0);
-		    ced_line(x1,y1,z1,x2,y2,z2, _layerTrueTracks<<CED_LAYER_SHIFT,2,0xFFFFFF);
-            //ced_line_ID(x1,y1,z1,x2,y2,z2, _layerTrueTracks<<CED_LAYER_SHIFT,2,0xFFFFFF,123456789); //hauke: which id???
-
+		    //ced_line(x1,y1,z1,x2,y2,z2, _layerTrueTracks<<CED_LAYER_SHIFT,2,0xFFFFFF);
+            ced_line_ID(x1,y1,z1,x2,y2,z2, _layerTrueTracks<<CED_LAYER_SHIFT,2,0xFFFFFF,track->id()); //hauke
 		  }
 		}
 		//   ced_send_event();
@@ -714,7 +713,7 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		    float z = (float)hit->getPosition()[2];
 		    int color = returnColor(iclust);
 		    //ced_hit(x,y,z,_layerTracks<<CED_LAYER_SHIFT,2,color);
-            ced_hit_ID(x,y,z,_layerTracks<<CED_LAYER_SHIFT,2,color,hit->id()); //hauke
+            ced_hit_ID(x,y,z,_layerTracks<<CED_LAYER_SHIFT,2,color,track->id()); //hauke
 
 		    ah[ihit] = 1.0;
 		    xh[ihit] = x;
@@ -766,10 +765,8 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 		    float y1 = y0 + r0*sin(bz*z1+phi0);
 		    float x2 = x0 + r0*cos(bz*z2+phi0);
 		    float y2 = y0 + r0*sin(bz*z2+phi0);			
-		    ced_line(x1,y1,z1,x2,y2,z2,_layerTracks<<CED_LAYER_SHIFT,1,0xFFFFFF); 
-            //ced_line_ID(x1,y1,z1,x2,y2,z2,_layerTracks<<CED_LAYER_SHIFT,1,0xFFFFFF,123456789); //hauke: which id???
-
-		    
+		    //ced_line(x1,y1,z1,x2,y2,z2,_layerTracks<<CED_LAYER_SHIFT,1,0xFFFFFF); 
+            ced_line_ID(x1,y1,z1,x2,y2,z2,_layerTracks<<CED_LAYER_SHIFT,1,0xFFFFFF,track->id()); //hauke
 		  }		
 		}
 		delete shapes;
