@@ -8,9 +8,8 @@
 | v01-00 |
  --------
      - new release of CEDViewer with 'picking' functionality 
-        - implemented  in CEDViewer   (GenericViewer: not yet )
-       
-     
+        - implemented  in CEDViewer and GenericViewer
+        - see ./doc/CEDPicking.pdf for details   
 
 
  -----------
