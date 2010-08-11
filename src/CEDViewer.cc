@@ -15,7 +15,7 @@
 
 #include <UTIL/LCTypedVector.h>
 
-#include <ced_cli.h> //for ced_description_layer
+// #include <ced_cli.h>
 #include "MarlinCED.h"
 #include "CLHEP/Vector/ThreeVector.h"
 
@@ -177,7 +177,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       int layer  = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
 
       drawParameters.push_back(DrawParameters( colName,size,marker,layer ) ); 
-      //std::cout << "layer: " << layer << " description: " << colName << std::endl; //hauke
     }
   }
   
@@ -203,13 +202,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
     }
     
     if( col->getTypeName() == LCIO::CLUSTER ){
-      //hauke
-      if( layer > -1){
-          ced_describe_layer("Cluster",layer);
-       }else{
-          ced_describe_layer("Cluster",CLUSTER_LAYER);
-       }
-
       
       // find Emin and Emax of cluster collection for drawing
       float emin=1.e99, emax=0. ;
@@ -278,13 +270,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       } // cluster
 	
     } else if( col->getTypeName() == LCIO::TRACK ){
-      //hauke
-      if( layer > -1){
-          ced_describe_layer("Tracks",layer);
-       }else{
-          ced_describe_layer("Tracks",TRACK_LAYER);
-       }
-
 
       for( int i=0 ; i< col->getNumberOfElements() ; i++ ){
 	  
@@ -340,14 +325,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	
       streamlog_out( DEBUG ) << "  drawing MCParticle collection " << std::endl ;
 
-      //hauke
-      if( layer > -1){
-          ced_describe_layer("MCParticle",layer);
-       }else{
-          ced_describe_layer("MCParticle",MCPARTICLE_LAYER);
-       }
-
-
       double ecalR =  ( Global::GEAR->getEcalBarrelParameters().getExtent()[0] +  
                         Global::GEAR->getEcalEndcapParameters().getExtent()[1]  ) / 2. ;
       
@@ -394,8 +371,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
 
         layer = ( layer > -1 ? layer : MCPARTICLE_LAYER ) ;
-            //std::cout << "layer: " << layer << " MCPARTICLE: " << std::endl; //hauke
-
         
         int ml = marker | ( layer << CED_LAYER_SHIFT );
         
@@ -446,13 +421,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         }
       }
     } else if( col->getTypeName() == LCIO::SIMTRACKERHIT ){
-      //hauke
-      if( layer > -1){
-          ced_describe_layer("SimTrackerHits",layer);
-       }else{
-          ced_describe_layer("SimTrackerHits",SIMTRACKERHIT_LAYER);
-       }
-
 
       int color = 0xff00ff ;
 
@@ -467,13 +435,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
     } else if( col->getTypeName() == LCIO::SIMCALORIMETERHIT ){
 
-      //hauke
-      if( layer > -1){
-          ced_describe_layer("SimCalorimeterHits",layer);
-       }else{
-          ced_describe_layer("SimCalorimeterHits",SIMCALORIMETERHIT_LAYER);
-       }
-
       int color = 0xff0000 ;
 
       layer = ( layer > -1 ? layer : SIMCALORIMETERHIT_LAYER ) ;
@@ -482,13 +443,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer ) ;
 
     } else if( col->getTypeName() == LCIO::TRACKERHIT ){
-      //hauke
-      if( layer > -1){
-          ced_describe_layer("TrackerHits",layer);
-       }else{
-          ced_describe_layer("TrackerHits",TRACKERHIT_LAYER);
-       }
-
 
       int color = 0xee0044 ;
 
@@ -498,13 +452,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer) ;
 
     } else if( col->getTypeName() == LCIO::CALORIMETERHIT ){
-
-      //hauke
-      if( layer > -1){
-          ced_describe_layer("CalorimeterHits",layer);
-       }else{
-          ced_describe_layer("CalorimeterHits",CALORIMETERHIT_LAYER);
-       }
 
       int color = 0xee0000 ;
       
