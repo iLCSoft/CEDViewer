@@ -17,7 +17,8 @@
 #include "HelixClass.h"
 #include <math.h>
 
-// #include <ced_cli.h>
+
+#include <ced_cli.h>
 #include "MarlinCED.h"
 
 using namespace lcio ;
@@ -782,6 +783,19 @@ void GenericViewer::processEvent( LCEvent * evt ) {
     }
 
 //     getchar();
+
+//hauke
+//ced_describe_layer("CalorimeterHits", _layerCaloHit);
+//ced_describe_layer("SimCalorimeterHits", _layerSimCaloHit);
+//ced_describe_layer("TrackerHits", _layerTrackerHit);
+//ced_describe_layer("SimTrackerHits", _layerSimTrackerHit);
+//ced_describe_layer("True Clusters", _layerTrueClusters);
+//ced_describe_layer("True Tracks", _layerTrueTracks);
+//ced_describe_layer("Clusters", _layerClusters);
+//ced_describe_layer("Tracks", _layerTracks);
+//ced_describe_layer("MCP", _layerMCP);
+//ced_describe_layer("Bosons", _layerBosons);
+//ced_describe_layer("Reconstructed", _layerReco);
 
 //++++++++++++++++++++++++++++++++++++
     MarlinCED::draw( this, _waitForKeyboard ) ;

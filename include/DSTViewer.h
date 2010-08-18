@@ -36,6 +36,7 @@ class DSTViewer : public Processor {
   virtual void check( LCEvent * evt ) ; 
   
   virtual void end() ;
+
   
  protected:
 
@@ -122,6 +123,8 @@ class DSTViewer : public Processor {
   	float * returnConeColor(std::string jetColName);
 
   	float _bField;
+    
+    void writeLayerDescription(void);
 
 } ;
 

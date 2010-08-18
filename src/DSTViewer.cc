@@ -20,6 +20,8 @@
 #include <gearimpl/Vector3D.h>
 #include "ColorMap.h"
 
+#include "ced_cli.h"
+
 using namespace lcio ;
 using namespace marlin ;
 
@@ -53,6 +55,37 @@ using namespace marlin ;
 #define IP_JET6			(24<<CED_LAYER_SHIFT)
 
 DSTViewer aDSTViewer ;
+
+void DSTViewer::writeLayerDescription(void){
+    int i;
+    for(i=0;i<25;i++){
+        ced_describe_layer("", i);    //delete all old descriptions
+    }
+    ced_describe_layer("Pions", PION_LAYER	>>CED_LAYER_SHIFT);    
+    ced_describe_layer("Photons", PHOTON_LAYER	>>CED_LAYER_SHIFT);    
+    ced_describe_layer("Neutrons", NEUTRON_LAYER>>CED_LAYER_SHIFT);	   	
+    ced_describe_layer("NHadr", NHADR_LAYER  >>CED_LAYER_SHIFT);	
+    ced_describe_layer("CHadr", CHADR_LAYER  >>CED_LAYER_SHIFT);	
+    ced_describe_layer("TPC", TPC_LAYER    >>CED_LAYER_SHIFT);	
+    ced_describe_layer("ECAL", ECAL_LAYER   >>CED_LAYER_SHIFT);	
+    ced_describe_layer("HCAL", HCAL_LAYER   >>CED_LAYER_SHIFT);	
+    ced_describe_layer("Clusters", CLUSTER_LAYER>>CED_LAYER_SHIFT);	
+    ced_describe_layer("Hits", HIT_LAYER	>>CED_LAYER_SHIFT);	
+    ced_describe_layer("JET2", JET2_LAYER	>>CED_LAYER_SHIFT);	
+    ced_describe_layer("JET3", JET3_LAYER	>>CED_LAYER_SHIFT);	
+    ced_describe_layer("JET4", JET4_LAYER	>>CED_LAYER_SHIFT);	
+    ced_describe_layer("JET5", JET5_LAYER	>>CED_LAYER_SHIFT);	
+    ced_describe_layer("JET6", JET6_LAYER	>>CED_LAYER_SHIFT);	
+    ced_describe_layer("MOM", MOM_LAYER	>>CED_LAYER_SHIFT);	
+    ced_describe_layer("Backup1", BACKUP_LAYER	>>CED_LAYER_SHIFT);    
+    ced_describe_layer("Backup2", BACKUP_LAYER2>>CED_LAYER_SHIFT);	
+    ced_describe_layer("IP_JET2", IP_JET2		>>CED_LAYER_SHIFT);	
+    ced_describe_layer("IP_JET3", IP_JET3		>>CED_LAYER_SHIFT);	
+    ced_describe_layer("IP_JET4", IP_JET4		>>CED_LAYER_SHIFT);	
+    ced_describe_layer("IP_JET5", IP_JET5		>>CED_LAYER_SHIFT);	
+    ced_describe_layer("IP_JET6", IP_JET6		>>CED_LAYER_SHIFT);	
+}
+
 
 /**
  * DSTViewer description
@@ -94,6 +127,7 @@ DSTViewer::DSTViewer() : Processor("DSTViewer") {
 			"Layer for Reco Particles",
 			_layerReco,
 			(int)9);
+
 }
 
 /**
@@ -118,10 +152,9 @@ void DSTViewer::processRunHeader( LCRunHeader* run) {
 /**
  * Main function processEvent */
 void DSTViewer::processEvent( LCEvent * evt ) { 
-
-    
     CEDPickingHandler &pHandler=CEDPickingHandler::getInstance();
     pHandler.update(evt); 
+    //DSTViewer::writeLayerDescription();
 
 	// Gets the GEAR global geometry params
 	const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
@@ -223,7 +256,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 			    //				gearTPC.getMaxDriftLength());
 							
                 MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, ml, size, color, 0.0, padLayout.getPlaneExtent()[1], 
-							gearTPC.getMaxDriftLength(), part->id() ); //hauke
+							gearTPC.getMaxDriftLength(), part->id() ); //hauke: add id
 
 //				/** Draw momentum lines from the ip */
 				char Mscale = 'b'; // 'b': linear, 'a': log
@@ -405,6 +438,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
         					double min_pt = 50;
     						//ced_cone_r( min_pt + scale_pt*pt_norm , scale_mom*v.r() , center_c, rotation_c, layer, RGBAcolor);
                             //does this make sense...
+                            //test
     						ced_cone_r_ID( min_pt + scale_pt*pt_norm , scale_mom*v.r() , center_c, rotation_c, layer, RGBAcolor,jet->id()); //hauke
 
 						}
@@ -433,6 +467,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 			}
 			catch( DataNotAvailableException &e){}
 
+        DSTViewer::writeLayerDescription();
 		/*
 		 * This refreshes the view? ...
 		 */
@@ -532,7 +567,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 			//			std::cout << "green = " << rgb_matrix[i][1] << std::endl;
 			//			std::cout << "blue = " << rgb_matrix[i][2] << std::endl;
 		}
-		ced_legend(ene_min, ene_max, color_steps, rgb_matrix, ticks, scale);
+		ced_legend(ene_min, ene_max, color_steps, rgb_matrix, ticks, scale); 
 	}
 
 	int DSTViewer::returnRGBClusterColor(float eneCluster, float cutoff_min, float cutoff_max, int color_steps, char scale, int colorMap){
