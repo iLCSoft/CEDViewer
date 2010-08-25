@@ -273,6 +273,9 @@ void DSTViewer::processEvent( LCEvent * evt ) {
                 //hauke
 				ced_line_ID(refx, refy, refz, momScale*px, momScale*py, momScale*pz, MOM_LAYER, LineSize, Mcolor, part->id()); //the right id?
 
+
+
+
 				if (nClusters > 0 ) {
 					// std::cout 	<< "nCluster > 0" << std::endl;
 					// std::cout 	<<  clusterVec.size() <<std::endl;
@@ -437,10 +440,27 @@ void DSTViewer::processEvent( LCEvent * evt ) {
         					double scale_mom = 25;
         					double min_pt = 50;
     						//ced_cone_r( min_pt + scale_pt*pt_norm , scale_mom*v.r() , center_c, rotation_c, layer, RGBAcolor);
-                            //does this make sense...
-                            //test
-    						ced_cone_r_ID( min_pt + scale_pt*pt_norm , scale_mom*v.r() , center_c, rotation_c, layer, RGBAcolor,jet->id()); //hauke
 
+                            //std::cout<<"CONE: from 0,0,0 to: " << pm[0] << " " << pm[1] << " " << pm[2] << " ID: " << jet->id() <<  std::endl;
+                            
+
+                            const double *pm=jet->getMomentum(); 
+                            int color = int(RGBAcolor[2]*(15*16+15)) + int(RGBAcolor[1]*(15*16+15))*16*16+ int(RGBAcolor[0]*(15*16+15))*16*16*16*16;
+
+                            //printf("RGBAcolor: %f %f %f color: %x\n", RGBAcolor[0], RGBAcolor[1], RGBAcolor[2], color);
+                            //ced_line_ID(0.0, 0.0, 0.0, 33*pm[0], 33*pm[1], 33*pm[2], layer, 1, color, jet->id()); //hauke
+                            int i;
+                            for(i=1;i<104;i++){
+                                ced_line_ID((i-1)/4*pm[0], (i-1)/4*pm[1], (i-1)/4*pm[2], i/4*pm[0], i/4*pm[1], i/4*pm[2], layer, 1, color, jet->id()); //hauke
+                                //ced_hit_ID(i/4*pm[0], i/4*pm[1], i/4*pm[2], layer, 2, color, jet->id()); //hauke
+
+                            }
+                            ced_hit_ID((i-1)/4*pm[0], (i-1)/4*pm[1], (i-1)/4*pm[2], layer, 2, color, jet->id()); //hauke
+
+                            
+
+
+    						ced_cone_r_ID( min_pt + scale_pt*pt_norm , scale_mom*v.r() , center_c, rotation_c, layer, RGBAcolor,jet->id()); //hauke
 						}
 				}
 
