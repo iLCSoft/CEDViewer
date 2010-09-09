@@ -785,17 +785,22 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 //     getchar();
 
 //hauke
-//ced_describe_layer("CalorimeterHits", _layerCaloHit);
-//ced_describe_layer("SimCalorimeterHits", _layerSimCaloHit);
-//ced_describe_layer("TrackerHits", _layerTrackerHit);
-//ced_describe_layer("SimTrackerHits", _layerSimTrackerHit);
-//ced_describe_layer("True Clusters", _layerTrueClusters);
-//ced_describe_layer("True Tracks", _layerTrueTracks);
-//ced_describe_layer("Clusters", _layerClusters);
-//ced_describe_layer("Tracks", _layerTracks);
-//ced_describe_layer("MCP", _layerMCP);
-//ced_describe_layer("Bosons", _layerBosons);
-//ced_describe_layer("Reconstructed", _layerReco);
+int i;
+for(i=0;i<25;i++){
+    MarlinCED::set_layer_description("",1);
+}
+
+MarlinCED::add_layer_description("CalorimeterHits", _layerCaloHit);
+MarlinCED::add_layer_description("SimCalorimeterHits", _layerSimCaloHit);
+MarlinCED::add_layer_description("TrackerHits", _layerTrackerHit);
+MarlinCED::add_layer_description("SimTrackerHits", _layerSimTrackerHit);
+MarlinCED::add_layer_description("True Clusters", _layerTrueClusters);
+MarlinCED::add_layer_description("True Tracks", _layerTrueTracks);
+MarlinCED::add_layer_description("Clusters", _layerClusters);
+MarlinCED::add_layer_description("Tracks", _layerTracks);
+MarlinCED::add_layer_description("MCP", _layerMCP);
+MarlinCED::add_layer_description("Bosons", _layerBosons);
+MarlinCED::add_layer_description("Reconstructed", _layerReco);
 
 //++++++++++++++++++++++++++++++++++++
     MarlinCED::draw( this, _waitForKeyboard ) ;

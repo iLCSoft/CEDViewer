@@ -144,7 +144,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
   int i;
   for(i=0;i<25;i++){
-    ced_describe_layer("",i); //delete all old descriptions
+    //ced_describe_layer("",i); //delete all old descriptions
+    MarlinCED::set_layer_description(std::string(""), i); 
+
   }
 
 //   ced_new_event();  
@@ -226,7 +228,10 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         
         layer = ( layer > -1 ? layer : CLUSTER_LAYER ) ;
 
-        ced_describe_layer( colName.c_str() ,layer);
+        //ced_describe_layer( colName.c_str() ,layer);
+        MarlinCED::add_layer_description(colName, layer); 
+
+
 
         int ml = marker | ( layer << CED_LAYER_SHIFT ) ;
         int color =  _colors[ i % _colors.size() ] ;
@@ -285,7 +290,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  
         layer = ( layer > -1 ? layer : TRACK_LAYER ) ;
 
-        ced_describe_layer( colName.c_str() ,layer);
+        //ced_describe_layer( colName.c_str() ,layer);
+        MarlinCED::add_layer_description(colName, layer); 
+
 
         int ml = marker | ( layer << CED_LAYER_SHIFT );
 	  
@@ -318,7 +325,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
         layer = ( layer > -1 ? layer : TRACKHELIX_LAYER ) ;
 
-        ced_describe_layer( colName.c_str() ,layer);
+        //ced_describe_layer( colName.c_str() ,layer);
+        MarlinCED::add_layer_description(colName, layer); 
+
 
         ml = marker | ( layer << CED_LAYER_SHIFT ) ;
 
@@ -384,7 +393,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
         layer = ( layer > -1 ? layer : MCPARTICLE_LAYER ) ;
 
-        ced_describe_layer( colName.c_str() ,layer);
+        //ced_describe_layer( colName.c_str() ,layer);
+        MarlinCED::add_layer_description(colName, layer); 
+
 
         
         int ml = marker | ( layer << CED_LAYER_SHIFT );
@@ -441,7 +452,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
       layer = ( layer > -1 ? layer : SIMTRACKERHIT_LAYER ) ;
 
-      ced_describe_layer( colName.c_str() ,layer);
+      //ced_describe_layer( colName.c_str() ,layer);
+      MarlinCED::add_layer_description(colName, layer); 
+
 
       LCTypedVector<SimTrackerHit> v( col ) ;
 
@@ -457,7 +470,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
       layer = ( layer > -1 ? layer : SIMCALORIMETERHIT_LAYER ) ;
 
-      ced_describe_layer( colName.c_str() ,layer);
+      //ced_describe_layer( colName.c_str() ,layer);
+      MarlinCED::add_layer_description(colName, layer); 
       
       LCTypedVector<SimCalorimeterHit> v( col ) ;
       MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer ) ;
@@ -468,7 +482,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
       layer = ( layer > -1 ? layer : TRACKERHIT_LAYER ) ;
 
-      ced_describe_layer( colName.c_str() ,layer);
+      //ced_describe_layer( colName.c_str() ,layer);
+      MarlinCED::add_layer_description(colName, layer); 
+
 
       LCTypedVector<TrackerHit> v( col ) ;
       MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer) ;
@@ -479,7 +495,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       
       layer = ( layer > -1 ? layer : CALORIMETERHIT_LAYER ) ;
 
-      ced_describe_layer( colName.c_str() ,layer);
+      //ced_describe_layer( colName.c_str() ,layer);
+      MarlinCED::add_layer_description(colName, layer); 
+
 
       LCTypedVector<CalorimeterHit> v( col ) ;
       MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer ) ;

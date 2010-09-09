@@ -59,31 +59,32 @@ DSTViewer aDSTViewer ;
 void DSTViewer::writeLayerDescription(void){
     int i;
     for(i=0;i<25;i++){
-        ced_describe_layer("", i);    //delete all old descriptions
+        //ced_describe_layer("", i);    //delete all old descriptions
+        MarlinCED::set_layer_description("", i);
     }
-    ced_describe_layer("Pions", PION_LAYER	>>CED_LAYER_SHIFT);    
-    ced_describe_layer("Photons", PHOTON_LAYER	>>CED_LAYER_SHIFT);    
-    ced_describe_layer("Neutrons", NEUTRON_LAYER>>CED_LAYER_SHIFT);	   	
-    ced_describe_layer("NHadr", NHADR_LAYER  >>CED_LAYER_SHIFT);	
-    ced_describe_layer("CHadr", CHADR_LAYER  >>CED_LAYER_SHIFT);	
-    ced_describe_layer("TPC", TPC_LAYER    >>CED_LAYER_SHIFT);	
-    ced_describe_layer("ECAL", ECAL_LAYER   >>CED_LAYER_SHIFT);	
-    ced_describe_layer("HCAL", HCAL_LAYER   >>CED_LAYER_SHIFT);	
-    ced_describe_layer("Clusters", CLUSTER_LAYER>>CED_LAYER_SHIFT);	
-    ced_describe_layer("Hits", HIT_LAYER	>>CED_LAYER_SHIFT);	
-    ced_describe_layer("JET2", JET2_LAYER	>>CED_LAYER_SHIFT);	
-    ced_describe_layer("JET3", JET3_LAYER	>>CED_LAYER_SHIFT);	
-    ced_describe_layer("JET4", JET4_LAYER	>>CED_LAYER_SHIFT);	
-    ced_describe_layer("JET5", JET5_LAYER	>>CED_LAYER_SHIFT);	
-    ced_describe_layer("JET6", JET6_LAYER	>>CED_LAYER_SHIFT);	
-    ced_describe_layer("MOM", MOM_LAYER	>>CED_LAYER_SHIFT);	
-    ced_describe_layer("Backup1", BACKUP_LAYER	>>CED_LAYER_SHIFT);    
-    ced_describe_layer("Backup2", BACKUP_LAYER2>>CED_LAYER_SHIFT);	
-    ced_describe_layer("IP_JET2", IP_JET2		>>CED_LAYER_SHIFT);	
-    ced_describe_layer("IP_JET3", IP_JET3		>>CED_LAYER_SHIFT);	
-    ced_describe_layer("IP_JET4", IP_JET4		>>CED_LAYER_SHIFT);	
-    ced_describe_layer("IP_JET5", IP_JET5		>>CED_LAYER_SHIFT);	
-    ced_describe_layer("IP_JET6", IP_JET6		>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("Pions", PION_LAYER	>>CED_LAYER_SHIFT);    
+    MarlinCED::add_layer_description("Photons", PHOTON_LAYER	>>CED_LAYER_SHIFT);    
+    MarlinCED::add_layer_description("Neutrons", NEUTRON_LAYER>>CED_LAYER_SHIFT);	   	
+    MarlinCED::add_layer_description("NHadr", NHADR_LAYER  >>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("CHadr", CHADR_LAYER  >>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("TPC", TPC_LAYER    >>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("ECAL", ECAL_LAYER   >>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("HCAL", HCAL_LAYER   >>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("Clusters", CLUSTER_LAYER>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("Hits", HIT_LAYER	>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("JET2", JET2_LAYER	>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("JET3", JET3_LAYER	>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("JET4", JET4_LAYER	>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("JET5", JET5_LAYER	>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("JET6", JET6_LAYER	>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("MOM", MOM_LAYER	>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("Backup1", BACKUP_LAYER	>>CED_LAYER_SHIFT);    
+    MarlinCED::add_layer_description("Backup2", BACKUP_LAYER2>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("IP_JET2", IP_JET2		>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("IP_JET3", IP_JET3		>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("IP_JET4", IP_JET4		>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("IP_JET5", IP_JET5		>>CED_LAYER_SHIFT);	
+    MarlinCED::add_layer_description("IP_JET6", IP_JET6		>>CED_LAYER_SHIFT);	
 }
 
 
