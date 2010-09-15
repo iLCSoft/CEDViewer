@@ -142,12 +142,14 @@ void CEDViewer::processEvent( LCEvent * evt ) {
   CEDPickingHandler &pHandler=CEDPickingHandler::getInstance();
   pHandler.update(evt); 
 
+/*
   int i;
   for(i=0;i<25;i++){
     //ced_describe_layer("",i); //delete all old descriptions
     MarlinCED::set_layer_description(std::string(""), i); 
 
   }
+*/
 
 //   ced_new_event();  
 //-----------------------------------------------------------------------

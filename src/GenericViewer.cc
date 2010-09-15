@@ -785,10 +785,12 @@ void GenericViewer::processEvent( LCEvent * evt ) {
 //     getchar();
 
 //hauke
+/*
 int i;
 for(i=0;i<25;i++){
     MarlinCED::set_layer_description("",1);
 }
+*/
 
 MarlinCED::add_layer_description("CalorimeterHits", _layerCaloHit);
 MarlinCED::add_layer_description("SimCalorimeterHits", _layerSimCaloHit);

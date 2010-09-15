@@ -57,11 +57,13 @@ using namespace marlin ;
 DSTViewer aDSTViewer ;
 
 void DSTViewer::writeLayerDescription(void){
+/*
     int i;
     for(i=0;i<25;i++){
         //ced_describe_layer("", i);    //delete all old descriptions
         MarlinCED::set_layer_description("", i);
     }
+*/
     MarlinCED::add_layer_description("Pions", PION_LAYER	>>CED_LAYER_SHIFT);    
     MarlinCED::add_layer_description("Photons", PHOTON_LAYER	>>CED_LAYER_SHIFT);    
     MarlinCED::add_layer_description("Neutrons", NEUTRON_LAYER>>CED_LAYER_SHIFT);	   	
