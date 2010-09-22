@@ -137,21 +137,12 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 //-----------------------------------------------------------------------
 // Reset drawing buffer and START drawing collection
 
-//hauke hoelbe 08.02.2010
   MarlinCED::newEvent(this) ;
+
   CEDPickingHandler &pHandler=CEDPickingHandler::getInstance();
+
   pHandler.update(evt); 
 
-/*
-  int i;
-  for(i=0;i<25;i++){
-    //ced_describe_layer("",i); //delete all old descriptions
-    MarlinCED::set_layer_description(std::string(""), i); 
-
-  }
-*/
-
-//   ced_new_event();  
 //-----------------------------------------------------------------------
 
   const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
@@ -167,8 +158,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
     while( index < _drawCollections.size() ){
 
       const std::string & colName = _drawCollections[ index++ ] ;
-      int size = std::atoi( _drawCollections[ index++ ].c_str() ) ;
       int marker = std::atoi( _drawCollections[ index++ ].c_str() ) ;
+      int size = std::atoi( _drawCollections[ index++ ].c_str() ) ;
       int layer = -1 ;
 
       drawParameters.push_back(DrawParameters( colName,size,marker,layer ) ); 
@@ -180,8 +171,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
     while( index < _drawCollectionsLayer.size() ){
 
       const std::string & colName = _drawCollectionsLayer[ index++ ] ;
-      int size   = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
       int marker = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
+      int size   = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
       int layer  = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
 
       drawParameters.push_back(DrawParameters( colName,size,marker,layer ) ); 
