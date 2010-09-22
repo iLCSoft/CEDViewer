@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!-- ?xml-stylesheet type="text/xsl" href="http://ilcsoft.desy.de/marlin/marlin.xsl"? -->
+<!-- ?xml-stylesheet type="text/xsl" href="marlin.xsl"? -->
+
+<!-- Loading shared library : ./lib/libCEDViewer.dylib -->
+<!--##########################################
+    #                                        #
+    #     Example steering file for marlin   #
+    #                                        #
+    ##########################################-->
+
+
+<marlin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ilcsoft.desy.de/marlin/marlin.xsd">
+ <execute>
+  <processor name="CEDViewer"/>  
+ </execute>
+
+ <global>
+  <parameter name="LCIOInputFiles"> recfile.slcio </parameter>
+  <!-- limit the number of processed records (run+evt): -->  
+  <parameter name="MaxRecordNumber" value="5001" />  
+  <parameter name="SkipNEvents" value="0" />  
+  <parameter name="SupressCheck" value="false" />  
+  <parameter name="GearXMLFile"> gear_ILD_00.xml </parameter>  
+  <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> MESSAGE </parameter> 
+ </global>
+
+
+ <processor name="CEDViewer" type="CEDViewer">
+ <!--CEDViewer: event display of LCIO objects  - based on CED by A.Zhelezov.-->
+  <!--collection to be displayed ( ColName, marker type[0-2], size)-->
+  <!--parameter name="DrawCollection" type="StringVec">CalorimeterHits 0 3  </parameter-->
+  <parameter name="DrawCollection" type="StringVec">
+
+    VXDCollection                0  1 
+    SITCollection                0  1
+    TPCCollection                0  1  
+    ETDCollection                0  1  
+    FTDCollection                0  1  
+    SETCollection                0  1  
+    
+    VTXTrackerHits               2  4
+    SITTrackerHits               2  4 
+    AllTPCTrackerHits            2  4 
+    ETDTrackerHits               2  4 
+    FTDTrackerHits               2  4 
+    SETTrackerHits               2  4 
+    
+
+    LDCTracks                    0  2  
+
+
+    MuonBarrelCollection          0  2 
+    MuonEndCapCollection          0  2 
+    BeamCalCollection             0  2 
+    EcalBarrelCollection          0  2
+    EcalEndcapCollection          0  2
+    EcalEndcapRingCollection      0  2
+    HcalBarrelRegCollection       0  2
+    HcalEndCapRingsCollection     0  2
+    HcalEndCapsCollection         0  2
+    LHcalCollection               0  2
+    LumiCalCollection             0  2
+
+    LHCAL                         0  2
+    ECALBarrel                    0  2
+    ECALEndcap                    0  2
+    BCAL                          0  2
+    HCALBarrel                    0  2
+    HCALEndcap                    0  2
+    LCAL                          0  2
+    MUON                          0  2
+
+    PandoraClusters               0  2
+
+    MCParticle                    0  2 
+
+    PandoraPFOs                   0  2 
+
+<!--
+    SiTracks                      
+    TPCTracks                     
+    V0RecoParticles               
+-->
+</parameter>
+  <!--collection to be displayed ( ColName, marker type[0-2], size, layer)-->
+  <!--parameter name="DrawInLayer" type="StringVec">TPCTracks 0 3 4  </parameter-->
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <!--parameter name="Verbosity" type="string">DEBUG </parameter-->
+</processor>
+
+</marlin>
