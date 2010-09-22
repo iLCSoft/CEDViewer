@@ -321,9 +321,24 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         double pz = pt * trk->getTanLambda() ;
 
 
-        double rx = trk->getReferencePoint()[0] ;
-        double ry = trk->getReferencePoint()[1] ;
-        double rz = trk->getReferencePoint()[2] ;
+        // double rx = trk->getReferencePoint()[0] ;
+        // double ry = trk->getReferencePoint()[1] ;
+        // double rz = trk->getReferencePoint()[2] ;
+
+        // start point for drawing ( PCA to reference point )
+#ifdef Correct_Track_Params
+
+        double xs = trk->getReferencePoint()[0] -  trk->getD0() * sin( trk->getPhi() ) ;
+        double ys = trk->getReferencePoint()[1] +  trk->getD0() * cos( trk->getPhi() ) ;
+        double zs = trk->getReferencePoint()[2] +  trk->getZ0() ;
+
+#else  // assume track params have reference point at origin ...
+
+        double xs = 0 -  trk->getD0() * sin( trk->getPhi() ) ;
+        double ys = 0 +  trk->getD0() * cos( trk->getPhi() ) ;
+        double zs = 0 +  trk->getZ0() ;
+#endif        
+
 
         layer = ( layer > -1 ? layer : TRACKHELIX_LAYER ) ;
 
@@ -335,8 +350,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
 
         if( pt > 0.01 ) // sanity check
-          MarlinCED::drawHelix( bField , charge, rx, ry, rz , 
-                                px, py, pz, ml , size ,  0xffffff ,
+          MarlinCED::drawHelix( bField , charge, xs, ys, zs , 
+                                px, py, pz, ml , 1 ,  0xffffff ,
                                 0.0, padLayout.getPlaneExtent()[1]+100. , 
                                 gearTPC.getMaxDriftLength()+100. ) ;
 
