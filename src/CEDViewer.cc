@@ -351,7 +351,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           MarlinCED::drawHelix( bField , charge, xs, ys, zs , 
                                 px, py, pz, ml , 1 ,  0xffffff ,
                                 0.0, padLayout.getPlaneExtent()[1]+100. , 
-                                gearTPC.getMaxDriftLength()+100. ) ;
+                                gearTPC.getMaxDriftLength()+100., trk->id() ) ;
 
 
       } // track
