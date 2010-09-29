@@ -162,7 +162,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       const std::string & colName = _drawCollections[ index++ ] ;
       int marker = std::atoi( _drawCollections[ index++ ].c_str() ) ;
       int size = std::atoi( _drawCollections[ index++ ].c_str() ) ;
-      std::cout << "#######################      SIZE: " << size << " #######################################" << std::endl;
+      //std::cout << "#######################      SIZE: " << size << " #######################################" << std::endl;
       int layer = -1 ;
 
       drawParameters.push_back(DrawParameters( colName,size,marker,layer ) ); 
