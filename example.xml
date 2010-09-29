@@ -16,7 +16,7 @@
  </execute>
 
  <global>
-  <parameter name="LCIOInputFiles"> recfile.slcio </parameter>
+  <parameter name="LCIOInputFiles"> /afs/desy.de/group/it/.i386_linux26/ilcsoft/data/REC01-06_ppr004_bbcsdu_w22281_250_ILD_00_LCP_ep+1.0_em-1.0_Slac_250_SM_0001.000.slcio  </parameter>
   <!-- limit the number of processed records (run+evt): -->  
   <parameter name="MaxRecordNumber" value="5001" />  
   <parameter name="SkipNEvents" value="0" />  

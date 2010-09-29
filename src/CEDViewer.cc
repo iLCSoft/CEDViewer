@@ -162,6 +162,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       const std::string & colName = _drawCollections[ index++ ] ;
       int marker = std::atoi( _drawCollections[ index++ ].c_str() ) ;
       int size = std::atoi( _drawCollections[ index++ ].c_str() ) ;
+      std::cout << "#######################      SIZE: " << size << " #######################################" << std::endl;
       int layer = -1 ;
 
       drawParameters.push_back(DrawParameters( colName,size,marker,layer ) ); 
@@ -521,9 +522,114 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       LCTypedVector<CalorimeterHit> v( col ) ;
       MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer ) ;
 
+
+    } else if( col->getTypeName() == LCIO::RECONSTRUCTEDPARTICLE ){ //hauke
+
+      int color = 0xeeffff ;
+
+      layer = ( layer > -1 ? layer : RECOPARTICLE_LAYER ) ;
+      drawParameters[np].Layer = layer ;
+
+      MarlinCED::add_layer_description(colName, layer); 
+
+      int nelem = col->getNumberOfElements();
+
+      float TotEn = 0.0;
+      float TotPX = 0.0;
+      float TotPY = 0.0;
+      float TotPZ = 0.0;
+
+      for (int ip(0); ip < nelem; ++ip) {
+        ReconstructedParticle * part = dynamic_cast<ReconstructedParticle*>(col->getElementAt(ip)); 
+        TrackVec trackVec = part->getTracks();
+        int nTracks =  (int)trackVec.size();
+        ClusterVec clusterVec = part->getClusters();
+        int nClusters = (int)clusterVec.size();
+
+        float ene = part->getEnergy();
+        float px  = (float)part->getMomentum()[0];
+        float py  = (float)part->getMomentum()[1];
+        float pz  = (float)part->getMomentum()[2];
+        int type = (int)part->getType();
+
+        TotEn += ene;
+        TotPX += px;
+        TotPY += py;
+        TotPZ += pz;
+
+        std::cout << "Particle : " << ip
+              << " type : " << type
+              << " PX = " << px
+              << " PY = " << py
+              << " PZ = " << pz
+              << " E  = " << ene << std::endl;
+
+        if (nClusters > 0 ) {
+          Cluster * cluster = clusterVec[0];
+          CalorimeterHitVec hitvec = cluster->getCalorimeterHits();
+          int nHits = (int)hitvec.size();
+          for (int iHit = 0; iHit < nHits; ++iHit) {
+            CalorimeterHit * hit = hitvec[iHit];
+            float x = hit->getPosition()[0];
+            float y = hit->getPosition()[1];
+            float z = hit->getPosition()[2];
+            ced_hit_ID(x,y,z,layer<<CED_LAYER_SHIFT,size,color,part->id()); 
+          }
+        }
+
+        if (nTracks > 0 ) {
+          Track * track = trackVec[0];
+          TrackerHitVec hitvec = track->getTrackerHits();
+          int nHits = (int)hitvec.size();
+          if(nHits > 0){
+            for (int iHit = 0; iHit < nHits; ++iHit) {
+              TrackerHit * hit = hitvec[iHit];
+              float x = (float)hit->getPosition()[0];
+              float y = (float)hit->getPosition()[1];
+              float z = (float)hit->getPosition()[2];
+              ced_hit_ID(x,y,z,layer<<CED_LAYER_SHIFT,size,color,part->id());
+            }
+          }else{
+            //streamlog_out(DEBUG) << "################         No Hits!" << std::endl; 
+            float px  = (float)(part->getMomentum()[0]);
+            float py  = (float)(part->getMomentum()[1]);
+            float pz  = (float)(part->getMomentum()[2]);
+
+            // start point
+            float refx = 0.0;
+            float refy = 0.0;
+            float refz = 0.0;
+
+            float momScale = 100;
+
+            //line
+            //ced_line_ID(refx, refy, refz, momScale*px, momScale*py, momScale*pz, layer << CED_LAYER_SHIFT, size, color, part->id()); 
+
+            //helix
+            float charge = (float)part->getCharge();
+            float bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ;
+            MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, layer<<CED_LAYER_SHIFT, size, color, 0.0, padLayout.getPlaneExtent()[1],
+                            gearTPC.getMaxDriftLength(), part->id() ); //hauke: add id
+          }
+
+        }
+      }
+  
+      std::cout << std::endl;
+      std::cout << "Total Energy and Momentum Balance of Event" << std::endl;
+      std::cout << "Energy = " << TotEn
+            << " PX = " << TotPX
+            << " PY = " << TotPY
+            << " PZ = " << TotPZ << std::endl;
+      std::cout << std::endl;
+  
+  
+      //LCTypedVector<CalorimeterHit> v( col ) ;
+      //MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer ) ;
+
+
+          //std::cout << std::endl << "#############        print RECONSTRUCTEDPARTICLE #################"  << std::endl;
     }
-
-
 
   } // while
 
