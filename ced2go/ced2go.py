@@ -26,13 +26,17 @@ def help():
 #The global variables, paths and commands
 viewer   = "CEDViewer" #default viewer
 
-templateXMLFile = "/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/template.xml"
+#templateXMLFile = "/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/template.xml"
+templateXMLFile = "./template.xml"
+
 if not os.path.isfile(templateXMLFile):
     print "Error: Template File \"" + templateXMLFile + "\" not found!"
     sys.exit()
 
 
-extractDetector="/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/build/extractdetector"
+#extractDetector="/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/build/extractdetector"
+extractDetector="./build/extractdetector"
+
 if not os.path.isfile(extractDetector):
     print "Error: Helper Tool \"" + extractDetector + "\" not found!"
     sys.exit()
@@ -163,5 +167,7 @@ while True:
     if CEDobj.poll() != None: 
         os.kill(Marlinobj.pid,15)
         break
+
+    time.sleep(0.5) #sleep for 0.5 seconds
 
 print "Done"
