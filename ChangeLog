@@ -1,133 +1,204 @@
+2010-09-29 16:32  hhoelbe
+
+	* src/CEDViewer.cc: removed debug statement
+
+2010-09-29 14:21  hhoelbe
+
+	* src/CEDViewer.cc: CEDViewer: Helix part of tracks was not
+	  pickable. Fixed
+
+2010-09-29 13:59  hhoelbe
+
+	* example.xml, src/CEDViewer.cc: CEDViewer now displays also
+	  Reconstructed Particles. If there are no hits, than he draw the
+	  helix.
+
+2010-09-22 16:00  gaede
+
+	* example.xml, test.xml: added more recent example (ILD_00)
+
+2010-09-22 15:59  gaede
+
+	* src/CEDViewer.cc: changed default layer to more reasonable
+	  values; fixed printout for default layers
+
+2010-09-22 14:53  gaede
+
+	* src/CEDViewer.cc: reversed order of marker and size in steering
+	  to original: colName, marker, size
+
+2010-09-22 14:37  gaede
+
+	* src/CEDViewer.cc: fixed drawing of tracks w/ reference points
+	  (need to set compile time flag, as old rtacks have worng
+	  reference point (PCA))
+
+2010-09-15 15:41  hhoelbe
+
+	* src/CEDViewer.cc, src/DSTViewer.cc, src/GenericViewer.cc: the
+	  viewers does not reset the layer descriptions anymore at startup
+
+2010-09-09 13:04  hhoelbe
+
+	* src/CEDViewer.cc, src/DSTViewer.cc, src/GenericViewer.cc: - now
+	  used MarlinCED::add_layer_description to add multiples
+	  descriptions
+	  for one layer
+
+2010-08-25 15:26  hhoelbe
+
+	* src/DSTViewer.cc: Cones have got a central line for picking
+
+2010-08-20 14:34  gaede
+
+	* src/CEDViewer.cc: changed layer description to collection name
+
+2010-08-18 16:45  hhoelbe
+
+	* include/DSTViewer.h, src/CEDViewer.cc, src/DSTViewer.cc,
+	  src/GenericViewer.cc: DSTViewer and CEDViewer add their layer
+	  descriptions to CED menu and help
+
+2010-08-11 16:19  hhoelbe
+
+	* src/CEDViewer.cc: rollback to last revision
+
+2010-08-11 15:44  hhoelbe
+
+	* src/CEDViewer.cc: cedviewer now add his layer description to ced
+	  (for menu & help frame)
+
+2010-07-02 11:28  /O=GermanGrid/OU=DESY/CN=Jan Engels
+
+	* ChangeLog: ---------- v01-00 ----------
+
 2010-06-29 08:45  gaede
 
-	* [r1621] CMakeLists.txt: turned -32 compatibility mode OFF
+	* CMakeLists.txt: turned -32 compatibility mode OFF
 
 2010-06-29 08:43  gaede
 
-	* [r1620] doc/release.notes: turned -32 bit mode OFF
+	* doc/release.notes: turned -32 bit mode OFF
 
 2010-06-23 17:03  hhoelbe
 
-	* [r1611] src/GenericViewer.cc: fixed id
+	* src/GenericViewer.cc: fixed id
 
 2010-06-23 15:21  /O=GermanGrid/OU=DESY/CN=Jan Engels
 
-	* [r1602] CMakeLists.txt: added exclude pattern for .svn dirs
+	* CMakeLists.txt: added exclude pattern for .svn dirs
 
 2010-06-23 14:42  hhoelbe
 
-	* [r1601] src/GenericViewer.cc: make genericviewer ready for
-	  picking
+	* src/GenericViewer.cc: make genericviewer ready for picking
 
 2010-06-23 09:55  engels
 
-	* [r1594] CMakeLists.txt: changed to version v01-00-00
+	* CMakeLists.txt: changed to version v01-00-00
 
 2010-06-18 15:38  hhoelbe
 
-	* [r1591] src/CEDViewer.cc: Enabled picking (hauke)
+	* src/CEDViewer.cc: Enabled picking (hauke)
 
 2010-06-17 14:43  aplin
 
-	* [r1586] CMakeLists.txt: added ctest
+	* CMakeLists.txt: added ctest
 
 2010-06-17 07:36  /O=GermanGrid/OU=DESY/CN=Jan Engels
 
-	* [r1581] src/VertexViewer.cc: removed compiler warnings
+	* src/VertexViewer.cc: removed compiler warnings
 	  bug fix: assignment instead of comparison inside if construct
 
 2010-06-11 10:18  gaede
 
-	* [r1578] CMakeLists.txt, doc/release.notes: changed to version
-	  v01-00
+	* CMakeLists.txt, doc/release.notes: changed to version v01-00
 
 2010-06-11 10:09  gaede
 
-	* [r1577] doc/CEDPicking.pdf: added Picking description (H.Hoelbe)
+	* doc/CEDPicking.pdf: added Picking description (H.Hoelbe)
 
 2010-06-11 10:04  gaede
 
-	* [r1576] src/CEDViewer.cc: some cleanup of code and fix for
-	  drawing MCParticles
+	* src/CEDViewer.cc: some cleanup of code and fix for drawing
+	  MCParticles
 
 2010-06-10 14:24  gaede
 
-	* [r1575] src/CEDViewer.cc: typo ...
+	* src/CEDViewer.cc: typo ...
 
 2010-06-10 14:23  gaede
 
-	* [r1574] src/CEDViewer.cc: type in printout
+	* src/CEDViewer.cc: type in printout
 
 2010-06-10 14:05  gaede
 
-	* [r1573] src/CEDViewer.cc: add some printout if collection not
-	  found and layer number used for drawing
+	* src/CEDViewer.cc: add some printout if collection not found and
+	  layer number used for drawing
 
 2010-06-10 14:04  gaede
 
-	* [r1572] CMakeLists.txt: add streamlog for APPLE
+	* CMakeLists.txt: add streamlog for APPLE
 
 2010-05-27 13:55  engels
 
-	* [r1563] include/CEDViewer.h, src/CEDViewer.cc, src/DSTViewer.cc:
-	  merged branch: hauke_dev (TODO: change this log msg)
+	* include/CEDViewer.h, src/CEDViewer.cc, src/DSTViewer.cc: merged
+	  branch: hauke_dev (TODO: change this log msg)
 
 2010-02-09 14:42  engels
 
-	* [r1466] CMakeLists.txt, doc/release.notes: ----------- v00-07-02
+	* CMakeLists.txt, doc/release.notes: ----------- v00-07-02
 	  ----------
 
 2010-02-07 11:17  gaede
 
-	* [r1458] BuildSetup.cmake, include/CEDViewer.h, src/CEDViewer.cc:
-	  Added new parameter 'DrawInLayer' to allow the user to specify
-	  the CED layer number
+	* BuildSetup.cmake, include/CEDViewer.h, src/CEDViewer.cc: Added
+	  new parameter 'DrawInLayer' to allow the user to specify the CED
+	  layer number
 
 2009-11-25 16:31  /C=DE/O=GermanGrid/OU=DESY/CN=Steven Aplin
 
-	* [r1450] doc/release.notes: ---------------- release v00-07-01
+	* doc/release.notes: ---------------- release v00-07-01
 	  ----------------
 
 2009-09-08 13:04  stewartm
 
-	* [r1365] src/VertexViewer.cc: SM-H: Removed pi = acos(-1)
+	* src/VertexViewer.cc: SM-H: Removed pi = acos(-1)
 
 2008-10-23 15:59  engels
 
-	* [r1258] CMakeLists.txt, doc/release.notes: --------- v00-07
-	  ---------
+	* CMakeLists.txt, doc/release.notes: --------- v00-07 ---------
 
 2008-10-15 08:08  engels
 
-	* [r1248] CMakeLists.txt: added -Wno-long-long definition
+	* CMakeLists.txt: added -Wno-long-long definition
 
 2008-10-14 11:02  engels
 
-	* [r1243] CEDViewerConfig.cmake.in, CMakeLists.txt: added 32 bit
+	* CEDViewerConfig.cmake.in, CMakeLists.txt: added 32 bit
 	  compatibility option
 
 2008-10-14 10:58  engels
 
-	* [r1242] src/GenericViewer.cc, src/VertexViewer.cc: removed some
-	  compiler warnings
+	* src/GenericViewer.cc, src/VertexViewer.cc: removed some compiler
+	  warnings
 
 2008-09-15 10:13  darasz
 
-	* [r1234] include/DSTViewer.h, src/CEDViewer.cc, src/ColorMap.cc,
+	* include/DSTViewer.h, src/CEDViewer.cc, src/ColorMap.cc,
 	  src/DSTViewer.cc: modified drawing of clusters to ellipsoids and
 	  tidyed up color map code
 
 2008-09-11 11:42  engels
 
-	* [r1232] src/DSTViewer.cc: small fix for compiling with gcc 3.2
+	* src/DSTViewer.cc: small fix for compiling with gcc 3.2
 
 2008-09-09 14:42  darasz
 
-	* [r1231] include/DSTViewer.h: updated doc
+	* include/DSTViewer.h: updated doc
 
 2008-09-09 14:38  darasz
 
-	* [r1230] include/ColorMap.h, include/DSTViewer.h, src/ColorMap.cc,
+	* include/ColorMap.h, include/DSTViewer.h, src/ColorMap.cc,
 	  src/DSTViewer.cc: implemented a DSTViewer: draws
 	  ReconstructedParticles as helices and straight lines; Clusters as
 	  Cylinders (Ellipsoids)
@@ -135,308 +206,297 @@
 
 2008-07-23 14:57  gaede
 
-	* [r1198] CMakeLists.txt: ------------- version v00-06
-	  --------------------
+	* CMakeLists.txt: ------------- version v00-06 --------------------
 
 2008-07-23 14:56  gaede
 
-	* [r1197] CMakeLists.txt, doc/release.notes: made dependant on CED
-	  directly
+	* CMakeLists.txt, doc/release.notes: made dependant on CED directly
 
 2008-07-03 08:55  rasp
 
-	* [r1122] include/VertexViewer.h: New version of the VertexViewer
+	* include/VertexViewer.h: New version of the VertexViewer
 	  processor.
 
 2008-07-03 08:55  rasp
 
-	* [r1121] src/VertexViewer.cc: New version of VertexViewer
-	  processor. Bug related to the
+	* src/VertexViewer.cc: New version of VertexViewer processor. Bug
+	  related to the
 	  calculation of the global rotation angle Ph0 for the ladders is
 	  fixed
 
 2008-05-28 14:47  engels
 
-	* [r1035] src/CEDViewer.cc: patched to make gcc 4.3 compliant
+	* src/CEDViewer.cc: patched to make gcc 4.3 compliant
 
 2008-04-16 15:28  gaede
 
-	* [r953] CMakeLists.txt, doc/release.notes: -------------- version
-	  v00-05 ---------------
+	* CMakeLists.txt, doc/release.notes: -------------- version v00-05
+	  ---------------
 
 2008-04-16 15:11  gaede
 
-	* [r952] doc/release.notes, include/VertexViewer.h,
-	  src/VertexViewer.cc: initial version of VertexViewer
+	* doc/release.notes, include/VertexViewer.h, src/VertexViewer.cc:
+	  initial version of VertexViewer
 
 2008-04-16 15:08  gaede
 
-	* [r951] src/CEDViewer.cc: replaced std::cout with streamlog_out(
-	  DEBUG )
+	* src/CEDViewer.cc: replaced std::cout with streamlog_out( DEBUG )
 
 2008-01-22 08:52  engels
 
-	* [r862] CEDViewerConfig.cmake.in: set both variables INCLUDE_DIR
-	  and INCLUDE_DIRS for compatibility
+	* CEDViewerConfig.cmake.in: set both variables INCLUDE_DIR and
+	  INCLUDE_DIRS for compatibility
 
 2008-01-07 14:10  engels
 
-	* [r852] CMakeLists.txt: bug fix: using CMAKE_MODULE_PATH with
-	  multiple paths wouldn't work
+	* CMakeLists.txt: bug fix: using CMAKE_MODULE_PATH with multiple
+	  paths wouldn't work
 
 2007-11-26 08:37  gaede
 
-	* [r790] BuildSetup.cmake, CMakeLists.txt, doc/release.notes: ----
-	  version v00-04 -------------
+	* BuildSetup.cmake, CMakeLists.txt, doc/release.notes: ---- version
+	  v00-04 -------------
 
 2007-11-23 15:15  engels
 
-	* [r786] BuildSetup.cmake: updated for ilcsoft release v01-03
+	* BuildSetup.cmake: updated for ilcsoft release v01-03
 
 2007-11-23 15:10  engels
 
-	* [r785] BuildSetup.cmake: updated for ilcsoft release v01-03
+	* BuildSetup.cmake: updated for ilcsoft release v01-03
 
 2007-11-23 15:09  engels
 
-	* [r784] CMakeLists.txt: incremented version patch level
+	* CMakeLists.txt: incremented version patch level
 
 2007-11-23 13:26  engels
 
-	* [r783] doc/release.notes: updated
+	* doc/release.notes: updated
 
 2007-11-23 13:21  engels
 
-	* [r782] src/CEDViewer.cc: removed HepPDT dependency
+	* src/CEDViewer.cc: removed HepPDT dependency
 
 2007-11-16 10:24  engels
 
-	* [r769] BuildSetup.cmake: updated for release v01-03
+	* BuildSetup.cmake: updated for release v01-03
 
 2007-09-12 07:59  engels
 
-	* [r658] CMakeLists.txt: replaced CMAKE_XXX_DIR with
-	  PROJECT_XXX_DIR
+	* CMakeLists.txt: replaced CMAKE_XXX_DIR with PROJECT_XXX_DIR
 
 2007-07-20 09:37  engels
 
-	* [r635] src/CEDViewer.cc: bug fixed for compatibility with latest
-	  CLHEP versions
+	* src/CEDViewer.cc: bug fixed for compatibility with latest CLHEP
+	  versions
 
 2007-07-13 18:45  gaede
 
-	* [r618] CMakeLists.txt, doc/release.notes: ---- release v00-03
-	  ---------
+	* CMakeLists.txt, doc/release.notes: ---- release v00-03 ---------
 
 2007-07-13 18:45  gaede
 
-	* [r617] BuildSetup.cmake: updated pathes to ilcsoft release v01-01
+	* BuildSetup.cmake: updated pathes to ilcsoft release v01-01
 
 2007-07-10 09:53  engels
 
-	* [r597] BuildSetup.cmake: updated
+	* BuildSetup.cmake: updated
 
 2007-07-10 09:47  engels
 
-	* [r596] BuildSetup.cmake: updated
+	* BuildSetup.cmake: updated
 
 2007-07-04 14:09  engels
 
-	* [r592] CMakeLists.txt: added rpath for apple
+	* CMakeLists.txt: added rpath for apple
 
 2007-07-02 12:46  engels
 
-	* [r584] BuildSetup.cmake, CMakeLists.txt: added BuildSetup.cmake
+	* BuildSetup.cmake, CMakeLists.txt: added BuildSetup.cmake
 
 2007-06-27 13:29  engels
 
-	* [r569] CMakeLists.txt: replaced SEND_ERROR with STATUS
+	* CMakeLists.txt: replaced SEND_ERROR with STATUS
 
 2007-06-21 14:41  engels
 
-	* [r562] CMakeLists.txt: moved documentation to user section
+	* CMakeLists.txt: moved documentation to user section
 
 2007-06-21 12:46  engels
 
-	* [r556] CMakeLists.txt: small bug fix
+	* CMakeLists.txt: small bug fix
 
 2007-06-21 08:35  engels
 
-	* [r550] CMakeLists.txt: added documentation
+	* CMakeLists.txt: added documentation
 
 2007-06-21 08:14  engels
 
-	* [r549] CMakeLists.txt, src/CMakeLists.txt: removed
-	  src/CMakeLists.txt
+	* CMakeLists.txt, src/CMakeLists.txt: removed src/CMakeLists.txt
 	  made more user friendly
 
 2007-05-29 16:20  engels
 
-	* [r525] CMakeLists.txt: updated version
+	* CMakeLists.txt: updated version
 
 2007-05-21 12:59  engels
 
-	* [r509] src/CMakeLists.txt: removed -pedantic flag due to problems
-	  in sl4
+	* src/CMakeLists.txt: removed -pedantic flag due to problems in sl4
 
 2007-05-16 13:12  engels
 
-	* [r503] CMakeLists.txt: bug fix: variable was being written to
-	  cache in wrong place
+	* CMakeLists.txt: bug fix: variable was being written to cache in
+	  wrong place
 
 2007-05-16 12:55  engels
 
-	* [r502] src/CMakeLists.txt: moved dependencies code to a macro
+	* src/CMakeLists.txt: moved dependencies code to a macro
 
 2007-05-11 08:10  engels
 
-	* [r497] src/CMakeLists.txt: bug fix: build_with and link_with were
+	* src/CMakeLists.txt: bug fix: build_with and link_with were
 	  calling load_package with required arg
 
 2007-05-11 08:06  engels
 
-	* [r496] CMakeLists.txt: removed cmake backwards compatibility 2.2
+	* CMakeLists.txt: removed cmake backwards compatibility 2.2
 
 2007-04-30 15:16  gaede
 
-	* [r485] doc/release.notes: tag v00-02
+	* doc/release.notes: tag v00-02
 
 2007-04-26 16:11  gaede
 
-	* [r461] src/HEP_RecordProcessor.cc: made comaptible with new
-	  version of PGdb (Phys_Geom_Database)
+	* src/HEP_RecordProcessor.cc: made comaptible with new version of
+	  PGdb (Phys_Geom_Database)
 
 2007-04-26 12:29  gaede
 
-	* [r460] src/HEP_RecordProcessor.cc: changed Phys_Geom_Database to
-	  PGdb
+	* src/HEP_RecordProcessor.cc: changed Phys_Geom_Database to PGdb
 
 2007-04-25 12:47  engels
 
-	* [r439] CMakeLists.txt, src/CMakeLists.txt: build_shared_libs
-	  improved
+	* CMakeLists.txt, src/CMakeLists.txt: build_shared_libs improved
 
 2007-04-25 09:54  engels
 
-	* [r438] CMakeLists.txt: bug fix: install_prefix
+	* CMakeLists.txt: bug fix: install_prefix
 
 2007-04-25 08:52  engels
 
-	* [r435] CMakeLists.txt, src/CMakeLists.txt: moved dependencies to
+	* CMakeLists.txt, src/CMakeLists.txt: moved dependencies to
 	  top-level CMakeLists.txt
 
 2007-04-24 16:34  engels
 
-	* [r434] src/CMakeLists.txt: bug fix: removed unnecessary
-	  -Wno-long-long definition
+	* src/CMakeLists.txt: bug fix: removed unnecessary -Wno-long-long
+	  definition
 
 2007-04-23 17:18  engels
 
-	* [r427] CEDViewerConfig.cmake.in, CMakeLists.txt,
+	* CEDViewerConfig.cmake.in, CMakeLists.txt,
 	  cmake_uninstall.cmake.in, src/CMakeLists.txt: added CMake files
 
 2007-03-01 15:54  engels
 
-	* [r406] src/GNUmakefile: library put back to the original place
+	* src/GNUmakefile: library put back to the original place
 
 2007-02-21 13:46  engels
 
-	* [r403] src/GNUmakefile: bug fix: -I CPP Flag whitespace removed
+	* src/GNUmakefile: bug fix: -I CPP Flag whitespace removed
 
 2007-02-16 16:40  engels
 
-	* [r401] src/GNUmakefile: bug fix: removed whitespaces from -L -I
-	  compile flags
+	* src/GNUmakefile: bug fix: removed whitespaces from -L -I compile
+	  flags
 
 2007-01-18 16:05  engels
 
-	* [r395] src/GNUmakefile: fixed dependencies
+	* src/GNUmakefile: fixed dependencies
 
 2007-01-11 17:02  engels
 
-	* [r389] doc/Doxyfile, src/GNUmakefile, src/GNUmakefile.OLD:
-	  modified Makefiles to work with $MARLINWORKDIR
+	* doc/Doxyfile, src/GNUmakefile, src/GNUmakefile.OLD: modified
+	  Makefiles to work with $MARLINWORKDIR
 
 2006-10-24 13:16  gaede
 
-	* [r346] src/GenericViewer.cc: added registerInputCollection()
+	* src/GenericViewer.cc: added registerInputCollection()
 
 2006-08-15 08:50  gaede
 
-	* [r317] src/CEDViewer.cc: fix for transition from CLHEP 1.8 to 1.9
-	  - namespace
+	* src/CEDViewer.cc: fix for transition from CLHEP 1.8 to 1.9 -
+	  namespace
 
 2006-06-28 15:17  aplin
 
-	* [r308] src/CEDViewer.cc: The B-Field is now sent as a paramter
-	  set in the TPC desripion of the gear file i.e. <parameter
+	* src/CEDViewer.cc: The B-Field is now sent as a paramter set in
+	  the TPC desripion of the gear file i.e. <parameter
 	  name="tpcBField" type="double"> 4.0 </parameter>
 
 2006-05-19 16:10  gaede
 
-	* [r286] src/CEDViewer.cc: added position and direction to cluster
+	* src/CEDViewer.cc: added position and direction to cluster
 	  plotting
 
 2006-03-31 21:51  samson
 
-	* [r264] include/HEP_RecordProcessor.h: Fix of syntax for
-	  compatibilty with gcc4
+	* include/HEP_RecordProcessor.h: Fix of syntax for compatibilty
+	  with gcc4
 
 2005-11-10 12:07  gaede
 
-	* [r198] src/HEP_RecordProcessor.cc: rm /** comments
+	* src/HEP_RecordProcessor.cc: rm /** comments
 
 2005-11-04 16:50  owendt
 
-	* [r191] include/GenericViewer.h: documentation for new features
+	* include/GenericViewer.h: documentation for new features
 
 2005-10-28 12:00  owendt
 
-	* [r174] src/GenericViewer.cc: see header
+	* src/GenericViewer.cc: see header
 
 2005-10-28 11:59  owendt
 
-	* [r173] include/GenericViewer.h: added toggle 'Wait for keyboard'
+	* include/GenericViewer.h: added toggle 'Wait for keyboard'
 
 2005-10-21 06:55  rasp
 
-	* [r164] include/GenericViewer.h: Documentation for GenericViewer
-	  is added
+	* include/GenericViewer.h: Documentation for GenericViewer is added
 
 2005-08-04 16:55  aplin
 
-	* [r135] src/CEDViewer.cc: added try catch for no collection in
-	  event
+	* src/CEDViewer.cc: added try catch for no collection in event
 
 2005-08-04 16:47  rasp
 
-	* [r134] src/GenericViewer.cc: Extended version of Generic Viewer
+	* src/GenericViewer.cc: Extended version of Generic Viewer
 
 2005-08-04 13:45  gaede
 
-	* [r124] include/CEDViewer.h, include/GenericViewer.h,
+	* include/CEDViewer.h, include/GenericViewer.h,
 	  src/GenericViewer.cc: moved GenericViewer to here from MarlinUtil
 
 2005-08-04 13:04  aplin
 
-	* [r118] src/CEDViewer.cc: made use of GEAR for track drawing
+	* src/CEDViewer.cc: made use of GEAR for track drawing
 
 2005-08-04 12:54  aplin
 
-	* [r116] src/CEDViewer.cc: *** empty log message ***
+	* src/CEDViewer.cc: *** empty log message ***
 
 2005-08-04 08:58  gaede
 
-	* [r108] debug.xml, doc, doc/Doxyfile, include,
-	  include/CEDViewer.h, include/HEP_RecordProcessor.h,
-	  include/MinMax.h, include/layers.h, my.steer, src,
-	  src/CEDViewer.cc, src/GNUmakefile, src/GNUmakefile.OLD,
-	  src/HEP_RecordProcessor.cc, test.xml: This commit was generated
-	  by cvs2svn to compensate for changes in r107,
+	* debug.xml, doc, doc/Doxyfile, include, include/CEDViewer.h,
+	  include/HEP_RecordProcessor.h, include/MinMax.h,
+	  include/layers.h, my.steer, src, src/CEDViewer.cc,
+	  src/GNUmakefile, src/GNUmakefile.OLD, src/HEP_RecordProcessor.cc,
+	  test.xml: This commit was generated by cvs2svn to compensate for
+	  changes in r107,
 	  which included commits to RCS files with non-trunk default
 	  branches.
 
 2005-08-04 08:58  
 
-	* [r106] .: Standard project directories initialized by cvs2svn.
+	* .: Standard project directories initialized by cvs2svn.
 

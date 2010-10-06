@@ -3,6 +3,30 @@
  release notes for CEDViewer
 
 ================================
+ --------
+| head   |
+ --------
+    new features: (H. Hoelbe, DESY)
+    -  CEDViewer: 
+        -  Adds now his layer description to CED
+        -  Now also displays Reconstructed Particles. If there are no hits,
+           than draw the helix. 
+    -  DSTViewer:         
+        -  Adds now his layer description to CED
+        -  Cones have now a central line for picking    
+    -  GenericViewer: 
+        -  Adds now his layer description to CED
+
+    [ -  ced2go:
+        -  A script which simplify the use of Marlin with CED in some cases.
+           ced2go needs the name of the LCIO file as an argument. Than it 
+           look to this file find out which gearfile is needed, create an 
+           steering file with this parameters. Than it starts CED and Marlin.  
+    ]
+
+    changes/bug fixes: (H. Hoelbe, DESY)
+    -  CEDViewer:
+        - Helix part of tracks was not pickable. fixed
 
  --------
 | v01-00 |
