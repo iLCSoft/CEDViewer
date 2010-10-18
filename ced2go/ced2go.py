@@ -27,7 +27,8 @@ def help():
 viewer   = "CEDViewer" #default viewer
 
 #templateXMLFile = "/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/template.xml"
-templateXMLFile = "./template.xml"
+templateXMLFile = os.path.join( os.path.abspath(sys.path[0]), "ced2go-template.xml" )
+
 
 if not os.path.isfile(templateXMLFile):
     print "Error: Template File \"" + templateXMLFile + "\" not found!"
@@ -35,7 +36,7 @@ if not os.path.isfile(templateXMLFile):
 
 
 #extractDetector="/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/build/extractdetector"
-extractDetector="./build/extractdetector"
+extractDetector = os.path.join( os.path.abspath(sys.path[0]), "extractdetector" )
 
 if not os.path.isfile(extractDetector):
     print "Error: Helper Tool \"" + extractDetector + "\" not found!"
