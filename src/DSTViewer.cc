@@ -326,7 +326,10 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 					int hit_type = 1 | HIT_LAYER;
 					
 					int cylinder_sides = 30;
+                    //problem with fisheye view
 					ced_geocylinder_r(sizes[0]/2, sizes[2], center, rotate, cylinder_sides, color, CLUSTER_LAYER); 
+
+
 
 					//ced_hit(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color);
                     ced_hit_ID(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color, cluster->id()); //hauke

@@ -1,0 +1,14 @@
+A script which simplify the use of Marlin with CED in some cases.
+ced2go needs the name of the LCIO file as an argument. Than it
+look to this file find out which gearfile is needed, create an
+steering file with this parameters. Than it starts CED and Marlin.
+
+Usage: ./ced2go.py [OPTION]  <LCIO Input File>
+Options:
+     -v            Viewer1
+     -v            Viewer2
+     -d            Gearfile
+     -h            Help
+All options are optional
+Viewers are e.g. CEDViewer, DSTViewer, GenericViewer
+
