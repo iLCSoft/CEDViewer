@@ -42,7 +42,7 @@ if not os.path.isfile(extractDetector):
     print "Error: Helper Tool \"" + extractDetector + "\" not found!"
     sys.exit()
 
-steeringFile="steering.xml"
+steeringFile="/tmp/ced2go_steering.xml"
 CED= "glced"
 Marlin="Marlin"
 
