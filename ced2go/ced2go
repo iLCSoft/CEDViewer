@@ -37,12 +37,14 @@ if not os.path.isfile(templateXMLFile):
 
 #extractDetector="/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/build/extractdetector"
 extractDetector = os.path.join( os.path.abspath(sys.path[0]), "extractdetector" )
+#extractDetector = "extractdetector" 
+
 
 if not os.path.isfile(extractDetector):
     print "Error: Helper Tool \"" + extractDetector + "\" not found!"
     sys.exit()
 
-steeringFile="steering.xml"
+steeringFile="/tmp/ced2go_" + os.environ['USER'] + "_steering.xml"
 CED= "glced"
 Marlin="Marlin"
 
