@@ -41,13 +41,13 @@ if not os.path.isfile(templateXMLFile):
     sys.exit()
 
 
-extractDetector = os.path.join( os.path.abspath(sys.path[0]), "extractdetector" )
-#extractDetector = "extractdetector"  #only for test case
+#extractDetector = os.path.join( os.path.abspath(sys.path[0]), "extractdetector" )
+extractDetector = "extractdetector"  #only for test case
 
 
-if not os.path.isfile(extractDetector):
-    print "Error: Helper Tool \"" + extractDetector + "\" not found!"
-    sys.exit()
+#if not os.path.isfile(extractDetector):
+#    print "Error: Helper Tool \"" + extractDetector + "\" not found!"
+#    sys.exit()
 
 steeringFile="/tmp/ced2go_" + os.environ['USER'] + "_steering.xml"
 CED= "glced"
@@ -130,7 +130,7 @@ if detector != "": #user defined gearfile
 else:  #find out the detector name used in the lcio file
 
     if old:
-        detector=os.popen(extractDetector).readline()
+        detector=os.popen(extractDetector + " " + keys['$LCIOInputFiles$']).readline()
     else:
         detector= str(subprocess.Popen([extractDetector,keys['$LCIOInputFiles$']], stdout=subprocess.PIPE).communicate()[0])
 
