@@ -1,7 +1,13 @@
 #!/usr/bin/python
 import sys
 import re
-import subprocess
+if sys.version_info[0] > 2 or ( sys.version_info[0] == 2 and sys.version_info[1]>= 4):
+    import subprocess
+    old = 0
+else:
+    print "Warning: Python Version < 2.4..."
+    old = 1
+    import popen2
 import os
 import signal
 import time
@@ -35,9 +41,8 @@ if not os.path.isfile(templateXMLFile):
     sys.exit()
 
 
-#extractDetector="/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/build/extractdetector"
 extractDetector = os.path.join( os.path.abspath(sys.path[0]), "extractdetector" )
-#extractDetector = "extractdetector" 
+#extractDetector = "extractdetector"  #only for test case
 
 
 if not os.path.isfile(extractDetector):
@@ -123,10 +128,15 @@ keys['$LCIOInputFiles$']=args[0]
 if detector != "": #user defined gearfile
      keys['$GearXMLFile$'] = detector
 else:  #find out the detector name used in the lcio file
-    detector= str(subprocess.Popen([extractDetector,keys['$LCIOInputFiles$']], stdout=subprocess.PIPE).communicate()[0])
+
+    if old:
+        detector=os.popen(extractDetector).readline()
+    else:
+        detector= str(subprocess.Popen([extractDetector,keys['$LCIOInputFiles$']], stdout=subprocess.PIPE).communicate()[0])
+
     detector=detector.rstrip() #remove newline
 
-    #print '"' + detector + '"'
+    print '"' + detector + '"'
 
     tmp = detector.split("\n")
     if len(tmp) != 1:
@@ -158,19 +168,22 @@ xmlFH.close()
 templateFH.close()
 
 #start ced and marlin
-CEDobj = subprocess.Popen([CED,'-geometry', '600x400'])
-Marlinobj = subprocess.Popen([Marlin, steeringFile])
+if old:
+    os.system(CED + " -geometry 600x400" + " & sleep 1; " + Marlin  + " " + steeringFile);
+else:
+    CEDobj    = subprocess.Popen([CED,'-geometry', '600x400'])
+    Marlinobj = subprocess.Popen([Marlin, steeringFile])
 
-#terminate the both processes when one is closed
-while True: 
-    if Marlinobj.poll() != None:
-        os.kill(CEDobj.pid,15)
-        break
+    #terminate the both processes when one is closed
+    while True: 
+        if Marlinobj.poll() != None:
+            os.kill(CEDobj.pid,15)
+            break
 
-    if CEDobj.poll() != None: 
-        os.kill(Marlinobj.pid,15)
-        break
+        if CEDobj.poll() != None: 
+            os.kill(Marlinobj.pid,15)
+            break
 
-    time.sleep(0.5) #sleep for 0.5 seconds
+        time.sleep(0.5) #sleep for 0.5 seconds
 
 print "Done"
