@@ -6,7 +6,7 @@
 
 ########################################################
 # CMake compatibility issues: don't modify this, please!
-CMAKE_MINIMUM_REQUIRED( VERSION 2.4.6 )
+CMAKE_MINIMUM_REQUIRED( VERSION 2.6 FATAL_ERROR )
 #SET( CMAKE_BACKWARDS_COMPATIBILITY 2.4.6 )
 MARK_AS_ADVANCED(CMAKE_BACKWARDS_COMPATIBILITY)
 # allow more human readable "if then else" constructs
@@ -229,11 +229,11 @@ MESSAGE( STATUS "BUILD_SHARED_LIBS = ${BUILD_SHARED_LIBS}" )
 MESSAGE( STATUS "CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}" )
 MESSAGE( STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}" )
 MESSAGE( STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}" )
-IF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-    MESSAGE( STATUS "BUILD_32BIT_COMPATIBLE = ${BUILD_32BIT_COMPATIBLE}" )
-ENDIF()
-MESSAGE( STATUS "${PROJECT_NAME}_DEPENDS = \"${${PROJECT_NAME}_DEPENDS}\"" )
-MESSAGE( STATUS "BUILD_WITH = \"${BUILD_WITH}\"" )
+#IF( CMAKE_SIZEOF_VOID_P EQUAL 8 )
+#    MESSAGE( STATUS "BUILD_32BIT_COMPATIBLE = ${BUILD_32BIT_COMPATIBLE}" )
+#ENDIF()
+#MESSAGE( STATUS "${PROJECT_NAME}_DEPENDS = \"${${PROJECT_NAME}_DEPENDS}\"" )
+#MESSAGE( STATUS "BUILD_WITH = \"${BUILD_WITH}\"" )
 MESSAGE( STATUS "INSTALL_DOC = ${INSTALL_DOC}" )
 MESSAGE( STATUS "Change a value with: cmake -D<Variable>=<Value>" )
 MESSAGE( STATUS "-------------------------------------------------------------------------------" )
@@ -251,11 +251,6 @@ SET( CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" CACHE PATH
     "Path to custom CMake Modules" FORCE )
 SET( INSTALL_DOC "${INSTALL_DOC}" CACHE BOOL
     "Set to OFF to skip build/install Documentation" FORCE )
-
-# export build settings
-INCLUDE( CMakeExportBuildSettings )
-CMAKE_EXPORT_BUILD_SETTINGS( "${PROJECT_NAME}BuildSettings.cmake" )
-INSTALL( FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}BuildSettings.cmake" DESTINATION lib/cmake )
 
 # export library dependencies (keep this as the last line in the file)
 EXPORT_LIBRARY_DEPENDENCIES( "${PROJECT_NAME}LibDeps.cmake" )
