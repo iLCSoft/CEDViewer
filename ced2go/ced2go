@@ -13,6 +13,12 @@ import signal
 import time
 import getopt
 
+import socket
+import sys
+
+import random
+
+
 
 #Help output
 def help():
@@ -166,6 +172,24 @@ for line in templateFH:
     xmlFH.write(line) 
 xmlFH.close()
 templateFH.close()
+
+#check for a free port for CED 
+for port in range(int(random.random()*6000+1024),200000):
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind(('',port))
+    except socket.error, (value,message):
+        if value == 98: #port already in use
+            #print "port " + str(port) + " in use "
+            s.close() 
+            continue 
+        else:
+            print "unknown error: " + message
+            sys.exit()
+    print "Use port " + str(port)
+    s.close()
+    break
+os.environ['CED_PORT']=str(port)
 
 #start ced and marlin
 if old:
