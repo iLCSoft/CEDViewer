@@ -3,6 +3,11 @@
  release notes for CEDViewer
 
 ================================
+ -----------
+| v01-01-01 |
+ -----------
+     - bug fix in CEDViewer: have ReconstructedParticles in different colors
+
  --------
 | v01-01 |
  --------

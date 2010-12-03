@@ -525,7 +525,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
     } else if( col->getTypeName() == LCIO::RECONSTRUCTEDPARTICLE ){ //hauke
 
-      int color = 0xeeffff ;
 
       layer = ( layer > -1 ? layer : RECOPARTICLE_LAYER ) ;
       drawParameters[np].Layer = layer ;
@@ -540,6 +539,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       float TotPZ = 0.0;
 
       for (int ip(0); ip < nelem; ++ip) {
+
+        int color = _colors[ ip % _colors.size() ] ;
+
         ReconstructedParticle * part = dynamic_cast<ReconstructedParticle*>(col->getElementAt(ip)); 
         TrackVec trackVec = part->getTracks();
         int nTracks =  (int)trackVec.size();
