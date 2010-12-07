@@ -9,6 +9,7 @@
  --------
 
  - removed old makefile
+ - removed CEDViewerConfig.cmake.in
 
 
  --------
