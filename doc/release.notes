@@ -8,7 +8,9 @@
 |  HEAD  |
  --------
 
+ - cmake improvements
  - removed old makefile
+ - removed old steering file
  - removed CEDViewerConfig.cmake.in
 
 
