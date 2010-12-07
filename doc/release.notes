@@ -3,6 +3,14 @@
  release notes for CEDViewer
 
 ================================
+
+ --------
+|  HEAD  |
+ --------
+
+ - removed old makefile
+
+
  --------
 | v01-01 |
  --------
