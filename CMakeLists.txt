@@ -15,6 +15,15 @@ SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 
 
 
+### SETTINGS ################################################################
+
+# ilcsoft cmake macros / default settings
+INCLUDE( ilcsoft_default_settings )
+#INCLUDE( build_32bit_compatible )
+INCLUDE( MacroAddSharedLibrary )
+
+
+
 ### DEPENDENCIES ############################################################
 
 # additionally search for cmake macros/moules defined by this project
@@ -57,14 +66,6 @@ FOREACH( pkg ${required_packages} ${optional_packages} )
         MESSAGE( STATUS "${pkg} not found" )
     ENDIF()
 ENDFOREACH()
-
-
-
-### SETTINGS ################################################################
-
-# ilcsoft cmake macros / default settings
-INCLUDE( ilcsoft_default_settings )
-INCLUDE( MacroAddSharedLibrary )
 
 
 
