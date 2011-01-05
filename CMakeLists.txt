@@ -91,7 +91,7 @@ ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
 ADD_DEFINITIONS( "-Wno-long-long" )
 
 # add library
-AUX_SOURCE_DIRECTORY( src library_sources )
+AUX_SOURCE_DIRECTORY( ./src library_sources )
 ADD_SHARED_LIBRARY( ${libname} ${library_sources} )
 INSTALL_SHARED_LIBRARY( ${libname} DESTINATION lib )
 
