@@ -8,10 +8,12 @@
 |  HEAD  |
  --------
 
- - cmake improvements
+ - cmake changes:
+    - moved cmake macros to CMakeModules
+    - removed CEDViewerConfig.cmake.in
+    - removed BuildSetup.cmake
  - removed old makefile
  - removed old steering file
- - removed CEDViewerConfig.cmake.in
 
 
  --------

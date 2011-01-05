@@ -17,13 +17,8 @@ SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 
 ### SETTINGS ################################################################
 
-# additionally search for cmake macros/moules defined by this project
-LIST( APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake )
-
 # ilcsoft cmake macros / default settings
 INCLUDE( ilcsoft_default_settings )
-#INCLUDE( build_32bit_compatible )
-INCLUDE( MacroAddSharedLibrary )
 
 
 
@@ -88,8 +83,8 @@ ENDIF()
 SET( libname ${PROJECT_NAME} )
 
 # include directories
-INCLUDE_DIRECTORIES( "include" )
-INSTALL( DIRECTORY include DESTINATION . FILES_MATCHING PATTERN "*.h" )
+INCLUDE_DIRECTORIES( ./include )
+INSTALL_DIRECTORY( ./include DESTINATION . FILES_MATCHING PATTERN "*.h" )
 
 # definitions to pass to the compiler
 ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
@@ -98,12 +93,13 @@ ADD_DEFINITIONS( "-Wno-long-long" )
 # add library
 AUX_SOURCE_DIRECTORY( src library_sources )
 ADD_SHARED_LIBRARY( ${libname} ${library_sources} )
+INSTALL_SHARED_LIBRARY( ${libname} DESTINATION lib )
 
 # ced2go
 ADD_EXECUTABLE( extractdetector ced2go/extractdetector.cc )
 INSTALL( TARGETS extractdetector DESTINATION bin )
-INSTALL( FILES ced2go/ced2go-template.xml DESTINATION bin )
-INSTALL( FILES ced2go/ced2go DESTINATION bin PERMISSIONS
+INSTALL( FILES ./ced2go/ced2go-template.xml DESTINATION bin )
+INSTALL( FILES ./ced2go/ced2go DESTINATION bin PERMISSIONS
         OWNER_READ OWNER_WRITE OWNER_EXECUTE
         GROUP_READ GROUP_EXECUTE
         WORLD_READ WORLD_EXECUTE
