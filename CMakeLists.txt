@@ -28,12 +28,11 @@ INCLUDE( ilcsoft_default_settings )
 ### DEPENDENCIES ############################################################
 
 FIND_PACKAGE( Marlin 0.14 REQUIRED )
-FIND_PACKAGE( MarlinUtil REQUIRED )
-FIND_PACKAGE( CED REQUIRED )
+FIND_PACKAGE( MarlinUtil 1.2 REQUIRED )
 FIND_PACKAGE( CLHEP REQUIRED )
 FIND_PACKAGE( GSL REQUIRED )
 
-FOREACH( pkg Marlin MarlinUtil CED CLHEP GSL )
+FOREACH( pkg Marlin MarlinUtil CLHEP GSL )
     IF( ${pkg}_FOUND )
         INCLUDE_DIRECTORIES( ${${pkg}_INCLUDE_DIRS} )
         LINK_LIBRARIES( ${${pkg}_LIBRARIES} )
