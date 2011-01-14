@@ -17,48 +17,27 @@ SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 
 ### SETTINGS ################################################################
 
-# ilcsoft cmake macros / default settings
+# FindILCSOFT_CMAKE_MODULES.cmake needs to be in CMAKE_MODULE_PATH
+FIND_PACKAGE( ILCSOFT_CMAKE_MODULES 0.11 REQUIRED )
+
+# load default settings from ILCSOFT_CMAKE_MODULES
 INCLUDE( ilcsoft_default_settings )
 
 
 
 ### DEPENDENCIES ############################################################
 
-# ------- required packages -------------------
-SET( required_packages LCIO GEAR CED Marlin MarlinUtil streamlog CLHEP GSL )
+FIND_PACKAGE( Marlin 0.14 REQUIRED )
+FIND_PACKAGE( MarlinUtil REQUIRED )
+FIND_PACKAGE( CED REQUIRED )
+FIND_PACKAGE( CLHEP REQUIRED )
+FIND_PACKAGE( GSL REQUIRED )
 
-# ------- optional packages -------------------
-#SET( optional_packages AIDA )
-
-
-# ------- do the search -----------------------
-
-# fix for backwards compatibility
-FOREACH( pkg ${required_packages} ${optional_packages} )
-    IF( NOT ${pkg}_DIR AND DEFINED ${pkg}_HOME )
-        SET( ${pkg}_DIR ${${pkg}_HOME} )
-    ENDIF()
-ENDFOREACH()
-
-IF( NOT streamlog_DIR AND DEFINED Marlin_DIR )
-    SET( streamlog_DIR "${Marlin_DIR}" CACHE PATH "Path to streamlog" FORCE )
-ENDIF()
-
-FOREACH( pkg ${required_packages} )
-    FIND_PACKAGE( ${pkg} REQUIRED )
-ENDFOREACH()
-
-FOREACH( pkg ${optional_packages} )
-    FIND_PACKAGE( ${pkg} QUIET )
-ENDFOREACH()
-
-FOREACH( pkg ${required_packages} ${optional_packages} )
+FOREACH( pkg Marlin MarlinUtil CED CLHEP GSL )
     IF( ${pkg}_FOUND )
         INCLUDE_DIRECTORIES( ${${pkg}_INCLUDE_DIRS} )
         LINK_LIBRARIES( ${${pkg}_LIBRARIES} )
         ADD_DEFINITIONS ( ${${pkg}_DEFINITIONS} )
-    ELSE()
-        MESSAGE( STATUS "${pkg} not found" )
     ENDIF()
 ENDFOREACH()
 
@@ -93,17 +72,13 @@ ADD_DEFINITIONS( "-Wno-long-long" )
 # add library
 AUX_SOURCE_DIRECTORY( ./src library_sources )
 ADD_SHARED_LIBRARY( ${libname} ${library_sources} )
-INSTALL_SHARED_LIBRARY( ${libname} DESTINATION lib )
+INSTALL( TARGETS ${libname} DESTINATION lib )
 
 # ced2go
 ADD_EXECUTABLE( extractdetector ced2go/extractdetector.cc )
 INSTALL( TARGETS extractdetector DESTINATION bin )
 INSTALL( FILES ./ced2go/ced2go-template.xml DESTINATION bin )
-INSTALL( FILES ./ced2go/ced2go DESTINATION bin PERMISSIONS
-        OWNER_READ OWNER_WRITE OWNER_EXECUTE
-        GROUP_READ GROUP_EXECUTE
-        WORLD_READ WORLD_EXECUTE
-)
+INSTALL( PROGRAMS ./ced2go/ced2go DESTINATION bin )
 
 # display some variables and write them to cache
 DISPLAY_STD_VARIABLES()
