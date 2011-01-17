@@ -1,5 +1,4 @@
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-#ifdef USE_CLHEP  // only if CLHEP is available !
 #include "CEDViewer.h"
 #include <iostream>
 
@@ -12,16 +11,9 @@
 
 #include <EVENT/ReconstructedParticle.h>
 
-
 #include <UTIL/LCTypedVector.h>
 
 #include "MarlinCED.h"
-#include "CLHEP/Vector/ThreeVector.h"
-
-// fix for transition from CLHEP 1.8 to 1.9
-namespace CLHEP{}
-using namespace CLHEP ;
-
 
 #include <math.h>
 #include <cmath>
@@ -250,9 +242,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         //hauke hoelbe: add id for picking
         ced_hit_ID( x,y,z, ml, size*3 , color, clu->id() ) ;
 
-        Hep3Vector v(x,y,z) ;
+        LCVector3D v(x,y,z) ;
 
-        Hep3Vector d(1.,1.,1.) ;
+        LCVector3D d(1.,1.,1.) ;
 
 
         float length = 100 + 500 * ( clu->getEnergy() - emin )  / ( emax - emin )  ;
@@ -269,7 +261,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         d.setTheta( clu->getITheta() ) ;
         d.setPhi( clu->getIPhi() ) ;
  
-        Hep3Vector dp( v + d ) , dm( v - d )   ;
+        LCVector3D dp( v + d ) , dm( v - d )   ;
 
         //hauke hoelbe: need the id for picking mode!
         ced_line_ID( dp.x() , dp.y() , dp.z(),  
@@ -676,4 +668,3 @@ void CEDViewer::end(){
   
 }
 
-#endif

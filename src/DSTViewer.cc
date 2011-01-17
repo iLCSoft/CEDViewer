@@ -2,8 +2,6 @@
  *  @author: S.Daraszewicz
  *  @date: 15.08.08
  **/
-#ifdef USE_CLHEP 
-
 #include "DSTViewer.h"
 #include <EVENT/ReconstructedParticle.h>
 #include <iostream>
@@ -926,4 +924,3 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 		return color;	
 	}
 
-#endif
