@@ -68,7 +68,7 @@ ADD_DEFINITIONS( "-Wno-long-long" )
 # add library
 AUX_SOURCE_DIRECTORY( ./src library_sources )
 ADD_SHARED_LIBRARY( ${libname} ${library_sources} )
-INSTALL( TARGETS ${libname} DESTINATION lib )
+INSTALL_SHARED_LIBRARY( ${libname} DESTINATION lib )
 
 # ced2go
 ADD_EXECUTABLE( extractdetector ced2go/extractdetector.cc )
