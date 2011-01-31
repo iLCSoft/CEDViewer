@@ -5,11 +5,11 @@
 ================================
 
  --------
-|  HEAD  |
+| v01-02 |
  --------
 
  - cmake changes:
-    - moved cmake macros to CMakeModules
+    - simplified CMakeLists.txt
     - removed CEDViewerConfig.cmake.in
     - removed BuildSetup.cmake
  - removed old makefile
