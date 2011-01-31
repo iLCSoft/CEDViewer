@@ -26,7 +26,7 @@ INCLUDE( ilcsoft_default_settings )
 
 ### DEPENDENCIES ############################################################
 
-FIND_PACKAGE( Marlin 0.14 REQUIRED )
+FIND_PACKAGE( Marlin 1.0 REQUIRED )
 FIND_PACKAGE( MarlinUtil 1.2 REQUIRED )
 
 FOREACH( pkg Marlin MarlinUtil )
