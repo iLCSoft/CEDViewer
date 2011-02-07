@@ -10,6 +10,13 @@
 
  - cmake changes:
     - simplified CMakeLists.txt
+    - improvements in dependency handling:
+        - removed dependencies GEAR, LCIO and streamlog (now exported through Marlin)
+        - removed dependencies CED and CLHEP (now exported thorough MarlinUtil)
+        - removed dependency to GSL (not used anywhere in CEDViewer). Dependency was propagated 
+            from a "bug" in MarlinUtil header files ( #include <gsl/...> statements )
+        - exchanged CMakeModules dependency with new package ILCUTIL
+
     - removed CEDViewerConfig.cmake.in
     - removed BuildSetup.cmake
  - removed old makefile
