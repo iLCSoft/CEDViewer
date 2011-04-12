@@ -567,7 +567,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
             float x = hit->getPosition()[0];
             float y = hit->getPosition()[1];
             float z = hit->getPosition()[2];
-            ced_hit_ID(x,y,z,layer<<CED_LAYER_SHIFT,size,color,part->id()); 
+            ced_hit_ID(x,y,z,marker|(layer<<CED_LAYER_SHIFT),size,color,part->id()); 
           }
         }
 
@@ -581,7 +581,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
               float x = (float)hit->getPosition()[0];
               float y = (float)hit->getPosition()[1];
               float z = (float)hit->getPosition()[2];
-              ced_hit_ID(x,y,z,layer<<CED_LAYER_SHIFT,size,color,part->id());
+              ced_hit_ID(x,y,z,marker|(layer<<CED_LAYER_SHIFT),size,color,part->id());
             }
           }else{
             //streamlog_out(DEBUG) << "################         No Hits!" << std::endl; 
@@ -602,7 +602,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
             //helix
             float charge = (float)part->getCharge();
             float bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ;
-            MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, layer<<CED_LAYER_SHIFT, size, color, 0.0, padLayout.getPlaneExtent()[1],
+            MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, marker|(layer<<CED_LAYER_SHIFT), size, color, 0.0, padLayout.getPlaneExtent()[1],
                             gearTPC.getMaxDriftLength(), part->id() ); //hauke: add id
           }
 
