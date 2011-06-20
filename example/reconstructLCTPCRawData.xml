@@ -1,0 +1,260 @@
+<!--##########################################
+    #                                        #
+    #     Example steering file for marlin   #
+    #                                        #
+    ##########################################-->
+
+
+<marlin>
+ <execute>
+  <processor name="MyAIDAProcessor" />
+  <processor name="MyConditionsProcessor"/>
+  <processor name="MyTrackerRawDataToDataConverterProcessor"/>
+  <processor name="MyPulseFinderProcessor"/>
+  <processor name="MyChannelMapperProcessor"/>
+  <processor name="MyHitTrackFinderTopoProcessor"/>  
+  <processor name="MyTrackSeederProcessor"/>
+  <processor name="MyTrackFitterKalmanProcessor"/>
+  <processor name="MyTrackerRawViewer" />
+  <processor name="MyLCIOOutputProcessor"/>  
+ </execute>
+
+ <global>
+  <parameter name="LCIOInputFiles"> /data/ilcsoft/data/readout-17606_0.000.slcio </parameter>
+  <!-- limit the number of processed records (run+evt): -->  
+  <parameter name="MaxRecordNumber" value="0" />  
+  <parameter name="SkipNEvents" value="0" />  
+  <parameter name="SupressCheck" value="false" />  
+  <parameter name="GearXMLFile"> gear_LP_TPC_GEM_7module.xml </parameter>  
+  <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> MESSAGE </parameter>
+ </global>
+
+
+<processor name="MyAIDAProcessor" type="AIDAProcessor">
+ <!--Processor that handles AIDA files. Creates on directory per processor.  Processors only need to create and fill the histograms, clouds and tuples. Needs to be the first ActiveProcessor-->
+  <!-- compression of output file 0: false >0: true (default) -->
+  <parameter name="Compress" type="int">1 </parameter>
+  <!-- filename without extension-->
+  <parameter name="FileName" type="string">tpc_aida_file </parameter>
+  <!-- type of output file root (default) or xml )-->
+  <parameter name="FileType" type="string">root </parameter>
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <!--parameter name="Verbosity" type="string">DEBUG </parameter-->
+</processor>
+
+ <processor name="MyConditionsProcessor" type="ConditionsProcessor">
+ <!--ConditionsProcessor provides access to conditions data  transparently from LCIO files or a databases, using LCCD-->
+  <!--Initialization of a conditions database handler-->
+  <!--parameter name="DBCondHandler" type="StringVec">conditionsName /lccd/myfolder HEAD  </parameter-->
+  <!--Initialization of a conditions db file handler-->
+  <!--parameter name="DBFileHandler" type="StringVec">conditionsName conditions.slcio collectionName  </parameter-->
+  <!--Initialization string for conditions database-->
+  <!--parameter name="DBInit" type="string">localhost:lccd_test:calvin:hobbes </parameter-->
+  <!--Initialization of a data file handler-->
+  <!--parameter name="DataFileHandler" type="StringVec">TPCPedestal  </parameter-->
+  <!--parameter name="DataFileHandler" type="StringVec">TPCChannelMapping </parameter-->
+  <!--Initialization of a simple conditions file handler-->
+  <parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20101214.slcio ADCChannelMapping  </parameter>
+  <!--parameter name="SimpleFileHandler" type="StringVec">TPCPedestal dummy_pedestals_20101214.slcio DummyPedestals  </parameter-->
+</processor>
+
+
+ <processor name="MyTrackerRawViewer" type="TrackerRawViewer">
+ <!--TrackerRawViewer does whatever it does ...-->
+  <!--Name of the LCCD collection with channel mapping-->
+  <parameter name="ChannelMappingCollection" type="string">ADCChannelMapping </parameter>
+  <!--Optionally use a text file for the hardware channel to position mapping - overwrites mapping from LCCD and GEAR-->
+  <parameter name="ChannelPositionTextFile" type="string">ch2pos_20101214.txt </parameter>
+  <!--Name of the TrackewrRawData collection-->
+  <parameter name="CollectionName" type="string" lcioInType="TrackerRawData">AltroRawData </parameter>
+  <!--drift velocity in mu/ns-->
+  <parameter name="DriftVelocity" type="float"> 80. </parameter>
+  <!--ADC value used for the maximum of the color scale-->
+  <parameter name="ColorScaleMaxADC" type="int"> 32 </parameter>
+  <!--color scheme - 1: hot , 2 : cold -->
+  <parameter name="ColorScheme" type="int">1 </parameter>
+  <!--Name of the TrackerHit collection-->
+  <parameter name="HitCollectionName" type="string" lcioInType="TrackerHit">TPCHits </parameter>
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <parameter name="Verbosity" type="string">DEBUG4 </parameter>
+</processor>
+
+
+ <processor name="MyChannelMapperProcessor" type="ChannelMapperProcessor">
+  <!--ChannelMapper changes cellID0 to map from hardware channel numbers to sowftware/logical channel numbers.-->
+  <!--Name of the input collection-->
+  <parameter name="InputCollectionName" type="string" lcioInType="TrackerPulse" value="TPCPulses"/>
+  <!--Name of the collection with the mapping-->
+  <parameter name="MappingCollectionName" type="string">ADCChannelMapping </parameter>
+  <!--Optional: Name of output collection-->
+  <!--parameter name="OutputCollectionName" type="string">TPCPulses</parameter-->
+  <!--if not 0 the output collection is set transient (only if OutputCollectionName defined)-->
+  <parameter name="SetOutputTransient" type="int">0 </parameter>
+ </processor>
+
+ <processor name="MyHitTrackFinderTopoProcessor" type="HitTrackFinderTopoProcessor">
+ <!--HitTrackFinderTopoProcessor calculates TrackerHits from TrackerPulses-->
+  <!--Optional: Name of the input collection containing the TPC conditions data-->
+  <!--parameter name="InputTPCConditions" type="string">TPCConditions </parameter-->
+  <!--Name of the input TrackerPulses collection-->
+  <parameter name="InputTrackerPulses" type="string" lcioInType="TrackerPulse" value="TPCPulses"/>
+  <!--Maximum number of empty consecuitve pads in hit (default: 1)-->
+  <parameter name="MaxEmptyPads" type="int">1 </parameter>
+  <!--Maximum number of subsequnetly missing hits (default: 1)-->
+  <parameter name="MaxSkipRows" type="int">1 </parameter>
+  <!--Maximum time between pulses in a hit in ns (default: 200.)-->
+  <parameter name="MaxTimeSpread" type="float">200 </parameter>
+  <!--Minimum size of hit / Minimum number of Pads (default: 1)-->
+  <parameter name="MinHitSize" type="int">1 </parameter>
+  <!--Minimum number of hits on track (default: 5)-->
+  <parameter name="MinTrackHits" type="int">5 </parameter>
+  <!--Set to 1 for the second half TPC, which look into the negative z direction (default: 0)-->
+  <parameter name="NegativeZDirection" type="int">0 </parameter>
+  <!--Name of the output Tracks collection-->
+  <parameter name="OutputTrackCandidates" type="string" lcioOutType="Track" value="TPCTrackCandidates"/>
+  <!--Name of the output TrackerHits collection-->
+  <parameter name="OutputTrackerHits" type="string" lcioOutType="TrackerHit" value="TPCHits"/>
+  <!--if not 0 the output hits collection is set transient (default: 0)-->
+  <parameter name="SetOutputHitsTransient" type="int">0 </parameter>
+  <!--if not 0 the output trackscollection is set transient (default: 0)-->
+  <parameter name="SetOutputTrackCandidatesTransient" type="int">0 </parameter>
+  <!--Optional: Set drift velocity in case there is no conditions data in mm/us-->
+  <parameter name="VDriftOverride" type="float">80. </parameter>
+</processor>
+
+ <processor name="MyLCIOOutputProcessor" type="LCIOOutputProcessor">
+ <!--Writes the current event to the specified LCIO outputfile. Needs to be the last ActiveProcessor.-->
+  <!--drops the named collections from the event-->
+  <!--parameter name="DropCollectionNames" type="StringVec">TPCHits HCalHits  </parameter-->
+  <!--drops all collections of the given type from the event-->
+  <!--parameter name="DropCollectionTypes" type="StringVec">SimTrackerHit SimCalorimeterHit  </parameter-->
+  <!-- name of output file -->
+  <parameter name="LCIOOutputFile" type="string">TPCTracks.slcio </parameter>
+  <!--write mode for output file:  WRITE_APPEND or WRITE_NEW-->
+  <parameter name="LCIOWriteMode" type="string"> WRITE_NEW</parameter>
+  <!--will split output file if size in kB exceeds given value - doesn't work with APPEND and NEW-->
+  <!--parameter name="SplitFileSizekB" type="int">1992294 </parameter-->
+</processor>
+
+ <processor name="MyPedestalSubtractorProcessor" type="PedestalSubtractorProcessor">
+ <!--PedestalSubtractor correct the TrackerData by subtracting the pedestals provided via a file-->
+  <!--Name of the input collection-->
+  <parameter name="InputCollectionName" type="string">TPCConvertedRawData </parameter>
+  <!--Name of the output collection-->
+  <parameter name="OutputCollectionName" type="string">TPCData </parameter>
+  <!--Name of the collection containing the pedestals-->
+  <parameter name="PedestalCollectionName" type="string">DummyPedestals </parameter>
+  <!--if not 0 the output collection is set transient-->
+  <parameter name="SetOutputTransient" type="int">1 </parameter>
+</processor>
+
+ <IGNORE_processor name="MyPulseFinderProcessor" type="PulseFinderProcessor">
+ <!--PulseFinder: find hits out of the raw data and calculate the time and charge information-->
+  <!--if not 0 the ADC spectrum will be stored for all pulses-->
+  <parameter name="ForceSpectrumSave" type="int">1 </parameter>
+  <!--Name of the input TrackerData collection-->
+  <parameter name="InputCollectionName" type="string">TPCData </parameter>
+  <!--Name of the output TrackerData collectiononly the data related to a pulse will be stored-->
+  <parameter name="OutputTrackerDataCollectionName" type="string">TPCDataInPulses </parameter>
+  <!--Name of the output TrackerPulse collection-->
+  <parameter name="OutputTrackerPulseCollectionName" type="string">TPCPulses </parameter>
+  <!--Name of the collection containing the pedestal information-->
+  <parameter name="PedestalCollectionName" type="string"> TPCPedestals </parameter>
+  <!--a pulse start if ADC value is the given value times width of the pedestal-->
+  <parameter name="PulseStartThreshold" type="float">5 </parameter>
+  <!--# bins saved after the start bin (exept there is another pulse)-->
+  <parameter name="SaveNBinsAfterStart" type="int">8 </parameter>
+  <!--# bins saved before the start bin (exept there is another pulse)-->
+  <parameter name="SaveNBinsBeforeStart" type="int">2 </parameter>
+  <!--if not 0 the output collection is set transient-->
+  <parameter name="SetOutputTransient" type="int">0 </parameter>
+</IGNORE_processor>
+
+<processor name="MyPulseFinderProcessor" type="PulseFinderProcessor">
+ <!--PulseFinderProcessor: finds pulses out of the raw data and calculate the time and charge (in FADC) information-->
+  <!--Name of the conditions collection in which the parameters of the read out electronics is stored-->
+  <parameter name="ElectronicsParametersCollectionName" type="string">GenericADCElectronicsParameters </parameter>
+  <!--Name of the conditions object in which the parameters of the read out electronics is stored-->
+  <parameter name="ElectronicsParametersObjectName" type="string">GenericADCElectronicsParameters </parameter>
+  <!--if true the ADC spectrum will be stored for all pulses-->
+  <parameter name="ForceSpectrumSave" type="bool">true </parameter>
+  <!--Name of the input TrackerData collection-->
+  <parameter name="InputCollectionName" type="string" lcioInType="TrackerData">TPCData </parameter>
+  <!--Maximum number of the adc spectrum; to determine wether a pulse is maxed out. This single value overrides any value, from any readout group, which may have been taken from LCCD.-->
+  <parameter name="MaximumADCValueOverride" type="float">127 </parameter>
+  <!--Declares the minimal height of the maximum entry of a pulse in ADC counts.-->
+  <parameter name="MinimumPulseHeight" type="float">8 </parameter>
+  <!--Declares the minimal length of a pulse in time bins above the thresholds.-->
+  <parameter name="MinimumPulseLength" type="int">5 </parameter>
+  <!--Name of the output TrackerData collection only the data related to a pulse will be stored-->
+  <parameter name="OutputTrackerDataCollectionName" type="string" lcioOutType="TrackerData">TPCDataInPulses </parameter>
+  <!--Name of the output TrackerPulse collection-->
+  <parameter name="OutputTrackerPulseCollectionName" type="string" lcioOutType="TrackerPulse">TPCPulses </parameter>
+  <!--The pedestal width to be used for every hardware channel in every readout group. This overrides any information provided by LCCD.-->
+  <parameter name="PedestalWidthOverride" type="float">0.5 </parameter>
+  <!--A pulse ends if the ADC value drops below this value times the pedestal width.-->
+  <parameter name="PulseEndThreshold" type="float">3 </parameter>
+  <!--A pulse starts if the ADC value is the given value times the pedestal width.-->
+  <parameter name="PulseStartThreshold" type="float">7 </parameter>
+  <!--The readout frequency of every readout group (in Hz). This overrides any information provided by LCCD.-->
+  <parameter name="ReadoutFrequencyOverride" type="float">20e+06 </parameter>
+  <!--# bins saved after the end threshold (except there is another pulse)-->
+  <parameter name="SaveNBinsAfterEnd" type="int">8 </parameter>
+  <!--# bins saved before start threshold (except there is another pulse)-->
+  <parameter name="SaveNBinsBeforeStart" type="int">2 </parameter>
+  <!--The polarity of the signals (1 for positive, -1 for negative) produced by all readout groups. This overrides any information provided by LCCD.-->
+  <parameter name="SignalPolarityOverride" type="int">1 </parameter>
+  <!--Set this flag to use the amplitude calculated by fitting a parabola to the log of the pulse data.-->
+  <!--parameter name="UseParabolicFitAmplitudeAsCharge?" type="bool">false </parameter-->
+  <!--Set this flag to use the time caclulated by fitting a parabola to the log of the pulse data.-->
+  <!--parameter name="UseParabolicFitMaxAsTime?" type="bool">false </parameter-->
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <!--parameter name="Verbosity" type="string">DEBUG </parameter-->
+  <!--if true the output collection is written-->
+  <parameter name="WriteOutputToStorage" type="bool">true </parameter>
+</processor>
+
+
+ <processor name="MyTrackSeederProcessor" type="TrackSeederProcessor">
+ <!--Calculates seed track parameters from  in the TrackerHits in the track candidates collection!-->
+  <!--The the name of the input collection of track candidates (default: TPCTrackCandidates)-->
+  <parameter name="InputTrackCandidates" type="string" lcioInType="Track" value="TPCTrackCandidates"/>
+  <!--The name of the collection the seed tracks be stored under (default: TPCSeedTracks)-->
+  <parameter name="OutputSeedTracks" type="string" lcioOutType="Track" value="TPCSeedTracks"/>
+  <!--if not 0 the output hits collection is set transient (default: 0)-->
+  <parameter name="SetOutputTransient" type="int">0 </parameter>
+</processor>
+
+ <processor name="MyTrackerRawDataToDataConverterProcessor" type="TrackerRawDataToDataConverterProcessor">
+ <!--TrackerRawDataToDataConverter converts the TrackerRawData to TrackerData without processing the values-->
+  <!--Name of the input collection-->
+  <parameter name="InputCollectionName" type="string">AltroRawData </parameter>
+  <!--Name of the output collection-->
+  <parameter name="OutputCollectionName" type="string">TPCData </parameter>
+  <!--if not 0 the output collection is set transient-->
+  <parameter name="SetOutputTransient" type="int">0 </parameter>
+</processor>
+
+
+ <processor name="MyTrackFitterKalmanProcessor" type="TrackFitterKalmanProcessor">
+ <!--To Be Filled: a Kalman filter track fitter-->
+  <!--The name of the input collection of track candidates (default: TPCSeedTracks)-->
+  <parameter name="InputSeedTracks" type="string" lcioInType="Track">TPCSeedTracks </parameter>
+  <!--The longitudinal defocussing in the readout structure sigma_0,long (in mm) (default: 1)-->
+  <parameter name="LongDefocussing" type="float">1 </parameter>
+  <!--The longitudinal diffusion coefficient (in mm/sqrt(mm) ) (default: 0)-->
+  <parameter name="LongDiffusionCoef" type="float">0 </parameter>
+  <!--The name of the output collection with the fitted tracks(default: TPCTracks)-->
+  <parameter name="OutputTracks" type="string" lcioOutType="Track">TPCTracks </parameter>
+  <!--if not 0 the output hits collection is set transient (default: 0)-->
+  <parameter name="SetOutputTransient" type="int">0 </parameter>
+  <!--The transverse defocussing in the readout structure sigma_0,trans(in mm) (default: 1)-->
+  <parameter name="TransDefocussing" type="float">1 </parameter>
+  <!--The transverse diffusion coefficient (in mm/sqrt(mm) ) (default: 0)-->
+  <parameter name="TransDiffusionCoef" type="float">0 </parameter>
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <parameter name="Verbosity" type="string">DEBUG </parameter>
+</processor>
+
+
+</marlin>

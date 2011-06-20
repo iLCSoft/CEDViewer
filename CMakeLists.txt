@@ -29,13 +29,34 @@ INCLUDE( ilcsoft_default_settings )
 FIND_PACKAGE( Marlin 1.0 REQUIRED )
 FIND_PACKAGE( MarlinUtil 1.2 REQUIRED )
 
-FOREACH( pkg Marlin MarlinUtil )
+FIND_PACKAGE( LCCD ) # optional - needed for TrackerRawViewer
+
+
+
+#FIND_PACKAGE( MarlinTPC ) # optional - needed for TrackerRawViewer
+#--- workaround for MarlinTPC (no cmake config files yet...)
+IF( MarlinTPC_DIR )
+  SET( MarlinTPC_INCLUDE_DIRS ${MarlinTPC_DIR}/tpcconddata/include )
+  IF( APPLE ) 
+    SET( MarlinTPC_LIBRARIES    ${MarlinTPC_DIR}/lib/libtpcconddata.dylib )
+  ELSE()
+    SET( MarlinTPC_LIBRARIES    ${MarlinTPC_DIR}/lib/libtpcconddata.so )
+  ENDIF()
+  SET( MarlinTPC_FOUND TRUE)
+ENDIF()
+
+
+FOREACH( pkg Marlin MarlinUtil LCCD MarlinTPC)
     IF( ${pkg}_FOUND )
         INCLUDE_DIRECTORIES( ${${pkg}_INCLUDE_DIRS} )
         LINK_LIBRARIES( ${${pkg}_LIBRARIES} )
         ADD_DEFINITIONS ( ${${pkg}_DEFINITIONS} )
     ENDIF()
 ENDFOREACH()
+
+
+
+
 
 
 
@@ -67,6 +88,21 @@ ADD_DEFINITIONS( "-Wno-long-long" )
 
 # add library
 AUX_SOURCE_DIRECTORY( ./src library_sources )
+
+LIST( REMOVE_ITEM library_sources ./src/TrackerRawViewer.cc )
+
+
+#don't build TrackerRawViewer if LCCD not available
+IF( LCCD_FOUND AND MarlinTPC_FOUND )
+  LIST( APPEND library_sources ./src/TrackerRawViewer.cc )
+ELSE() 
+  MESSAGE( "\n ***** TrackerRawViewer will not be built - it needs MarlinTPC and LCCD  \n"
+           " ***** to include TrackerRawData specify -DLCCD_DIR=... and -DMarlinTPC_DIR=...   !! \n"  ) 
+ENDIF()
+
+
+
+
 ADD_SHARED_LIBRARY( ${libname} ${library_sources} )
 INSTALL_SHARED_LIBRARY( ${libname} DESTINATION lib )
 
