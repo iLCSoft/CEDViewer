@@ -4,6 +4,7 @@
 #include "marlin/Processor.h"
 #include "lcio.h"
 #include <string>
+#include <vector>
 
 // MarlinTPC
 #define USE_LCCD
@@ -80,10 +81,22 @@ class TrackerRawViewer : public Processor {
   bool getPadCenter( double *padCenter, int cellID0, int cellID1 ) ;
 
 
+  static const int Red         =   0 ;
+  static const int Orange      =   1 ;
+  static const int Plum        =   2 ;
+  static const int Violet      =   3 ;
+  static const int Blue        =   4 ;
+  static const int LightBlue   =   5 ;
+  static const int Aquamarine  =   6 ;
+  static const int Green       =   7 ;
+  static const int Olive       =   8 ;
+  static const int Yellow      =   9 ;
+
   /** Input collection name.
    */
   std::string _colName ;
   std::string _hitColName ;
+  std::string _trkColName ;
   std::string _chMapCollection ;
   std::string _chPosTextFile ;
 
@@ -94,6 +107,8 @@ class TrackerRawViewer : public Processor {
   float _driftVelocity ;
   int _colorScaleMaxADC ;
   int _colorScheme ;
+
+  std::vector<int> _colors ;
 
   int _nRun ;
   int _nEvt ;
