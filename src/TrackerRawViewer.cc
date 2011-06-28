@@ -67,7 +67,7 @@ TrackerRawViewer::TrackerRawViewer() : Processor("TrackerRawViewer") ,
 				       _nEvt(0) {
   
   // modify processor description
-  _description = "TrackerRawViewer: visualization of TPC prototype raw data." ;
+  _description = "TrackerRawViewer: visualization of TPC prototype raw data - shows ADCdata, hits and tracks." ;
   
 
   // register steering parameters: name, description, class-variable, default value
