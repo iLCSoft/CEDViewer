@@ -25,13 +25,15 @@
  </execute>
 
  <global>
-  <parameter name="LCIOInputFiles">    readout-17606_0.000.slcio </parameter>
+  <parameter name="LCIOInputFiles">    readout-17636_0.000.slcio </parameter>
+  <!--parameter name="LCIOInputFiles">    readout-17606_0.000.slcio </parameter-->
   <!--parameter name="LCIOInputFiles"> readout-17324_0.000.slcio </parameter-->
   <!-- limit the number of processed records (run+evt): -->  
   <parameter name="MaxRecordNumber" value="0" />  
   <parameter name="SkipNEvents" value="0" />  
   <parameter name="SupressCheck" value="false" />  
-  <parameter name="GearXMLFile"> gear_LP_TPC_GEM_7module.xml </parameter>  
+  <parameter name="GearXMLFile"> gear_LP_TPC_GEM_DESYmodule.xml </parameter>  
+  <!--parameter name="GearXMLFile"> gear_LP_TPC_GEM_7module.xml </parameter-->  
   <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> MESSAGE </parameter>
  </global>
 
@@ -60,7 +62,8 @@
   <!--parameter name="DataFileHandler" type="StringVec">TPCPedestal  </parameter-->
   <!--parameter name="DataFileHandler" type="StringVec">TPCChannelMapping </parameter-->
   <!--Initialization of a simple conditions file handler-->
-  <parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20101214.slcio ADCChannelMapping  </parameter>
+  <parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20110628.slcio ADCChannelMapping  </parameter>
+  <!--parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20101214.slcio ADCChannelMapping  </parameter-->
   <!--parameter name="SimpleFileHandler" type="StringVec">TPCPedestal dummy_pedestals_20101214.slcio DummyPedestals  </parameter-->
 </processor>
 
@@ -265,7 +268,7 @@
   <parameter name="SetOutputTrackCandidatesTransient" type="int" value="0"/>
   <!--Track type (default: 1 0=straight line 1=helix)-->
   <parameter name="TrackType" type="int" value="1"/>
-  <parameter name="Verbosity" value="MESSAGE3"/>
+  <parameter name="Verbosity" value="DEBUG4444 MESSAGE3"/>
 </processor>
 
 

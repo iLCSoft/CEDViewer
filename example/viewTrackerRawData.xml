@@ -17,22 +17,21 @@
  </execute>
 
  <global>
-  <parameter name="LCIOInputFiles"> /data/ilcsoft/data/readout-17606_0.000.slcio </parameter>
+  <parameter name="LCIOInputFiles"> readout-17636_0.000.slcio </parameter>
   <!-- limit the number of processed records (run+evt): -->  
   <parameter name="MaxRecordNumber" value="5001" />  
   <parameter name="SkipNEvents" value="0" />  
   <parameter name="SupressCheck" value="false" />  
-  <parameter name="GearXMLFile"> gear_LP_TPC_GEM_7module.xml </parameter>  
+  <parameter name="GearXMLFile"> gear_LP_TPC_GEM_DESYmodule.xml </parameter>
+  <!--parameter name="GearXMLFile"> gear_LP_TPC_GEM_7module.xml </parameter-->
   <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> DEBUG  </parameter> 
   <parameter name="RandomSeed" value="1234567890" />
  </global>
 
  <processor name="MyConditionsProcessor" type="ConditionsProcessor">
-  <parameter name="SimpleFileHandler" type="StringVec">
-       ADCChannelMapping channelmap_20101214.slcio ADCChannelMapping  
-  </parameter>
-  <!--parameter name="SimpleFileHandler" type="StringVec">TPCPedestal dummy_pedestals_20101214.slcio DummyPedestals  
-  </parameter-->
+  <parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20110628.slcio ADCChannelMapping  </parameter>
+  <!--parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20101214.slcio ADCChannelMapping  </parameter-->
+  <!--parameter name="SimpleFileHandler" type="StringVec">TPCPedestal dummy_pedestals_20101214.slcio DummyPedestals  </parameter-->
 </processor>
 
  <processor name="MyTrackerRawViewer" type="TrackerRawViewer">
@@ -40,13 +39,13 @@
   <!--Name of the LCCD collection with channel mapping-->
   <parameter name="ChannelMappingCollection" type="string">ADCChannelMapping </parameter>
   <!--Optionally use a text file for the hardware channel to position mapping - overwrites mapping from LCCD and GEAR-->
-  <parameter name="ChannelPositionTextFile" type="string">ch2pos_20101214.txt </parameter>
+  <!--parameter name="ChannelPositionTextFile" type="string">ch2pos_20101214.txt </parameter-->
   <!--Name of the TrackewrRawData collection-->
   <parameter name="CollectionName" type="string" lcioInType="TrackerRawData">AltroRawData </parameter>
   <!--drift velocity in mu/ns-->
   <parameter name="DriftVelocity" type="float"> 80. </parameter>
   <!--ADC value used for the maximum of the color scale-->
-  <parameter name="ColorScaleMaxADC" type="int"> 16 </parameter>
+  <parameter name="ColorScaleMaxADC" type="int"> 250 </parameter>
   <!--color scheme - 1: hot , 2 : cold -->
   <parameter name="ColorScheme" type="int">1 </parameter>
   <!--Name of the TrackerHit collection-->

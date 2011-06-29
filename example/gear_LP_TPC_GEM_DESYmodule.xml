@@ -1,0 +1,212 @@
+<gear>
+
+   <!-- 
+        GEAR xml file for the end plate of the LP TPC with GEM module
+     -->
+   <BField type="ConstantBField" x="0.0" y="0.0" z="0.0"/>
+   <global detectorName="LP TPC"/>
+  
+  <detectors>
+
+  <!-- The TPC has geartype set to TPCParameters -->
+  <detector name="TPC" geartype="TPCParameters">
+
+    <!-- First set the global parameters -->
+    <!-- Drift length in mm -->
+    <maxDriftLength value="600.0"/>
+    <coordinateType value="cartesian"/>
+    <driftVelocity value="80000000."/>
+
+    <!-- readoutFrequency value="4.0e+07" / -->
+  
+    <modules moduleIDStartCount="0">
+      <!-- The below description is defined as default module. -->
+  
+      <default>
+         <!-- 40 MHz readout electronics -->
+         <readoutFrequency value="20000000"/>
+	 <driftVelocity value="80000000."/>
+ 
+         <!-- There is a pad layuot in each module -->
+         <PadRowLayout2D type="VersatileDiskRowLayout" 
+        			rMin="1432.00">
+                    
+	    <!-- row 0 -->
+	    <row nPad="164" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="-0.0075" />
+	    <!-- row 1 -->
+	    <row nPad="164" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.4145" />
+	    <!-- row 2 -->
+	    <row nPad="165" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.2055" />
+	    <!-- row 3 -->
+	    <row nPad="166" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="-0.004" />
+	    <!-- row 4 -->
+	    <row nPad="166" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.418" />
+	    <!-- row 5 -->
+	    <row nPad="167" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.209" />
+	    <!-- row 6 -->
+	    <row nPad="168" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="-0.0005" />
+	    <!-- row 7 -->
+	    <row nPad="168" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.4215" />
+	    <!-- row 8 -->
+	    <row nPad="169" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.2125" />
+	    <!-- row 9 -->
+	    <row nPad="170" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.0035" />
+	    <!-- row 10 -->
+	    <row nPad="170" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.4255" />
+	    <!-- row 11 -->
+	    <row nPad="171" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.216" />
+	    <!-- row 12 -->
+	    <row nPad="172" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.007" />
+	    <!-- row 13 -->
+	    <row nPad="172" padPitch="1.2625" rowHeight="7.05" 
+	         padWidth="1.24" padHeight="5.65" offset="0.429" />
+	    <!-- row 14 -->
+	    <row nPad="173" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.306" />
+	    <!-- row 15 -->
+	    <row nPad="174" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.097" />
+	    <!-- row 16 -->
+	    <row nPad="175" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="-0.112" />
+	    <!-- row 17 -->
+	    <row nPad="175" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.31" />
+	    <!-- row 18 -->
+	    <row nPad="176" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.1005" />
+	    <!-- row 19 -->
+	    <row nPad="177" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="-0.1085" />
+	    <!-- row 20 -->
+	    <row nPad="177" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.3135" />
+	    <!-- row 21 -->
+	    <row nPad="178" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.104" />
+	    <!-- row 22 -->
+	    <row nPad="179" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="-0.105" />
+	    <!-- row 23 -->
+	    <row nPad="179" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.317" />
+	    <!-- row 24 -->
+	    <row nPad="180" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.108" />
+	    <!-- row 25 -->
+	    <row nPad="181" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="-0.1015" />
+	    <!-- row 26 -->
+	    <row nPad="181" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.3205" />
+	    <!-- row 27 -->
+	    <row nPad="182" padPitch="1.2625" rowHeight="5.85" 
+	         padWidth="1.24" padHeight="5.65" offset="0.1115" />
+    </PadRowLayout2D>
+
+        </default>
+
+        <!-- The position of the modules on the endplate are set.
+             The origin of this coordinate is a center of the end plate.
+             Each module is not rotate.
+          -->
+
+        <!-- modules in the lower row. They are shifted in x because I assume
+        the phi=0 to be the central axis of the end plate -->
+
+        <!-- module No.0 -->
+        <module>
+          <!-- -phi_module/2 - 3^o 
+               = ( - 8.3870 / 2. - 3.0 )*pi/180. -->
+          <angle value="-0.12555026" />
+          <!-- Shift the origin -->
+          <offset x_r="-171.615" y_phi="0" />
+        </module>
+
+        <!-- module No.1 -->
+        <module>
+          <!-- -phi_module/2 + 5.39^o 
+               = ( - 8.3870 / 2. + 5.39 )*pi/180. -->
+          <angle value="0.0208828645" />
+          <!-- Shift the origin -->
+          <offset x_r="-171.615" y_phi="0" />
+        </module>
+
+        <!-- modules in the middle row, no offset -->
+        <!-- module No.2 -->
+        <module>
+          <!-- -phi_module/2 - 8.50^o 
+               = ( - 8.3870 / 2. - 8.50 )*pi/180. -->
+          <angle value="-0.221543369" />
+          <!-- Shift the origin -->
+          <!-- offset x_r="0" y_phi="0" /-->
+        </module>
+
+
+        <!-- module No.3 -->
+        <module>
+	<!-- -phi_module/2 - 0.11^o 
+	       = ( - 8.3870 / 2. - 0.11 )*pi/180. -->
+          <angle value=" -0.0751102444" />
+          <!-- Shift the origin -->
+          <!--offset x_r="0" y_phi="0" /-->
+        </module>
+
+        <!-- module No.4 -->
+        <module>
+          <!-- -phi_module/2 + 8.27^o 
+               = ( - 8.3870 / 2. + 8.27 )*pi/180. -->
+          <angle value="0.071148347" />
+          <!-- Shift the origin -->
+          <!-- offset x_r="0" y_phi="0" /-->
+        </module>
+
+        <!-- modules in the upper row -->
+        <!-- module No.5 -->
+        <module>
+          <!-- -phi_module/2 - 5.0^o 
+               = ( - 8.3870 / 2. - 5.0 )*pi/180. -->
+          <angle value=" -0.160456845" />
+          <!-- Shift the origin -->
+          <offset x_r="172.5" y_phi="0" />
+        </module>
+
+        <!-- module No.6 -->
+        <module>
+          <!-- -phi_module/2 + 3.39^o 
+               = ( - 8.3870 / 2. + 3.39 )*pi/180. -->
+          <angle value=" -0.0140237205" />
+          <!-- Shift the origin -->
+          <offset x_r="172.5" y_phi="0" />
+        </module>
+
+	
+      </modules>
+
+        <!--Special parameters for HepRep event display-->
+        <parameter name="TPC_outer_radius"  type="double" > 357 </parameter>
+	<!-- Do not set inner parameter, nothing to draw -->
+        <!--parameter name="TPC_inner_radius" type="double" > 0.0 </parameter-->
+        <parameter name="TPC_cylinder_centre_c0"      type="double" > 1503.615 </parameter>
+        <parameter name="TPC_cylinder_centre_c1"      type="double" > 0.0 </parameter>
+
+    </detector>
+
+  </detectors>
+
+</gear>
+
+
