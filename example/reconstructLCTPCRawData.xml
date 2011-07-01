@@ -12,20 +12,33 @@
   <processor name="MyTrackerRawDataToDataConverterProcessor"/>
   <processor name="MyPulseFinderProcessor"/>
   <processor name="MyChannelMapperProcessor"/>
-
   <processor name="MyRowBasedHitFinderProcessor"/>
   <processor name="MyTrackMakingKalmanFilterProcessor"/>
-
-  <IGNORE_processor name="MyHitTrackFinderTopoProcessor"/>  
-  <IGNORE_processor name="MyTrackSeederProcessor"/>
-  <IGNORE_processor name="MyTrackFitterKalmanProcessor"/>
-
   <processor name="MyTrackerRawViewer" />
   <processor name="MyLCIOOutputProcessor"/>  
  </execute>
 
  <global>
-  <parameter name="LCIOInputFiles">    readout-17636_0.000.slcio </parameter>
+  <!--parameter name="LCIOInputFiles">     
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17636_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17637_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17639_0.000.slcio
+  </parameter-->
+  <parameter name="LCIOInputFiles">    
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17647_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17648_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17649_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17650_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17651_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17652_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17653_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17654_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17655_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17656_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17657_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17658_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17659_0.000.slcio
+  </parameter>
   <!--parameter name="LCIOInputFiles">    readout-17606_0.000.slcio </parameter-->
   <!--parameter name="LCIOInputFiles"> readout-17324_0.000.slcio </parameter-->
   <!-- limit the number of processed records (run+evt): -->  
@@ -62,44 +75,14 @@
   <!--parameter name="DataFileHandler" type="StringVec">TPCPedestal  </parameter-->
   <!--parameter name="DataFileHandler" type="StringVec">TPCChannelMapping </parameter-->
   <!--Initialization of a simple conditions file handler-->
-  <parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20110628.slcio ADCChannelMapping  </parameter>
+  <parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20110630.slcio TPCChannelMapping  </parameter>
   <!--parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20101214.slcio ADCChannelMapping  </parameter-->
   <!--parameter name="SimpleFileHandler" type="StringVec">TPCPedestal dummy_pedestals_20101214.slcio DummyPedestals  </parameter-->
 </processor>
 
 
 
- <processor name="MyHitTrackFinderTopoProcessor" type="HitTrackFinderTopoProcessor">
- <!--HitTrackFinderTopoProcessor calculates TrackerHits from TrackerPulses-->
-  <!--Optional: Name of the input collection containing the TPC conditions data-->
-  <!--parameter name="InputTPCConditions" type="string">TPCConditions </parameter-->
-  <!--Name of the input TrackerPulses collection-->
-  <parameter name="InputTrackerPulses" type="string" lcioInType="TrackerPulse" value="TPCPulses"/>
-  <!--Maximum number of empty consecuitve pads in hit (default: 1)-->
-  <parameter name="MaxEmptyPads" type="int">1 </parameter>
-  <!--Maximum number of subsequnetly missing hits (default: 1)-->
-  <parameter name="MaxSkipRows" type="int">1 </parameter>
-  <!--Maximum time between pulses in a hit in ns (default: 200.)-->
-  <parameter name="MaxTimeSpread" type="float">200 </parameter>
-  <!--Minimum size of hit / Minimum number of Pads (default: 1)-->
-  <parameter name="MinHitSize" type="int">1 </parameter>
-  <!--Minimum number of hits on track (default: 5)-->
-  <parameter name="MinTrackHits" type="int">5 </parameter>
-  <!--Set to 1 for the second half TPC, which look into the negative z direction (default: 0)-->
-  <parameter name="NegativeZDirection" type="int">0 </parameter>
-  <!--Name of the output Tracks collection-->
-  <parameter name="OutputTrackCandidates" type="string" lcioOutType="Track" value="TPCTrackCandidates"/>
-  <!--Name of the output TrackerHits collection-->
-  <parameter name="OutputTrackerHits" type="string" lcioOutType="TrackerHit" value="TPCHits"/>
-  <!--if not 0 the output hits collection is set transient (default: 0)-->
-  <parameter name="SetOutputHitsTransient" type="int">0 </parameter>
-  <!--if not 0 the output trackscollection is set transient (default: 0)-->
-  <parameter name="SetOutputTrackCandidatesTransient" type="int">0 </parameter>
-  <!--Optional: Set drift velocity in case there is no conditions data in mm/us-->
-  <parameter name="VDriftOverride" type="float">80. </parameter>
-</processor>
 
- 
  <processor name="MyPedestalSubtractorProcessor" type="PedestalSubtractorProcessor">
  <!--PedestalSubtractor correct the TrackerData by subtracting the pedestals provided via a file-->
   <!--Name of the input collection-->
@@ -122,50 +105,6 @@
   <parameter name="SetOutputTransient" type="int">0 </parameter>
 </processor>
 
-
-<IGNORE_processor name="MyPulseFinderProcessor" type="PulseFinderProcessor">
- <!--PulseFinderProcessor: finds pulses out of the raw data and calculate the time and charge (in FADC) information-->
-  <!--Name of the conditions collection in which the parameters of the read out electronics is stored-->
-  <parameter name="ElectronicsParametersCollectionName" type="string">GenericADCElectronicsParameters </parameter>
-  <!--Name of the conditions object in which the parameters of the read out electronics is stored-->
-  <parameter name="ElectronicsParametersObjectName" type="string">GenericADCElectronicsParameters </parameter>
-  <!--if true the ADC spectrum will be stored for all pulses-->
-  <parameter name="ForceSpectrumSave" type="bool">true </parameter>
-  <!--Name of the input TrackerData collection-->
-  <parameter name="InputCollectionName" type="string" lcioInType="TrackerData">TPCData </parameter>
-  <!--Maximum number of the adc spectrum; to determine wether a pulse is maxed out. This single value overrides any value, from any readout group, which may have been taken from LCCD.-->
-  <parameter name="MaximumADCValueOverride" type="float">127 </parameter>
-  <!--Declares the minimal height of the maximum entry of a pulse in ADC counts.-->
-  <parameter name="MinimumPulseHeight" type="float">8 </parameter>
-  <!--Declares the minimal length of a pulse in time bins above the thresholds.-->
-  <parameter name="MinimumPulseLength" type="int">5 </parameter>
-  <!--Name of the output TrackerData collection only the data related to a pulse will be stored-->
-  <parameter name="OutputTrackerDataCollectionName" type="string" lcioOutType="TrackerData">TPCDataInPulses </parameter>
-  <!--Name of the output TrackerPulse collection-->
-  <parameter name="OutputTrackerPulseCollectionName" type="string" lcioOutType="TrackerPulse">TPCPulses </parameter>
-  <!--The pedestal width to be used for every hardware channel in every readout group. This overrides any information provided by LCCD.-->
-  <parameter name="PedestalWidthOverride" type="float">0.5 </parameter>
-  <!--A pulse ends if the ADC value drops below this value times the pedestal width.-->
-  <parameter name="PulseEndThreshold" type="float">3 </parameter>
-  <!--A pulse starts if the ADC value is the given value times the pedestal width.-->
-  <parameter name="PulseStartThreshold" type="float">7 </parameter>
-  <!--The readout frequency of every readout group (in Hz). This overrides any information provided by LCCD.-->
-  <parameter name="ReadoutFrequencyOverride" type="float">20e+06 </parameter>
-  <!--# bins saved after the end threshold (except there is another pulse)-->
-  <parameter name="SaveNBinsAfterEnd" type="int">8 </parameter>
-  <!--# bins saved before start threshold (except there is another pulse)-->
-  <parameter name="SaveNBinsBeforeStart" type="int">2 </parameter>
-  <!--The polarity of the signals (1 for positive, -1 for negative) produced by all readout groups. This overrides any information provided by LCCD.-->
-  <parameter name="SignalPolarityOverride" type="int">1 </parameter>
-  <!--Set this flag to use the amplitude calculated by fitting a parabola to the log of the pulse data.-->
-  <!--parameter name="UseParabolicFitAmplitudeAsCharge?" type="bool">false </parameter-->
-  <!--Set this flag to use the time caclulated by fitting a parabola to the log of the pulse data.-->
-  <!--parameter name="UseParabolicFitMaxAsTime?" type="bool">false </parameter-->
-  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
-  <!--parameter name="Verbosity" type="string">DEBUG </parameter-->
-  <!--if true the output collection is written-->
-  <parameter name="WriteOutputToStorage" type="bool">true </parameter>
-</IGNORE_processor>
 
  <processor name="MyPulseFinderProcessor" type="PulseFinderProcessor">
  <!--PulseFinderProcessor: finds pulses out of the raw data and calculate the time and charge (in FADC) information-->
@@ -223,6 +162,8 @@
   <!--parameter name="OutputCollectionName" type="string" value="TPCPulsesMapped"/-->
   <!--if not 0 the output collection is set transient (only if OutputCollectionName defined)-->
   <parameter name="SetOutputTransient" type="int" value="0"/>
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <parameter name="Verbosity" type="string">DEBUG </parameter>
 </processor>
 
  <processor name="MyRowBasedHitFinderProcessor" type="RowBasedHitFinderProcessor">
@@ -261,7 +202,7 @@
   <!--Maximum number of subsequnetly missing hits (default: 1)-->
   <parameter name="MaxSkipRows" type="int" value="5 "/>
   <!--Minimum number of hits on track (default: 15)-->
-  <parameter name="MinTrackHits" type="int" value="15"/>
+  <parameter name="MinTrackHits" type="int" value="10"/>
   <!--if not 0 the output hits collection is set transient (default: 0)-->
   <parameter name="SetOutputHitsTransient" type="int" value="0"/>
   <!--if not 0 the output trackscollection is set transient (default: 0)-->
@@ -286,6 +227,8 @@
   <parameter name="ColorScaleMaxADC" type="int"> 32 </parameter>
   <!--color scheme - 1: hot , 2 : cold -->
   <parameter name="ColorScheme" type="int">1 </parameter>
+  <!--true: display one event and wait for 'return' - false: continiously display events-->
+  <parameter name="WaitForKeyBoard" type="bool">false true </parameter>
   <!--Name of the TrackerHit collection-->
   <parameter name="HitCollectionName" type="string" lcioInType="TrackerHit">TPCHits </parameter>
   <!--Name of the Track collection-->

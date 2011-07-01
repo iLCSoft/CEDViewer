@@ -17,21 +17,39 @@
  </execute>
 
  <global>
-  <parameter name="LCIOInputFiles"> readout-17636_0.000.slcio </parameter>
+  <!--parameter name="LCIOInputFiles">     
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17636_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17637_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17639_0.000.slcio
+  </parameter-->
+  <parameter name="LCIOInputFiles">    
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17647_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17648_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17649_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17650_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17651_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17652_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17653_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17654_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17655_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17656_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17657_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17658_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17659_0.000.slcio
+  </parameter>
+  <!--parameter name="LCIOInputFiles">    readout-17606_0.000.slcio </parameter-->
+  <!--parameter name="LCIOInputFiles"> readout-17324_0.000.slcio </parameter-->
   <!-- limit the number of processed records (run+evt): -->  
-  <parameter name="MaxRecordNumber" value="5001" />  
+  <parameter name="MaxRecordNumber" value="0" />  
   <parameter name="SkipNEvents" value="0" />  
   <parameter name="SupressCheck" value="false" />  
-  <parameter name="GearXMLFile"> gear_LP_TPC_GEM_DESYmodule.xml </parameter>
-  <!--parameter name="GearXMLFile"> gear_LP_TPC_GEM_7module.xml </parameter-->
-  <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> DEBUG  </parameter> 
-  <parameter name="RandomSeed" value="1234567890" />
+  <parameter name="GearXMLFile"> gear_LP_TPC_GEM_DESYmodule.xml </parameter>  
+  <!--parameter name="GearXMLFile"> gear_LP_TPC_GEM_7module.xml </parameter-->  
+  <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> MESSAGE </parameter>
  </global>
 
  <processor name="MyConditionsProcessor" type="ConditionsProcessor">
-  <parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20110628.slcio ADCChannelMapping  </parameter>
-  <!--parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20101214.slcio ADCChannelMapping  </parameter-->
-  <!--parameter name="SimpleFileHandler" type="StringVec">TPCPedestal dummy_pedestals_20101214.slcio DummyPedestals  </parameter-->
+  <parameter name="SimpleFileHandler" type="StringVec">ADCChannelMapping channelmap_20110630.slcio TPCChannelMapping  </parameter>
 </processor>
 
  <processor name="MyTrackerRawViewer" type="TrackerRawViewer">
@@ -45,11 +63,15 @@
   <!--drift velocity in mu/ns-->
   <parameter name="DriftVelocity" type="float"> 80. </parameter>
   <!--ADC value used for the maximum of the color scale-->
-  <parameter name="ColorScaleMaxADC" type="int"> 250 </parameter>
+  <parameter name="ColorScaleMaxADC" type="int"> 32 </parameter>
   <!--color scheme - 1: hot , 2 : cold -->
   <parameter name="ColorScheme" type="int">1 </parameter>
+  <!--true: display one event and wait for 'return' - false: continiously display events-->
+  <parameter name="WaitForKeyBoard" type="bool">false true </parameter>
   <!--Name of the TrackerHit collection-->
-  <parameter name="HitCollectionName" type="string" lcioInType="TrackerHit">TPCTrackerHits </parameter>
+  <parameter name="HitCollectionName" type="string" lcioInType="TrackerHit">TPCHits </parameter>
+  <!--Name of the Track collection-->
+  <parameter name="TrackCollectionName" type="string" lcioInType="TrackerHit">TPCTracks </parameter>
   <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
   <parameter name="Verbosity" type="string">DEBUG4 </parameter>
 </processor>

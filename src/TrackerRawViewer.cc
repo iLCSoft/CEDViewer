@@ -33,6 +33,9 @@ std::ostream& operator<<(  std::ostream& os , const std::pair<int,int>& p){
 }
   
 
+
+
+
 // --- prin TrackerRawData - need to go replace the one in LCIO ...
 std::ostream& operator<<(  std::ostream& os , const TrackerRawData& rd){
   
@@ -118,7 +121,10 @@ TrackerRawViewer::TrackerRawViewer() : Processor("TrackerRawViewer") ,
 			      _colorScheme , 
 			      int( 1 ) ) ;
 
-
+  registerProcessorParameter( "WaitForKeyBoard" , 
+			      "true: display one event and wait for 'return' - false: continiously display events" , 
+			      _waitForKeyboard , 
+			      bool( true ) ) ;
 }
 
 
@@ -335,9 +341,13 @@ void TrackerRawViewer::processEvent( LCEvent * evt ) {
 		    pos.y()  ,
 		    pos.z() ,
 		    ml, size , color, data->id() ) ;
+
+	//	if( adc[j] > 0.1 *  _colorScaleMaxADC )
+	_adcMap[ std::make_pair( data->getCellID0() , data->getCellID1() )  ] += adc[j] ;
+
       }
     }
-  }    
+  }
 
   // ===============================================================================
   //       optionally draw hits
@@ -484,7 +494,54 @@ void TrackerRawViewer::processEvent( LCEvent * evt ) {
   }
 
 
-  //=======================================================================================
+  // ===============================================================================
+  //    draw current hit map 
+  // ===============================================================================
+  
+  layer = 4 ;
+  size = 4 ;
+  marker = 0 ;
+
+
+  // increase the event counter for every channel knwon to the channel map:
+  typedef std::map< tpcconddata::ADCChannelMapping::key_type , tpcconddata::ADCChannelMapping > lccdMap ;
+
+  for( lccdMap::const_iterator it = _chMap->map().begin() ; it != _chMap->map().end() ; ++it ) {
+    int cellID0 = it->first.first ;
+    int cellID1 = it->first.second ;
+    _adcMap[ std::make_pair( cellID0, cellID1 )  ].N ++  ;
+  }
+
+  for( ADCMap::iterator it = _adcMap.begin() ; it != _adcMap.end() ; ++it ) {
+
+    int cellID0 = it->first.first ;
+    int cellID1 = it->first.second ;
+
+    float adc = it->second.Total / it->second.N ;
+
+    double padCenter[2] ;
+    
+    bool padFound  = getPadCenter ( padCenter , cellID0 , cellID1 ) ;
+    
+    if( !padFound ) {
+      continue ; // nothing to draw 
+    }
+
+    gear::Vector3D pos( padCenter[0] - offset[0] , padCenter[1] - offset[1]  ,  0  ) ;
+
+    unsigned int rgb[3] ;
+    ColorMap::selectColorMap( 3 )( rgb, adc , 0 ,  _colorScaleMaxADC   ) ;
+	
+    int color = ColorMap::RGB2HEX( rgb[0], rgb[1], rgb[2] ); 
+    
+    ml = marker | ( layer << CED_LAYER_SHIFT ) ;
+ 
+    ced_hit_ID( pos.x(), pos.y(), pos.z(), ml, size , color, 0 ) ; // fixme have id and print function
+
+  }
+
+
+ //=======================================================================================
 
 
 
@@ -494,10 +551,8 @@ void TrackerRawViewer::processEvent( LCEvent * evt ) {
     
     
     
-  int waitForKeyboard =  true ; //false ;
-  
   //++++++++++++++++++++++++++++++++++++
-  MarlinCED::draw( this , waitForKeyboard ) ;
+  MarlinCED::draw( this , _waitForKeyboard ) ;
   //++++++++++++++++++++++++++++++++++++
   
   _nEvt ++ ;

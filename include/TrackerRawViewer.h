@@ -5,6 +5,7 @@
 #include "lcio.h"
 #include <string>
 #include <vector>
+#include <map>
 
 // MarlinTPC
 #define USE_LCCD
@@ -24,29 +25,49 @@ using namespace marlin ;
 class ChannelPosMap ;
 
 /** Simple event display that visualizes TrackerRawData for the LCTPC large prototype with CED.
+ *  Draws all ADC channels with a color code on layer 1. Optionally, hits and tracks are displayed
+ *  on layers 2 and 3. On Layer 4 a color coded map of the mean number of integrated ADC counts 
+ *  per pad is drawn with a color code. 
  *  
  *  <h4>Input </h4>
- *  A collection of TrackerRawData (and optionally a collection of TrackerHits).
+ *  A collection of TrackerRawData (and optionally collections of TrackerHits and Tracks).
  *
- *  <h4>Output</h4> 
- *  collection of Tracks 
  * 
  * @param CollectionName:            Name of the TrackerRawData collection (default: AltroRawData )
  * @param ChannelMappingCollection:  Name of the LCCD collection with channel mapping (default: ADCChannelMapping)
  * @param ChannelPositionTextFile:   Optionally use a text file for the hardware channel to position mapping - overwrites mapping from LCCD and GEAR 
  * @param DriftVelocity:             Drift velocity in micron/ns (default: 80.)
- * @param ColorScaleMaxADC:          ADC value used for the maximum of the color scale (default: 32)
+ * @param ColorScaleMaxADC:          ADC value used for the maximum of the color scales (default: 32)
+ * @param WaitForKeyBoard:           true: display one event and wait for 'return' - false: continiously display events
  * @param ColorScheme:               Color scheme - 1: hot , 2 : cold    (default: 1)
- * @param HitCollectionName:         Name of the TrackerHit collection   (default: TPCTrackerHits)
+ * @param HitCollectionName:         Name of the TrackerHit collection   (optional, default: TPCTrackerHits)
+ * @param TrackCollectionName:       Name of the Track collection        (optional, default: TPCTracks)
+ *   
  *   
  * 
  *  @author F. Gaede, DESY
- *  @version $Id:$
+ *  @version $Id$
  */
 
 class TrackerRawViewer : public Processor {
   
- public:
+  /** Helper struct for running mean of ADC counts on pads */
+  struct PadMeanADC{
+    
+    PadMeanADC() :Total(0.),N(0){}
+    
+    float Total ;
+    int N ;
+    
+    void operator+=(float adc){
+      Total += adc ;
+      //      ++N ; 
+    }
+  };
+  
+  typedef std::map< std::pair<int, int>,  PadMeanADC > ADCMap ; 
+  
+public:
   
   virtual Processor*  newProcessor() { return new TrackerRawViewer ; }
   
@@ -107,11 +128,14 @@ class TrackerRawViewer : public Processor {
   float _driftVelocity ;
   int _colorScaleMaxADC ;
   int _colorScheme ;
+  bool _waitForKeyboard ;
 
   std::vector<int> _colors ;
 
   int _nRun ;
   int _nEvt ;
+
+  ADCMap _adcMap ;
 } ;
 
 #endif

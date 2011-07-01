@@ -20,7 +20,7 @@ namespace marlin {
    * <p> F.Gaede: changed to use MarlinCED
    * 
    * @author V.Morgunov, DESY
-   * @version $Id: HEP_RecordProcessor.h,v 1.2 2006-03-31 21:51:47 samson Exp $
+   * @version $Id$
    */
   class HEP_RecordProcessor : public Processor {
 

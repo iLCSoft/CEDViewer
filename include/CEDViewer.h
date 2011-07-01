@@ -18,7 +18,7 @@ using namespace marlin ;
  *  @param DrawInLayer    - collection to be displayed ( ColName, marker type[0-2], size) 
  *
  *  @author F.Gaede, DESY
- *  @version $Id: CEDViewer.h,v 1.2 2005-08-04 13:45:21 gaede Exp $ 
+ *  @version $Id$ 
  */
 
 class CEDViewer : public Processor {

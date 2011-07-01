@@ -13,7 +13,7 @@ using namespace marlin ;
 
 /** Vertex Viewer Processor <br>
  *  @author A.Raspereza, DESY
- *  @version $Id: VertexViewer.h,v 1.2 2008-07-03 08:55:33 rasp Exp $ 
+ *  @version $Id$ 
  */
 class VertexViewer : public Processor {
   

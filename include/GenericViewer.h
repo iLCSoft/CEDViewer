@@ -67,7 +67,7 @@ using namespace marlin ;
  *  <br>
  *
  *  @authors A.Raspereza (DESY), O.Wendt (DESY)
- *  @version $Id: GenericViewer.h,v 1.4 2005-11-04 16:50:26 owendt Exp $ 
+ *  @version $Id$ 
  */
 class GenericViewer : public Processor {
   

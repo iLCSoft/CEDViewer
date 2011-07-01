@@ -17,7 +17,7 @@ using namespace marlin ;
      .....
  *  <br>
  *  @authors Szymon Daraszewicz (DESY/UOE)
- *  @version $Id: DSTViewer.h,v 1.3 2008-09-15 10:13:48 darasz Exp $ 
+ *  @version $Id$ 
  */
 class DSTViewer : public Processor {
   
