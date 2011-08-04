@@ -428,7 +428,6 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 								int layerIp = returnIpLayer(_jetCollections[i]);
 								//ced_line(refx, refy, refz, momScale*pm[0], momScale*pm[1], momScale*pm[2], layerIp, LineSize, color);
                                 ced_line_ID(refx, refy, refz, momScale*pm[0], momScale*pm[1], momScale*pm[2], layerIp, LineSize, color, pv[k]->id()); //hauke
-								
 							}
 						   					   
 	    	 				double center_c[3] = {0., 0., 0. };
