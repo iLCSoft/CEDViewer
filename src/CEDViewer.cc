@@ -594,9 +594,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
             float refy = 0.0;
             float refz = 0.0;
 
-            float momScale = 100;
-
             //line
+            //float momScale = 100;
             //ced_line_ID(refx, refy, refz, momScale*px, momScale*py, momScale*pz, layer << CED_LAYER_SHIFT, size, color, part->id()); 
 
             //helix

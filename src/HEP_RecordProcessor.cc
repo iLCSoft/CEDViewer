@@ -462,7 +462,7 @@ void draw_MC_Charged_Hadrons(LCEvent * evt, float ecut){
 // end     SUBROUTINE helix_geant_draw (charge,xp,yp,zp,cx,cy,cz,p,icol)
 	      rsq  = hypot(x2,y2);
 	      rad3 = hypot(rsq,z2);
-	      npt1 = npt1++ ;
+	      npt1++ ;
 	      if((npt1>0)&&(rad3>300.)&&(My_abs(z2)<6000.)&&(rsq<3000.)) { //do not draw outside volume
 		kcol = 0x7af774;
 		lwid = 1;

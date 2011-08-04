@@ -834,20 +834,20 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 		int white = 0x55555555;
 		int black = 0x55000000;
 		int red = 0x55550000;
-		int blue = 0x55000055;
 		int green = 0x55008000;
 		int yellow = 0x55555500;
-		int orange = 0x5555a500;
-		int violet = 0x55ee82ee;
-		int purple = 0x55800080;
-		int silver = 0x55c0c0c0;
-		int gold = 0x5555d700;
-		int gray = 0x55808080;
-		int aqua = 0x55005555;
-		int skyblue = 0x5587ceeb;
-		int lightblue = 0x55a558e6;
 		int fuchsia = 0x55550055;
-		int khaki = 0x55f0e68c;
+		//int blue = 0x55000055;
+		//int orange = 0x5555a500;
+		//int violet = 0x55ee82ee;
+		//int purple = 0x55800080;
+		//int silver = 0x55c0c0c0;
+		//int gold = 0x5555d700;
+		//int gray = 0x55808080;
+		//int aqua = 0x55005555;
+		//int skyblue = 0x5587ceeb;
+		//int lightblue = 0x55a558e6;
+		//int khaki = 0x55f0e68c;
 
 	
 		if (jetColName == "Durham_2Jets"){
