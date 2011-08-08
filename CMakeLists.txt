@@ -30,20 +30,17 @@ FIND_PACKAGE( Marlin 1.0 REQUIRED )
 FIND_PACKAGE( MarlinUtil 1.2 REQUIRED )
 
 FIND_PACKAGE( LCCD ) # optional - needed for TrackerRawViewer
-
-
-
-#FIND_PACKAGE( MarlinTPC ) # optional - needed for TrackerRawViewer
+FIND_PACKAGE( MarlinTPC ) # optional - needed for TrackerRawViewer
 #--- workaround for MarlinTPC (no cmake config files yet...)
-IF( MarlinTPC_DIR )
-  SET( MarlinTPC_INCLUDE_DIRS ${MarlinTPC_DIR}/tpcconddata/include )
-  IF( APPLE ) 
-    SET( MarlinTPC_LIBRARIES    ${MarlinTPC_DIR}/lib/libtpcconddata.dylib )
-  ELSE()
-    SET( MarlinTPC_LIBRARIES    ${MarlinTPC_DIR}/lib/libtpcconddata.so )
-  ENDIF()
-  SET( MarlinTPC_FOUND TRUE)
-ENDIF()
+#IF( MarlinTPC_DIR )
+#  SET( MarlinTPC_INCLUDE_DIRS ${MarlinTPC_DIR}/tpcconddata/include )
+#  IF( APPLE ) 
+#    SET( MarlinTPC_LIBRARIES    ${MarlinTPC_DIR}/lib/libtpcconddata.dylib )
+#  ELSE()
+#    SET( MarlinTPC_LIBRARIES    ${MarlinTPC_DIR}/lib/libtpcconddata.so )
+#  ENDIF()
+#  SET( MarlinTPC_FOUND TRUE)
+#ENDIF()
 
 
 FOREACH( pkg Marlin MarlinUtil LCCD MarlinTPC)

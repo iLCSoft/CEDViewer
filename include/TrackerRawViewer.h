@@ -9,7 +9,7 @@
 
 // MarlinTPC
 #define USE_LCCD
-#include "ADCChannelMapping.h"
+#include "marlintpc/ADCChannelMapping.h"
 
 //---- LCCD ----
 #include "lccd/ConditionsMap.hh"
