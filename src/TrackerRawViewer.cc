@@ -277,7 +277,7 @@ void TrackerRawViewer::processEvent( LCEvent * evt ) {
 
   const static int nCorners =       40 ;
   const static int tpcColor = 0xaaaaaa ;
-  const static int tpcPhi0  =        0. ;
+  const static int tpcPhi0  =        0 ;
   
   static CED_GeoCylinder geoCylindersANY[] = {                      
     { tpcOuterR , nCorners , tpcPhi0,  zAnode ,   -zAnode , tpcColor  }, 
