@@ -4,6 +4,27 @@
 
 ================================
 
+
+ --------
+| v01-03 |
+ --------
+
+   -  added new TrackerRawViewer
+
+       - displays raw data from LCTPC large prototype
+
+       - needs CEDViewer to be build with MarlinTPC and LCCD
+       - see example/viewTrackerRawData.xml and example/reconstructLCTPCRawData.xml 
+       
+
+   - CEDViewer
+      - added new steering parameters 
+        "DrawHelixForTrack" and "DrawDetectorID"
+
+      - fixed display of ReconstructParticles (did not respect
+	the marker flags - patch provided by T. Tanabe)
+
+
  --------
 | v01-02 |
  --------
