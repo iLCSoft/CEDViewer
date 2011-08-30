@@ -61,7 +61,10 @@ class CEDViewer : public Processor {
    */
   StringVec _drawCollections ;
   StringVec _drawCollectionsLayer ;
-  
+
+  bool      _drawHelixForTracks ;
+  int       _drawDetectorID  ;
+
   IntVec _colors ;
 
   int _nRun ;

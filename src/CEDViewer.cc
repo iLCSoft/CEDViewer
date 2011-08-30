@@ -88,6 +88,18 @@ CEDViewer::CEDViewer() : Processor("CEDViewer") {
                              _drawCollectionsLayer ,
                              layerExample ,
                              layerExample.size() ) ;
+
+
+  registerProcessorParameter( "DrawHelixForTrack" , 
+                              "draw a helix for Track objects",
+                              _drawHelixForTracks ,
+                              true  ) ;
+
+  registerProcessorParameter( "DrawDetectorID" , 
+                              "draw detector from GEAR file with given ID (see MarlinCED::newEvent() ) : 0 ILD, -1 none",
+                              _drawDetectorID ,
+                              0 ) ;
+  
   
   
 }
@@ -131,7 +143,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 //-----------------------------------------------------------------------
 // Reset drawing buffer and START drawing collection
 
-  MarlinCED::newEvent(this) ;
+  MarlinCED::newEvent(this , _drawDetectorID ) ; 
 
   CEDPickingHandler &pHandler=CEDPickingHandler::getInstance();
 
@@ -339,7 +351,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         ml = marker | ( layer << CED_LAYER_SHIFT ) ;
 
 
-        if( pt > 0.01 ) // sanity check
+        if( _drawHelixForTracks && pt > 0.01 ) 
           MarlinCED::drawHelix( bField , charge, xs, ys, zs , 
                                 px, py, pz, ml , 1 ,  0xffffff ,
                                 0.0, padLayout.getPlaneExtent()[1]+100. , 
@@ -551,12 +563,12 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         TotPY += py;
         TotPZ += pz;
 
-        std::cout << "Particle : " << ip
-              << " type : " << type
-              << " PX = " << px
-              << " PY = " << py
-              << " PZ = " << pz
-              << " E  = " << ene << std::endl;
+        streamlog_out( DEBUG2)  << "Particle : " << ip
+                                << " type : " << type
+                                << " PX = " << px
+                                << " PY = " << py
+                                << " PZ = " << pz
+                                << " E  = " << ene << std::endl;
 
         if (nClusters > 0 ) {
           Cluster * cluster = clusterVec[0];
@@ -608,13 +620,14 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         }
       }
   
-      std::cout << std::endl;
-      std::cout << "Total Energy and Momentum Balance of Event" << std::endl;
-      std::cout << "Energy = " << TotEn
-            << " PX = " << TotPX
-            << " PY = " << TotPY
-            << " PZ = " << TotPZ << std::endl;
-      std::cout << std::endl;
+      streamlog_out( DEBUG2) << std::endl
+                             << "Total Energy and Momentum Balance of Event" << std::endl
+                             << "Energy = " << TotEn
+                             << " PX = " << TotPX
+                             << " PY = " << TotPY
+                             << " PZ = " << TotPZ 
+                             << std::endl 
+                             << std::endl;
   
   
       //LCTypedVector<CalorimeterHit> v( col ) ;
@@ -655,15 +668,15 @@ void CEDViewer::check( LCEvent * evt ) {
 }
 
 void CEDViewer::printParticle(int id, LCEvent * evt){
-  std::cout << "CEDViewer::printParticle id: " << id << std::endl;
+  streamlog_out( MESSAGE )  << "CEDViewer::printParticle id: " << id << std::endl;
 } 
 
 
 void CEDViewer::end(){ 
   
-  streamlog_out(DEBUG) << "end() :" << " processed " << _nEvt 
-                       << " events in " << _nRun << " runs "
-                       << std::endl ;
+  streamlog_out(DEBUG2 ) << "end() :" << " processed " << _nEvt 
+                         << " events in " << _nRun << " runs "
+                         << std::endl ;
   
 }
 
