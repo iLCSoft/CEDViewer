@@ -109,6 +109,7 @@ INSTALL( TARGETS extractdetector DESTINATION bin )
 INSTALL( FILES ./ced2go/ced2go-template.xml DESTINATION bin )
 INSTALL( PROGRAMS ./ced2go/ced2go DESTINATION bin )
 
+
 # display some variables and write them to cache
 DISPLAY_STD_VARIABLES()
 
