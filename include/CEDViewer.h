@@ -56,7 +56,23 @@ class CEDViewer : public Processor {
   
  protected:
 
-
+  static const int ncol = 20 ;
+  static const int nscheme = 10 ;
+  static const int Red         =   0 ;
+  static const int Orange      =   1 ;
+  static const int Plum        =   2 ;
+  static const int Violet      =   3 ;
+  static const int Blue        =   4 ;
+  static const int LightBlue   =   5 ;
+  static const int Aquamarine  =   6 ;
+  static const int Green       =   7 ;
+  static const int Olive       =   8 ;
+  static const int Yellow      =   9 ;
+  
+  static const int Dark        =   10 ;
+  static const int Light       =   11 ;
+  static const int Classic     =   12 ;
+  
   /** Input collection name.
    */
   StringVec _drawCollections ;
@@ -64,6 +80,7 @@ class CEDViewer : public Processor {
 
   bool      _drawHelixForTracks ;
   int       _drawDetectorID  ;
+  int       _colorScheme ;
 
   IntVec _colors ;
 
