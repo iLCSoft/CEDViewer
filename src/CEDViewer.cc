@@ -601,7 +601,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       LCTypedVector<SimCalorimeterHit> v( col ) ;
       MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer ) ;
 
-    } else if( col->getTypeName() == LCIO::TRACKERHIT ){
+    } else if( col->getTypeName() == LCIO::TRACKERHIT ||  col->getTypeName() == LCIO::TRACKERHITPLANE  ||  col->getTypeName() == LCIO::TRACKERHITZCYLINDER ){
 
       int color = 0xee0044 ;
 
