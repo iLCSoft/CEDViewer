@@ -77,7 +77,6 @@ SET( libname ${PROJECT_NAME} )
 
 # include directories
 INCLUDE_DIRECTORIES( ./include )
-INSTALL_DIRECTORY( ./include DESTINATION . FILES_MATCHING PATTERN "*.h" )
 
 # definitions to pass to the compiler
 ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
