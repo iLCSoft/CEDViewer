@@ -105,6 +105,10 @@ CEDViewer::CEDViewer() : Processor("CEDViewer") {
                               _colorScheme,
                               10 ) ;
   
+  registerProcessorParameter( "MCParticleEnergyCut" , 
+                              "minimum energy of MCParticles to be drawn",
+                              _mcpECut ,
+                              float(0.001) ) ;
   
   
 }
@@ -489,12 +493,13 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         float charge = mcp->getCharge (); 
 	  
         if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+        //if( mcp-> getNumberOfDaughters() != 0 ) continue ; // stable particles only   
 
         // 	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
         //if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
         // FIXME: need definition of stable particles (partons, decays in flight,...)
 	  
-        if ( mcp->getEnergy() < 0.001 ) continue ;           // ECut ?
+        if ( mcp->getEnergy() < _mcpECut ) continue ;           // ECut ?
 
         streamlog_out( DEBUG ) << "  drawing MCParticle pdg " 
                                << mcp->getPDG() 
@@ -542,28 +547,55 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         } else { // neutral
 	    
           int color  ;
-          double r_min = 300 ;
+          //          double r_min = 300 ;
           double z_max ;
           double r_max ;
 	    
-          if( std::abs( mcp->getPDG() ) == 22 ) {
+          // if( std::abs( mcp->getPDG() ) == 22 ) {
+          //   color = 0xf9f920;          // photon
+          //   r_max = ecalR ;
+          //   z_max = ecalZ ;
+          // } else {
+          //   color = 0xb900de  ;        // neutral hadron
+          //   r_max = hcalR ;
+          //   z_max = hcalZ ;  
+          // } 
+          // //          0xdddddd // neutrino 
+
+          switch(  std::abs(mcp->getPDG() )  ){
+            
+          case 22:
+
             color = 0xf9f920;          // photon
             r_max = ecalR ;
             z_max = ecalZ ;
-          } else {
+
+            break ;
+
+          case 12:  case 14: case 16: // neutrino
+
+           color =  0xdddddd  ;   
+            r_max = hcalR * 2. ;
+            z_max = hcalZ * 2. ;  
+            break ; 
+
+          default:  
             color = 0xb900de  ;        // neutral hadron
             r_max = hcalR ;
             z_max = hcalZ ;  
-          } 
-	    
+          }
+
+
+   
           double pt = hypot(px,py);	 
           double p = hypot(pt,pz); 
 	    
           double length = ( std::abs( pt/pz) > r_max/z_max ) ?  // hit barrel or endcap ? 
-            r_max * p / pt  :  z_max * p / pz  ;
+            r_max * p / pt  :  std::abs( z_max * p / pz ) ;
 	    
           //hauke hoelbe: add id for picking
-          ced_line_ID( r_min*px/p ,  r_min*py/p ,  r_min*pz/p , 
+          //          ced_line_ID( r_min*px/p ,  r_min*py/p ,  r_min*pz/p , 
+          ced_line_ID( x , y , z , 
                        length*px/p ,  length*py/p ,  length*pz/p , 
                        ml , size, color, mcp->id() );	 
           

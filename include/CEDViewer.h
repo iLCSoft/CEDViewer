@@ -81,6 +81,7 @@ class CEDViewer : public Processor {
   bool      _drawHelixForTracks ;
   int       _drawDetectorID  ;
   int       _colorScheme ;
+  float     _mcpECut ;
 
   IntVec _colors ;
 
