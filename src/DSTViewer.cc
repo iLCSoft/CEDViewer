@@ -524,7 +524,7 @@ int DSTViewer::returnTrackColor(int type) {
   else if (type==2112)	kcol = 0x99FFFF; //white - n0
   else if (type==-2112)	kcol = 0x99FFFF; //white n bar
   else {
-    std::cout 	<< "Unassigned type of colour: default" << std::endl;
+    streamlog_out( DEBUG ) << "Unassigned type of colour: default" << std::endl;
   }
   return kcol;
 }
