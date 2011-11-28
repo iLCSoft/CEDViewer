@@ -459,8 +459,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
 
         if( _drawHelixForTracks && pt > 0.01 ) 
+
           MarlinCED::drawHelix( bField , charge, xs, ys, zs , 
-                                px, py, pz, ml , 1 ,  0xffffff ,
+                                px, py, pz, ml , 1 ,  0xdddddd  ,
                                 0.0, padLayout.getPlaneExtent()[1]+100. , 
                                 gearTPC.getMaxDriftLength()+100., trk->id() ) ;
 
@@ -551,16 +552,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           double z_max ;
           double r_max ;
 	    
-          // if( std::abs( mcp->getPDG() ) == 22 ) {
-          //   color = 0xf9f920;          // photon
-          //   r_max = ecalR ;
-          //   z_max = ecalZ ;
-          // } else {
-          //   color = 0xb900de  ;        // neutral hadron
-          //   r_max = hcalR ;
-          //   z_max = hcalZ ;  
-          // } 
-          // //          0xdddddd // neutrino 
 
           switch(  std::abs(mcp->getPDG() )  ){
             
@@ -603,37 +594,58 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       }
     } else if( col->getTypeName() == LCIO::SIMTRACKERHIT ){
 
-      int color = 0xff00ff ;
-
+      
       layer = ( layer > -1 ? layer : SIMTRACKERHIT_LAYER ) ;
       drawParameters[np].Layer = layer ;
 
       //ced_describe_layer( colName.c_str() ,layer);
       MarlinCED::add_layer_description(colName, layer); 
 
-
-      LCTypedVector<SimTrackerHit> v( col ) ;
-
-//hauke hoelbe
-      MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer) ;
-//      MarlinCED::drawObjectsWithPositionID(col, v.begin(), v.end() , marker, size , color, layer) ;
-
+      
+      
+      for( int i=0, n=col->getNumberOfElements(); i<n ; i++ ){
+        
+        SimTrackerHit* h = dynamic_cast<SimTrackerHit*>( col->getElementAt(i) ) ; 
+        
+        // color code by MCParticle
+        const int mci = ( h->getMCParticle() ? h->getMCParticle()->id() :  0 ) ;
+        int color = _colors[  mci % _colors.size() ] ;
+        
+        int id =    h->id();
+        ced_hit_ID( h->getPosition()[0],
+                    h->getPosition()[1],
+                    h->getPosition()[2],
+                    marker,layer, size , color, id ) ;
+        
+      }  
 
     } else if( col->getTypeName() == LCIO::SIMCALORIMETERHIT ){
-
-
-      int color = 0xff0000 ;
 
       layer = ( layer > -1 ? layer : SIMCALORIMETERHIT_LAYER ) ;
       drawParameters[np].Layer = layer ;
 
-      //ced_describe_layer( colName.c_str() ,layer);
       MarlinCED::add_layer_description(colName, layer); 
       
-      LCTypedVector<SimCalorimeterHit> v( col ) ;
-      MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer ) ;
+      for( int i=0, n=col->getNumberOfElements(); i<n ; i++ ){
+        
+        SimCalorimeterHit* h = dynamic_cast<SimCalorimeterHit*>( col->getElementAt(i) ) ; 
+        
+        // color code by MCParticle
+        //        const int mci = (  h->getNMCContributions() !=0  ?  h->getParticleCont(0)->id()  :  0 ) ;  
+        const int mci = (  h->getNMCContributions() !=0  && h->getParticleCont(0) ?  h->getParticleCont(0)->id()  :  0 ) ;  
+        int color = _colors[  mci % _colors.size() ] ;
+        
+        int id =    h->id();
+        ced_hit_ID( h->getPosition()[0],
+                    h->getPosition()[1],
+                    h->getPosition()[2],
+                    marker,layer, size , color, id ) ;
+        
+      }  
 
-    } else if( col->getTypeName() == LCIO::TRACKERHIT ||  col->getTypeName() == LCIO::TRACKERHITPLANE  ||  col->getTypeName() == LCIO::TRACKERHITZCYLINDER ){
+    } else if(  col->getTypeName() == LCIO::TRACKERHIT       ||  
+                col->getTypeName() == LCIO::TRACKERHITPLANE  ||  
+                col->getTypeName() == LCIO::TRACKERHITZCYLINDER   ){
 
       int color = 0xee0044 ;
 
