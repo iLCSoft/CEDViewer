@@ -91,9 +91,9 @@ CEDViewer::CEDViewer() : Processor("CEDViewer") {
 
 
   registerProcessorParameter( "DrawHelixForTrack" , 
-                              "draw a helix for Track objects",
+                              "draw a helix for Track objects:0 none, 1: atIP, 2: atFirstHit, 3: atLastHit, 4: atCalorimeter",
                               _drawHelixForTracks ,
-                              true  ) ;
+                              1  ) ;
 
   registerProcessorParameter( "DrawDetectorID" , 
                               "draw detector from GEAR file with given ID (see MarlinCED::newEvent() ) : 0 ILD, -1 none",
@@ -400,9 +400,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         layer = ( layer > -1 ? layer : TRACK_LAYER ) ;
         drawParameters[np].Layer = layer ;
 
-        //ced_describe_layer( colName.c_str() ,layer);
         MarlinCED::add_layer_description(colName, layer); 
-
 
         int ml = marker | ( layer << CED_LAYER_SHIFT );
 	  
@@ -416,56 +414,60 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           
         } // hits
 	  
-          // draw the helix:
-        double bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ; 
-        //double bField = gearTPC.getDoubleVal("tpcBField") ;
+        const TrackState* ts = 0 ;
 
+        switch( _drawHelixForTracks ){
+          
+        case 1:  ts = trk->getTrackState( TrackState::AtIP          ) ; break ;
+        case 2:  ts = trk->getTrackState( TrackState::AtFirstHit    ) ; break ;
+        case 3:  ts = trk->getTrackState( TrackState::AtLastHit     ) ; break ;
+        case 4:  ts = trk->getTrackState( TrackState::AtCalorimeter ) ; break ;
 
-        double pt = bField * 3e-4 / std::abs( trk->getOmega() ) ;
-        double charge = ( trk->getOmega() > 0. ?  1. : -1. ) ;
-	 
-        double px = pt * std::cos(  trk->getPhi() ) ;
-        double py = pt * std::sin(  trk->getPhi() ) ;
-        double pz = pt * trk->getTanLambda() ;
+        }
+        
+        if( ts !=0 ){
+          
+          double bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ; 
 
-
-        // double rx = trk->getReferencePoint()[0] ;
-        // double ry = trk->getReferencePoint()[1] ;
-        // double rz = trk->getReferencePoint()[2] ;
-
-        // start point for drawing ( PCA to reference point )
+          double pt = bField * 3e-4 / std::abs( ts->getOmega() ) ;
+          double charge = ( ts->getOmega() > 0. ?  1. : -1. ) ;
+          
+          double px = pt * std::cos(  ts->getPhi() ) ;
+          double py = pt * std::sin(  ts->getPhi() ) ;
+          double pz = pt * ts->getTanLambda() ;
+          
+          
+#define Correct_Track_Params 1
 #ifdef Correct_Track_Params
-
-        double xs = trk->getReferencePoint()[0] -  trk->getD0() * sin( trk->getPhi() ) ;
-        double ys = trk->getReferencePoint()[1] +  trk->getD0() * cos( trk->getPhi() ) ;
-        double zs = trk->getReferencePoint()[2] +  trk->getZ0() ;
-
+          // start point for drawing ( PCA to reference point )
+          
+          double xs = ts->getReferencePoint()[0] -  ts->getD0() * sin( ts->getPhi() ) ;
+          double ys = ts->getReferencePoint()[1] +  ts->getD0() * cos( ts->getPhi() ) ;
+          double zs = ts->getReferencePoint()[2] +  ts->getZ0() ;
+          
 #else  // assume track params have reference point at origin ...
-
-        double xs = 0 -  trk->getD0() * sin( trk->getPhi() ) ;
-        double ys = 0 +  trk->getD0() * cos( trk->getPhi() ) ;
-        double zs = 0 +  trk->getZ0() ;
+          
+          double xs = 0 -  ts->getD0() * sin( ts->getPhi() ) ;
+          double ys = 0 +  ts->getD0() * cos( ts->getPhi() ) ;
+          double zs = 0 +  ts->getZ0() ;
 #endif        
-
-
-        layer = ( layer > -1 ? layer : TRACKHELIX_LAYER ) ;
-        drawParameters[np].Layer = layer ;
-
-        //ced_describe_layer( colName.c_str() ,layer);
-        MarlinCED::add_layer_description(colName, layer); 
-
-
-        ml = marker | ( layer << CED_LAYER_SHIFT ) ;
-
-
-        if( _drawHelixForTracks && pt > 0.01 ) 
-
-          MarlinCED::drawHelix( bField , charge, xs, ys, zs , 
-                                px, py, pz, ml , 1 ,  0xdddddd  ,
-                                0.0, padLayout.getPlaneExtent()[1]+100. , 
-                                gearTPC.getMaxDriftLength()+100., trk->id() ) ;
-
-
+          
+          
+          layer = ( layer > -1 ? layer : TRACKHELIX_LAYER ) ;
+          drawParameters[np].Layer = layer ;
+          
+          ml = marker | ( layer << CED_LAYER_SHIFT ) ;
+          
+          
+          if( _drawHelixForTracks && pt > 0.01 ) 
+            
+            MarlinCED::drawHelix( bField , charge, xs, ys, zs , 
+                                  px, py, pz, ml , 1 ,  0xdddddd  ,
+                                  0.0, padLayout.getPlaneExtent()[1]+300. , 
+                                  gearTPC.getMaxDriftLength()+600., trk->id() ) ;
+          
+        }
+        
       } // track
 
     } else if( col->getTypeName() == LCIO::MCPARTICLE ){
