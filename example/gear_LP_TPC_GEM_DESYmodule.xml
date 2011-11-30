@@ -4,7 +4,7 @@
         GEAR xml file for the end plate of the LP TPC with GEM module
      -->
    <BField type="ConstantBField" x="0.0" y="0.0" z="0.0"/>
-   <global detectorName="LP TPC"/>
+   <global detectorName="LPTPC"/>
   
   <detectors>
 

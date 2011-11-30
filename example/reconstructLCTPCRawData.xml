@@ -11,7 +11,7 @@
   <processor name="MyConditionsProcessor"/>
   <processor name="MyTrackerRawDataToDataConverterProcessor"/>
   <processor name="MyPulseFinderProcessor"/>
-  <processor name="MyChannelMapperProcessor"/>
+  <processor name="MyChannelMappingProcessor"/>
   <processor name="MyRowBasedHitFinderProcessor"/>
   <processor name="MyTrackMakingKalmanFilterProcessor"/>
   <processor name="MyTrackerRawViewer" />
@@ -20,24 +20,24 @@
 
  <global>
   <!--parameter name="LCIOInputFiles">     
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17636_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17637_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17639_0.000.slcio
-  </parameter-->
-  <parameter name="LCIOInputFiles">    
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17647_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17648_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17649_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17650_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17651_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17652_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17653_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17654_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17655_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17656_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17657_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17658_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17659_0.000.slcio
+   </parameter-->
+   <parameter name="LCIOInputFiles">    
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17636.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17637.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17639.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17647.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17648.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17649.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17650.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17651.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17652.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17653.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17654.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17655.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17656.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17657.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17658.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17659.000.slcio
   </parameter>
   <!--parameter name="LCIOInputFiles">    readout-17606_0.000.slcio </parameter-->
   <!--parameter name="LCIOInputFiles"> readout-17324_0.000.slcio </parameter-->
@@ -152,7 +152,7 @@
   <!--parameter name="Verbosity" type="string">DEBUG </parameter-->
 </processor>
 
- <processor name="MyChannelMapperProcessor" type="ChannelMapperProcessor">
+ <XXXprocessor name="MyChannelMappingProcessor" type="ChannelMappingProcessor">
  <!--ChannelMapperProcessor changes cellID0 to map from hardware channel numbers to sowftware/logical channel numbers.-->
   <!--Name of the input collection-->
   <parameter name="InputCollectionName" type="string" lcioInType="TrackerPulse"> TPCPulses </parameter>
@@ -164,6 +164,24 @@
   <parameter name="SetOutputTransient" type="int" value="0"/>
   <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
   <parameter name="Verbosity" type="string">DEBUG </parameter>
+</XXXprocessor>
+
+ <processor name="MyChannelMappingProcessor" type="ChannelMappingProcessor">
+ <!--ChannelMappingProcessor to translate the channel mapping from hardware channel and readout group to gear pad ID and module ID. Mappings provided via LCCD-->
+  <!--Name of the collection containing the ChannelMappings-->
+  <parameter name="ChannelMappingCollectionName" type="string">ADCChannelMapping </parameter>
+  <!--Name of the input collection-->
+  <parameter name="InputCollectionName" type="string" lcioInType="TrackerPulse">TPCPulses </parameter>
+  <!--The timepan in seconds for which the last valid collection will be used if no conditions data are available via LCCD.-->
+  <!--parameter name="MissingConditionsDataOverrideTimespan" type="int">0 </parameter-->
+  <!--Optional: Name of output collection-->
+  <!--parameter name="OutputCollectionName" type="string">TPCPulsesMapped </parameter-->
+  <!--If true, found signals without mapping in the conditions data will be removed from collection, else processing will stop in such a case.-->
+  <parameter name="RemoveChannelsWithoutMapping" type="bool">false </parameter>
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <parameter name="Verbosity" type="string">DEBUG </parameter>
+  <!--if true the output collection is written-->
+  <parameter name="WriteOutputToStorage" type="bool">true </parameter>
 </processor>
 
  <processor name="MyRowBasedHitFinderProcessor" type="RowBasedHitFinderProcessor">
@@ -228,7 +246,7 @@
   <!--color scheme - 1: hot , 2 : cold -->
   <parameter name="ColorScheme" type="int">1 </parameter>
   <!--true: display one event and wait for 'return' - false: continiously display events-->
-  <parameter name="WaitForKeyBoard" type="bool">false true </parameter>
+  <parameter name="WaitForKeyBoard" type="bool">true </parameter>
   <!--Name of the TrackerHit collection-->
   <parameter name="HitCollectionName" type="string" lcioInType="TrackerHit">TPCHits </parameter>
   <!--Name of the Track collection-->

@@ -18,24 +18,24 @@
 
  <global>
   <!--parameter name="LCIOInputFiles">     
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17636_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17637_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17639_0.000.slcio
-  </parameter-->
-  <parameter name="LCIOInputFiles">    
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17647_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17648_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17649_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17650_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17651_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17652_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17653_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17654_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17655_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17656_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17657_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17658_0.000.slcio
-       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/readout-17659_0.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17636.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17637.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17639.000.slcio
+   </parameter-->
+   <parameter name="LCIOInputFiles">    
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17647.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17648.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17649.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17650.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17651.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17652.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17653.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17654.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17655.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17656.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17657.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17658.000.slcio
+       /afs/desy.de/group/flc/pool/tpc/share/LPData/June_2011/LCIOrawdata/readout-17659.000.slcio
   </parameter>
   <!--parameter name="LCIOInputFiles">    readout-17606_0.000.slcio </parameter-->
   <!--parameter name="LCIOInputFiles"> readout-17324_0.000.slcio </parameter-->

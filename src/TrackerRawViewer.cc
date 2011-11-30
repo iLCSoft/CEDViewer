@@ -276,14 +276,22 @@ void TrackerRawViewer::processEvent( LCEvent * evt ) {
   // --- draw a cylinder for the TPC  ----
 
   const static int nCorners =       40 ;
-  const static int tpcColor = 0xaaaaaa ;
+  //const static int tpcColor  = 0xf5f300 ;
+  const static int tpcColor = 0x88888888 ;
   const static int tpcPhi0  =        0 ;
   
-  static CED_GeoCylinder geoCylindersANY[] = {                      
-    { tpcOuterR , nCorners , tpcPhi0,  zAnode ,   -zAnode , tpcColor  }, 
-  };
+  // static CED_GeoCylinder geoCylindersANY[] = {                      
+  //   { tpcOuterR , nCorners , tpcPhi0,  zAnode ,   -zAnode , tpcColor  }, 
+  // };
+  // ced_geocylinders( sizeof(geoCylindersANY)/sizeof(CED_GeoCylinder), geoCylindersANY );
   
-  ced_geocylinders( sizeof(geoCylindersANY)/sizeof(CED_GeoCylinder), geoCylindersANY );
+  static const int fDL = NUMBER_DATA_LAYER; //  first non data layer 
+  static const unsigned  tpcLayer = fDL + 0 ;
+
+  std::vector<CEDGeoTube> gTV ; 
+  gTV.push_back( CEDGeoTube( 0. , tpcOuterR , nCorners, nCorners , tpcPhi0, tpcPhi0,  zAnode ,   -zAnode , tpcColor , tpcLayer, 1 , 0 )  ) ;
+  ced_geotubes( gTV.size() ,  (CED_GeoTube*) &gTV[0] );
+  MarlinCED::add_layer_description("TPC", tpcLayer );
 
   //========================================================================
  
@@ -502,7 +510,8 @@ void TrackerRawViewer::processEvent( LCEvent * evt ) {
   size = 4 ;
   marker = 0 ;
 
-
+  MarlinCED::add_layer_description( "Hit Map", layer); 
+ 
   // increase the event counter for every channel knwon to the channel map:
   typedef std::map< tpcconddata::ADCChannelMapping::key_type , tpcconddata::ADCChannelMapping > lccdMap ;
 
