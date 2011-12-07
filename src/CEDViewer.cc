@@ -111,6 +111,27 @@ CEDViewer::CEDViewer() : Processor("CEDViewer") {
                               float(0.001) ) ;
   
   
+  registerProcessorParameter( "UsingParticleGun" , 
+                             "If set true generator status is ignored for MCParticles to be drawn",
+                             _usingParticleGun ,
+                             bool(false) ) ;
+
+  registerProcessorParameter( "UseTPCForLimitsOfHelix" , 
+                             "Use the gear parameters to define the max extent of drawing a helix",
+                             _useTPCForLimitsOfHelix ,
+                             bool(true) ) ;
+
+  registerProcessorParameter( "HelixMaxR" , 
+                             "Max R (mm) Extent for drawing Helix if UseTPCForLimitsOfHelix false",
+                             _helix_max_r ,
+                             float(2000.0) ) ;
+  
+  registerProcessorParameter( "HelixMaxZ" , 
+                             "Max Z (mm) Extent for drawing Helix if UseTPCForLimitsOfHelix false",
+                             _helix_max_z ,
+                             float(2500.0) ) ;
+  
+  
 }
 
 void CEDViewer::init() { 
@@ -259,9 +280,16 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
 //-----------------------------------------------------------------------
 
-  const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
-  const gear::PadRowLayout2D& padLayout = gearTPC.getPadLayout() ;
-
+  if( _useTPCForLimitsOfHelix ){
+    try{
+      const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
+      const gear::PadRowLayout2D& padLayout = gearTPC.getPadLayout() ;
+      _helix_max_r = padLayout.getPlaneExtent()[1]+300.0;
+      _helix_max_z = gearTPC.getMaxDriftLength()+600.0;
+    }
+    catch(gear::UnknownParameterException& e) {}
+  }
+  
   //add DrawInLayer to
   std::vector< DrawParameters > drawParameters ;
   drawParameters.reserve( _drawCollections.size() + _drawCollectionsLayer.size()  ) ;
@@ -458,13 +486,12 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           
           ml = marker | ( layer << CED_LAYER_SHIFT ) ;
           
-          
           if( _drawHelixForTracks && pt > 0.01 ) 
             
             MarlinCED::drawHelix( bField , charge, xs, ys, zs , 
-                                  px, py, pz, ml , 1 ,  0xdddddd  ,
-                                  0.0, padLayout.getPlaneExtent()[1]+300. , 
-                                  gearTPC.getMaxDriftLength()+600., trk->id() ) ;
+                                 px, py, pz, ml , 1 ,  0xdddddd  ,
+                                 0.0, _helix_max_r,
+                                 _helix_max_z, trk->id() ) ;
           
         }
         
@@ -495,7 +522,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  
         float charge = mcp->getCharge (); 
 	  
-        if( mcp-> getGeneratorStatus() != 1 ) continue ; // stable particles only   
+        if( mcp-> getGeneratorStatus() != 1 && _usingParticleGun == false ) continue ; // stable particles only   
         //if( mcp-> getNumberOfDaughters() != 0 ) continue ; // stable particles only   
 
         // 	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
@@ -544,8 +571,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           //std::cout<<"Hauke: drawHelix called from cedviewer" << std::endl;
           MarlinCED::drawHelix( bField , charge, x, y, z, 
                                 px, py, pz, ml , size , 0x7af774  ,
-                                0.0,  padLayout.getPlaneExtent()[1]+100. ,
-                                gearTPC.getMaxDriftLength()+100., mcp->id() ) ;	    
+                                0.0,  _helix_max_r ,
+                                _helix_max_z, mcp->id() ) ;	    
 	    
         } else { // neutral
 	    
@@ -584,8 +611,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           double p = hypot(pt,pz); 
 	    
           double length = ( std::abs( pt/pz) > r_max/z_max ) ?  // hit barrel or endcap ? 
-            r_max * p / pt  :  std::abs( z_max * p / pz ) ;
-	    
+          r_max * p / pt  :  std::abs( z_max * p / pz ) ;
+          
           //hauke hoelbe: add id for picking
           //          ced_line_ID( r_min*px/p ,  r_min*py/p ,  r_min*pz/p , 
           ced_line_ID( x , y , z , 
@@ -762,8 +789,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
             //helix
             float charge = (float)part->getCharge();
             float bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ;
-            MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, marker|(layer<<CED_LAYER_SHIFT), size, color, 0.0, padLayout.getPlaneExtent()[1],
-                            gearTPC.getMaxDriftLength(), part->id() ); //hauke: add id
+            MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, marker|(layer<<CED_LAYER_SHIFT), size, color, 0.0, _helix_max_r,
+                            _helix_max_z, part->id() ); //hauke: add id
           }
 
         }

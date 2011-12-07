@@ -78,11 +78,16 @@ class CEDViewer : public Processor {
   StringVec _drawCollections ;
   StringVec _drawCollectionsLayer ;
 
+  bool      _usingParticleGun ;
   int       _drawHelixForTracks ;
   int       _drawDetectorID  ;
   int       _colorScheme ;
   float     _mcpECut ;
 
+  float     _helix_max_r;
+  float     _helix_max_z;
+  bool      _useTPCForLimitsOfHelix;
+  
   IntVec _colors ;
 
   int _nRun ;
