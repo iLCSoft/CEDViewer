@@ -4,6 +4,48 @@
 
 ================================
 
+ --------
+| v01-04 |
+ --------
+
+    - Added option to supply limits to helix drawing, other than the extent of the TPC
+    - Added option for drawing MC truth info for particle gun events
+    - switched to TPC drawing with surfaces and cuts
+
+    - adopted steering example steering files:
+       - renamed ChannelMapperProcessor to ChannelMappingProcessor
+       - changed raw data file pathes on afs
+
+    - changed parameter DrawHelixForTrack to int:
+       draw a helix for Track objects:
+       0 none, 1: atIP, 2: atFirstHit, 3: atLastHit, 4: atCalorimeter
+
+    - changes in DSTViewer processor:
+      - code cleanup
+      - use streamlog instead of cout
+      - added parameter DrawDetectorID 
+      - this processor needs to be revisited ....
+
+    - color code SimTrackerHits and SimCalorimeterHits by the MCParticle 
+    - changed drawing of track helix color to light grey
+
+    - added parameter MCParticleEnergyCut 
+    - fixed drawing of neutrals 
+         - neg. pz particles where drawn in wrong direction
+         - start drawing particles at their vertex
+    - added lightgrey color for neutrinos
+
+    - added drawing of TrackerHitPlanae and TrackerHitZCylinder
+
+    - added various color schemes for displaying particles, tracks and clusters
+      -> steering parameter ColorScheme 
+    - print evt/run numbers at the end of the event
+
+    - cmake changes:
+        - added cmake policy CMP0008
+        - removed obsolete install of header files
+
+
 
  --------
 | v01-03 |
