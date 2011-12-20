@@ -66,7 +66,9 @@ $LCIOInputFiles$
     MuonEndCapCollection          0  1
     BeamCalCollection             0  1
     EcalBarrelCollection          0  1
+    EcalBarrelSiliconCollection   0  1
     EcalEndcapCollection          0  1
+    EcalEndcapSiliconCollection   0  1
     EcalEndcapRingCollection      0  1
     HcalBarrelRegCollection       0  1
     HcalEndCapRingsCollection     0  1
