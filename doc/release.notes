@@ -3,6 +3,11 @@
  release notes for CEDViewer
 
 ================================
+ -----------
+| v01-04-01 |
+ -----------
+     - fixed collection names for ced2go
+       (EcalBarrel/EndcapSiliconCollection)
 
  --------
 | v01-04 |
