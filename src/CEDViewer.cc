@@ -131,6 +131,11 @@ CEDViewer::CEDViewer() : Processor("CEDViewer") {
                              _helix_max_z ,
                              float(2500.0) ) ;
   
+  registerProcessorParameter("WaitForKeyboard",
+                             "Wait for Keyboard before proceed",
+                             _waitForKeyboard,
+                             (int)1);
+
   
 }
 
@@ -832,7 +837,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
 
   //++++++++++++++++++++++++++++++++++++
-  MarlinCED::draw(this) ;
+  MarlinCED::draw(this, _waitForKeyboard );
   //++++++++++++++++++++++++++++++++++++
   
   _nEvt ++ ;

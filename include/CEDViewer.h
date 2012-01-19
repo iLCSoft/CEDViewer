@@ -87,8 +87,10 @@ class CEDViewer : public Processor {
   float     _helix_max_r;
   float     _helix_max_z;
   bool      _useTPCForLimitsOfHelix;
+  int       _waitForKeyboard ;
   
   IntVec _colors ;
+
 
   int _nRun ;
   int _nEvt ;
