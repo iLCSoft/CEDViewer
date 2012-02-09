@@ -19,6 +19,8 @@ import sys
 import random
 
 
+#templateXMLFile = "/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/template.xml"
+templateXMLFile = os.path.join( os.path.abspath(sys.path[0]), "ced2go-template.xml" )
 
 #Help output
 def help():
@@ -27,7 +29,8 @@ def help():
     print "     -v            Viewer1"
     print "     -v            Viewer2"
     print "     -d            Gearfile"
-    print "     -h            Help"
+    print "     -h/-?         Help"
+    print "     -t            template file ["+templateXMLFile+"]"
     print "All options are optional"
     print "Viewers are e.g. CEDViewer, DSTViewer, GenericViewer"
 
@@ -38,8 +41,6 @@ def help():
 #The global variables, paths and commands
 viewer   = "CEDViewer" #default viewer
 
-#templateXMLFile = "/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/template.xml"
-templateXMLFile = os.path.join( os.path.abspath(sys.path[0]), "ced2go-template.xml" )
 
 
 if not os.path.isfile(templateXMLFile):
@@ -78,7 +79,7 @@ keys = {'$LCIOInputFiles$':'',
 
 #Parse the command line arguments
 try: 
-    opts, args = getopt.getopt(sys.argv[1:], "hv:d:", "help") 
+    opts, args = getopt.getopt(sys.argv[1:], "hv:d:t:", "help") 
     #print 'Opts:',opts
     #print 'Extra parameters:',args
 except getopt.GetoptError, err:
@@ -93,6 +94,11 @@ for key in opts:
         detector=key[1]
         if not os.path.isfile(detector):
             print "Error: Gearfile \"" + detector + "\" not found!"
+            sys.exit()
+    if key[0] == "-t":
+        templateXMLFile=key[1]
+        if not os.path.isfile(templateXMLFile):
+            print "Error: template \"" + templateXMLFile + "\" not found!"
             sys.exit()
     if key[0]  == "-v":
           keys['$Viewer$'] += "\n<processor name=\"My" + str(key[1]) + "\"/>"
@@ -151,7 +157,7 @@ else:  #find out the detector name used in the lcio file
     try: 
         keys['$GearXMLFile$'] = gearfiles[detector] 
     except(KeyError):
-        print "Error: Unknown detector in LCIO file"
+        print "Error: Unknown detector in LCIO file - provide correct gear file on command line with option -d"
         sys.exit(1)
 
 #root = Tk()
