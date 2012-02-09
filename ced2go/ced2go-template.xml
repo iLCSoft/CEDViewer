@@ -43,7 +43,63 @@ $LCIOInputFiles$
 
   <!--collection to be displayed ( ColName, marker type[0-2], size)-->
 <processor name="MyCEDViewer" type="CEDViewer">
-  <parameter name="DrawCollection" type="StringVec">
+    <parameter name="DrawInLayer"> 
+       
+       VXDCollection 0 5 1
+       SITCollection 0 5 1
+       FTDCollection 0 5 1
+       TPCCollection 0 3 1
+       SETCollection 0 3 1
+       ETDCollection 0 3 1
+       
+       VXDTrackerHits       1 10  11
+       SITTrackerHits       1 10  11
+       TPCTrackerHits       1  5  11
+       FTDTrackerHits       1 10  11
+
+       HcalEndCapsCollection       0 3 2
+       LHcalCollection             0 3 2
+       LumiCalCollection           0 3 2
+       MuonBarrelCollection        0 3 2
+       MuonEndCapCollection        0 3 2
+       EcalBarrelSiliconCollection 0 3 2  
+       EcalBarrelSiliconPreShower  0 3 2  
+       EcalEndcapRingCollection    0 3 2  
+       EcalEndcapRingPreShower     0 3 2  
+       EcalEndcapSiliconCollection 0 3 2  
+       EcalEndcapSiliconPreShower  0 3 2  
+       HcalBarrelRegCollection     0 3 2
+       HcalEndCapRingsCollection   0 3 2
+
+
+       HCALEndcap   0 5 12
+       HCALOther    0 5 12
+       MUON         0 2 12
+       LHCAL        0 3 12  
+       LCAL         0 3 12
+       BCAL         0 3 12
+       ECALBarrel   0 2 12
+       ECALEndcap   0 2 12
+       ECALOther    0 2 12
+       HCALBarrel   0 5 12
+
+       TruthTracks      0 3 3
+       ForwardTracks    0 3 4
+       SiTracks         0 3 5
+       ClupatraTracks   3 5 6
+       MarlinTrkTracks  3 3 7
+
+
+       PandoraClusters  0 3 8
+       PandoraPFOs      0 3 9
+       
+       MCParticle 0 3 0
+
+
+
+
+     </parameter>
+  <XXXparameter name="DrawCollection" type="StringVec">
 
 
     VXDCollection                 0  1
@@ -96,7 +152,7 @@ $LCIOInputFiles$
     TPCTracks
     V0RecoParticles
 -->
-  </parameter>
+  </XXXparameter>
 
 </processor>
 
