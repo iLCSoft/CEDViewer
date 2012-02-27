@@ -3,11 +3,22 @@
  release notes for CEDViewer
 
 ================================
+
+ --------
+| v01-05 |
+ --------
+
+    modifed collections names to by the same as in bbudsc_stdreco.xml
+    allow to specifiy steering file template on the command line with -t
+    added parameter WaitForKeyboard
+
+
  -----------
 | v01-04-01 |
  -----------
      - fixed collection names for ced2go
        (EcalBarrel/EndcapSiliconCollection)
+
 
  --------
 | v01-04 |
