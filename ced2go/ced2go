@@ -60,18 +60,6 @@ steeringFile="/tmp/ced2go_" + os.environ['USER'] + "_steering.xml"
 CED= "glced"
 Marlin="Marlin"
 
-try:
-    standartconfig=os.environ["STANDARDCONFIG"]
-except: 
-    print "Error: Please source the init ilcsoft script first"
-    sys.exit(1)
-
-gearfiles={'ILD_00':standartconfig + '/mc2008/gear_ILD_00.xml',
-        'LDC01_06Sc':standartconfig+ '/mc2008/gear_LDC01_06Sc.xml',
-        'LDCPrime_02Sc':standartconfig+'/mc2008/gear_LDCPrime_02Sc.xml',
-        'LDC_GLD_01Sc':standartconfig+ '/mc2008/gear_LDC_GLD_01Sc.xml'
-}
-
 keys = {'$LCIOInputFiles$':'', 
         '$GearXMLFile$':'',
         '$Viewer$':''
@@ -140,6 +128,18 @@ keys['$LCIOInputFiles$']=args[0]
 if detector != "": #user defined gearfile
      keys['$GearXMLFile$'] = detector
 else:  #find out the detector name used in the lcio file
+
+    try:
+        standartconfig=os.environ["STANDARDCONFIG"]
+    except: 
+        print "Error: $STANDARDCONFIG not set. Either use option -d to point to your gearfile or set STANDARDCONFIG appropriately"
+        sys.exit(1)
+
+    gearfiles={'ILD_00':standartconfig + '/mc2008/gear_ILD_00.xml',
+            'LDC01_06Sc':standartconfig+ '/mc2008/gear_LDC01_06Sc.xml',
+            'LDCPrime_02Sc':standartconfig+'/mc2008/gear_LDCPrime_02Sc.xml',
+            'LDC_GLD_01Sc':standartconfig+ '/mc2008/gear_LDC_GLD_01Sc.xml'
+    }
 
     if old:
         detector=os.popen(extractDetector + " " + keys['$LCIOInputFiles$']).readline()
