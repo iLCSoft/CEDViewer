@@ -8,9 +8,11 @@
 | v01-05 |
  --------
 
-    modifed collections names to by the same as in bbudsc_stdreco.xml
-    allow to specifiy steering file template on the command line with -t
-    added parameter WaitForKeyboard
+    CEDViewer:
+      added parameter WaitForKeyboard
+    ced2go:
+      modifed collections names to by the same as in bbudsc_stdreco.xml
+      allow to specifiy steering file template on the command line with -t
 
 
  -----------
