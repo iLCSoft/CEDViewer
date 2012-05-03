@@ -8,6 +8,12 @@
 #include <map>
 
 // MarlinTPC
+
+// --- fix for lccd/ConditionsMap.hh tp print key made from pair
+std::ostream& operator<<(  std::ostream& os , const std::pair<int,int>& p){
+  os  << "[" << p.first << "," << p.second << "]" ; 
+  return os ;
+}
 #define USE_LCCD
 #include "marlintpc/ADCChannelMapping.h"
 

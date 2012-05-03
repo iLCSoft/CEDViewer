@@ -12,7 +12,6 @@
 #include "marlin/Global.h"
 
 
-#include "ChannelPosMap.h"
 
 
 //---- GEAR ----
@@ -20,41 +19,38 @@
 #include "gear/PadRowLayout2D.h"
 #include "gear/BField.h"
 
+#include "ChannelPosMap.h"
+
 using namespace lcio ;
 using namespace marlin ;
 
 
 TrackerRawViewer aTrackerRawViewer ;
 
-// --- fix for lccd/ConditionsMap.hh tp print key made from pair
-std::ostream& operator<<(  std::ostream& os , const std::pair<int,int>& p){
-  os  << "[" << p.first << "," << p.second << "]" ; 
-  return os ;
-}
   
 
 
 
 
 // --- prin TrackerRawData - need to go replace the one in LCIO ...
-std::ostream& operator<<(  std::ostream& os , const TrackerRawData& rd){
+// std::ostream& operator<<(  std::ostream& os , const TrackerRawData& rd){
   
-  using namespace std ;
+//   using namespace std ;
 
-  os << setw(30) << setfill(' ') << left << "CellID0"<< setfill(' ') << right << setw(40) << dec << rd.getCellID0() << endl;
-  os << setw(30) << setfill(' ') << left << "CellID1"<< setfill(' ') << right << setw(40) << dec << rd.getCellID1() << endl;
-  os << setw(30) << setfill(' ') << left << "Time"   << setfill(' ') << right << setw(40) << dec << rd.getTime() << endl;
+//   os << setw(30) << setfill(' ') << left << "CellID0"<< setfill(' ') << right << setw(40) << dec << rd.getCellID0() << endl;
+//   os << setw(30) << setfill(' ') << left << "CellID1"<< setfill(' ') << right << setw(40) << dec << rd.getCellID1() << endl;
+//   os << setw(30) << setfill(' ') << left << "Time"   << setfill(' ') << right << setw(40) << dec << rd.getTime() << endl;
 
-  const ShortVec& adc = rd.getADCValues() ;
+//   const ShortVec& adc = rd.getADCValues() ;
 	  
-  os << setfill(' ') << left << "ADC values: ["    ;
-  for(unsigned int j=0 ; j< adc.size() ; ++j ) {
-    os  << setfill(' ') << right << setw(4) << dec << adc[j] << ","  ;
-  }
-  os << "]" << std::endl ;
+//   os << setfill(' ') << left << "ADC values: ["    ;
+//   for(unsigned int j=0 ; j< adc.size() ; ++j ) {
+//     os  << setfill(' ') << right << setw(4) << dec << adc[j] << ","  ;
+//   }
+//   os << "]" << std::endl ;
 
-  return os ;
-}
+//   return os ;
+// }
 
 void printTRD(const LCObject* rd){
   streamlog_out( MESSAGE ) << *(TrackerRawData* ) rd ;
