@@ -12,6 +12,8 @@
 #include <EVENT/ReconstructedParticle.h>
 
 #include <UTIL/LCTypedVector.h>
+#include <UTIL/CellIDDecoder.h>
+#include <UTIL/ILDConf.h>
 
 #include "MarlinCED.h"
 
@@ -680,21 +682,48 @@ void CEDViewer::processEvent( LCEvent * evt ) {
     } else if(  col->getTypeName() == LCIO::TRACKERHIT       ||  
                 col->getTypeName() == LCIO::TRACKERHITPLANE  ||  
                 col->getTypeName() == LCIO::TRACKERHITZCYLINDER   ){
-
+      
       int color = 0xee0044 ;
-
+      
       layer = ( layer > -1 ? layer : TRACKERHIT_LAYER ) ;
       drawParameters[np].Layer = layer ;
 
       //ced_describe_layer( colName.c_str() ,layer);
       MarlinCED::add_layer_description(colName, layer); 
 
-
+      
       LCTypedVector<TrackerHit> v( col ) ;
       MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer) ;
 
-    } else if( col->getTypeName() == LCIO::CALORIMETERHIT ){
+      if( col->getTypeName() == LCIO::TRACKERHITPLANE ){
 
+        lcio::CellIDDecoder<TrackerHitPlane> dec( col ) ;
+        
+        LCTypedVector<TrackerHitPlane> hits( col ) ;
+        
+        for( unsigned i=0,N=hits.size() ; i<N ; ++i){
+          
+          TrackerHitPlane* h = hits[i] ;
+
+          if( dec(h)[ lcio::ILDCellID0::subdet ] !=  lcio::ILDDetID::SIT  ) continue ;
+          
+          double strip_half_length = 50. ; //mm
+          gear::Vector3D v( strip_half_length , h->getV()[1] ,  h->getV()[0] , gear::Vector3D::spherical ) ;
+          gear::Vector3D p( h->getPosition()[0] ,  h->getPosition()[1] ,  h->getPosition()[2] ) ;
+          
+          gear::Vector3D x0 = p - v ;
+          gear::Vector3D x1 = p + v ;
+          
+          //        size =1 ;
+          ced_line_ID( x0[0], x0[1], x0[2], x1[0], x1[1], x1[2],
+                       layer , 1. , color, h->id() );	 
+          
+        }
+      }
+      
+
+    } else if( col->getTypeName() == LCIO::CALORIMETERHIT ){
+      
       int color = 0xee0000 ;
       
       layer = ( layer > -1 ? layer : CALORIMETERHIT_LAYER ) ;
