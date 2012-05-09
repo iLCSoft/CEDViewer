@@ -692,10 +692,17 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       MarlinCED::add_layer_description(colName, layer); 
 
       
-      LCTypedVector<TrackerHit> v( col ) ;
-      MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer) ;
 
-      if( col->getTypeName() == LCIO::TRACKERHITPLANE ){
+      if( col->getTypeName() != LCIO::TRACKERHITPLANE ){
+
+        // draw a marker at hit position
+
+        LCTypedVector<TrackerHit> v( col ) ;
+        MarlinCED::drawObjectsWithPosition( v.begin(), v.end() , marker, size , color, layer) ;
+      
+      } else { // LCIO::TRACKERHITPLANE
+      
+        // draw strips for SIT hits - a marker else
 
         lcio::CellIDDecoder<TrackerHitPlane> dec( col ) ;
         
@@ -705,11 +712,17 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           
           TrackerHitPlane* h = hits[i] ;
 
-          if( dec(h)[ lcio::ILDCellID0::subdet ] !=  lcio::ILDDetID::SIT  ) continue ;
+          gear::Vector3D p( h->getPosition()[0] ,  h->getPosition()[1] ,  h->getPosition()[2] ) ;
           
+          if( dec(h)[ lcio::ILDCellID0::subdet ] !=  lcio::ILDDetID::SIT  ) {
+
+            ced_hit_ID( p[0], p[1], p[2], layer , 1. , color, h->id() );	 
+            
+            continue ;
+          }
+
           double strip_half_length = 50. ; //mm
           gear::Vector3D v( strip_half_length , h->getV()[1] ,  h->getV()[0] , gear::Vector3D::spherical ) ;
-          gear::Vector3D p( h->getPosition()[0] ,  h->getPosition()[1] ,  h->getPosition()[2] ) ;
           
           gear::Vector3D x0 = p - v ;
           gear::Vector3D x1 = p + v ;
