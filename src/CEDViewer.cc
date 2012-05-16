@@ -716,8 +716,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           
           if( dec(h)[ lcio::ILDCellID0::subdet ] !=  lcio::ILDDetID::SIT  ) {
 
-            ced_hit_ID( p[0], p[1], p[2], layer , 1. , color, h->id() );	 
-            
+            ced_hit_ID( p[0], p[1], p[2], marker, layer , size , color, h->id() );	 
+
             continue ;
           }
 
