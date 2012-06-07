@@ -11,6 +11,7 @@
     - fixed ced2go in case variable STANDARDCONFIG is not set
     - made compatible with clang++
 
+
  --------
 | v01-05 |
  --------
