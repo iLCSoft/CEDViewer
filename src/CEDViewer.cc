@@ -794,55 +794,61 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                                 << " E  = " << ene << std::endl;
 
         if (nClusters > 0 ) {
-          Cluster * cluster = clusterVec[0];
-          CalorimeterHitVec hitvec = cluster->getCalorimeterHits();
-          int nHits = (int)hitvec.size();
-          for (int iHit = 0; iHit < nHits; ++iHit) {
-            CalorimeterHit * hit = hitvec[iHit];
-            float x = hit->getPosition()[0];
-            float y = hit->getPosition()[1];
-            float z = hit->getPosition()[2];
-            ced_hit_ID(x,y,z,marker|(layer<<CED_LAYER_SHIFT),size,color,part->id()); 
+
+          for (unsigned icluster=0; icluster<nClusters; ++icluster) {
+            Cluster * cluster = clusterVec[icluster];
+            CalorimeterHitVec hitvec = cluster->getCalorimeterHits();
+            int nHits = (int)hitvec.size();
+            for (int iHit = 0; iHit < nHits; ++iHit) {
+              CalorimeterHit * hit = hitvec[iHit];
+              float x = hit->getPosition()[0];
+              float y = hit->getPosition()[1];
+              float z = hit->getPosition()[2];
+              ced_hit_ID(x,y,z,marker|(layer<<CED_LAYER_SHIFT),size,color,part->id()); 
+            }
+
           }
         }
 
         if (nTracks > 0 ) {
-          Track * track = trackVec[0];
-          TrackerHitVec hitvec = track->getTrackerHits();
-          int nHits = (int)hitvec.size();
-          if(nHits > 0){
-            for (int iHit = 0; iHit < nHits; ++iHit) {
-              TrackerHit * hit = hitvec[iHit];
-              float x = (float)hit->getPosition()[0];
-              float y = (float)hit->getPosition()[1];
-              float z = (float)hit->getPosition()[2];
-              ced_hit_ID(x,y,z,marker|(layer<<CED_LAYER_SHIFT),size,color,part->id());
+
+          for (unsigned itrack=0; itrack<nTracks; ++itrack) {
+            Track * track = trackVec[itrack];
+            TrackerHitVec hitvec = track->getTrackerHits();
+            int nHits = (int)hitvec.size();
+            
+            if(nHits > 0){
+              for (int iHit = 0; iHit < nHits; ++iHit) {
+                TrackerHit * hit = hitvec[iHit];
+                float x = (float)hit->getPosition()[0];
+                float y = (float)hit->getPosition()[1];
+                float z = (float)hit->getPosition()[2];
+                ced_hit_ID(x,y,z,marker|(layer<<CED_LAYER_SHIFT),size,color,part->id());
+              }
+            }else{
+              //streamlog_out(DEBUG) << "################         No Hits!" << std::endl; 
+              float px  = (float)(part->getMomentum()[0]);
+              float py  = (float)(part->getMomentum()[1]);
+              float pz  = (float)(part->getMomentum()[2]);
+              
+              // start point
+              float refx = 0.0;
+              float refy = 0.0;
+              float refz = 0.0;
+              
+              //line
+              //float momScale = 100;
+              //ced_line_ID(refx, refy, refz, momScale*px, momScale*py, momScale*pz, layer << CED_LAYER_SHIFT, size, color, part->id()); 
+              
+              //helix
+              float charge = (float)part->getCharge();
+              float bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ;
+              MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, marker|(layer<<CED_LAYER_SHIFT), size, color, 0.0, _helix_max_r, _helix_max_z, part->id() ); //hauke: add id
             }
-          }else{
-            //streamlog_out(DEBUG) << "################         No Hits!" << std::endl; 
-            float px  = (float)(part->getMomentum()[0]);
-            float py  = (float)(part->getMomentum()[1]);
-            float pz  = (float)(part->getMomentum()[2]);
-
-            // start point
-            float refx = 0.0;
-            float refy = 0.0;
-            float refz = 0.0;
-
-            //line
-            //float momScale = 100;
-            //ced_line_ID(refx, refy, refz, momScale*px, momScale*py, momScale*pz, layer << CED_LAYER_SHIFT, size, color, part->id()); 
-
-            //helix
-            float charge = (float)part->getCharge();
-            float bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ;
-            MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, marker|(layer<<CED_LAYER_SHIFT), size, color, 0.0, _helix_max_r,
-                            _helix_max_z, part->id() ); //hauke: add id
           }
-
         }
       }
-  
+      
       streamlog_out( DEBUG2) << std::endl
                              << "Total Energy and Momentum Balance of Event" << std::endl
                              << "Energy = " << TotEn
