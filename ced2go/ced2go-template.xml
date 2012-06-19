@@ -47,6 +47,8 @@ $LCIOInputFiles$
        
        VXDCollection 0 5 1
        SITCollection 0 5 1
+       FTD_PIXELCollection 0 5 1
+       FTD_STRIPCollection 0 5 1
        FTDCollection 0 5 1
        TPCCollection 0 3 1
        SETCollection 0 3 1
@@ -56,6 +58,9 @@ $LCIOInputFiles$
        SITTrackerHits       1 10  11
        TPCTrackerHits       1  5  11
        FTDTrackerHits       1 10  11
+       FTDStripTrackerHits  1 10  11
+       FTDPixelTrackerHits  1 10  11
+       FTDSpacePoints       1 10  11
 
        HcalEndCapsCollection       0 3 2
        LHcalCollection             0 3 2
