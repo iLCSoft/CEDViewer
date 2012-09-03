@@ -531,7 +531,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 	  
         if( mcp-> getGeneratorStatus() != 1 && _usingParticleGun == false ) continue ; // stable particles only   
         //if( mcp-> getNumberOfDaughters() != 0 ) continue ; // stable particles only   
-
+        //if( charge == 0.0 ) continue ;
         // 	  if( mcp-> getSimulatorStatus() != 0 ) continue ; // stable particles only   
         //if( mcp->getDaughters().size() > 0  ) continue ;    // stable particles only   
         // FIXME: need definition of stable particles (partons, decays in flight,...)

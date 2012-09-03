@@ -10,8 +10,8 @@ PROJECT( CEDViewer )
 
 # project version
 SET( ${PROJECT_NAME}_VERSION_MAJOR 1 )
-SET( ${PROJECT_NAME}_VERSION_MINOR 5 )
-SET( ${PROJECT_NAME}_VERSION_PATCH 2 )
+SET( ${PROJECT_NAME}_VERSION_MINOR 6 )
+SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 
 cmake_policy(SET CMP0008 NEW)
 
@@ -30,7 +30,8 @@ FIND_PACKAGE( Marlin 1.0 REQUIRED )
 FIND_PACKAGE( MarlinUtil 1.2 REQUIRED )
 
 FIND_PACKAGE( LCCD ) # optional - needed for TrackerRawViewer
-FIND_PACKAGE( MarlinTPC ) # optional - needed for TrackerRawViewer
+
+#FIND_PACKAGE( MarlinTPC ) # optional - needed for TrackerRawViewer
 #--- workaround for MarlinTPC (no cmake config files yet...)
 #IF( MarlinTPC_DIR )
 #  SET( MarlinTPC_INCLUDE_DIRS ${MarlinTPC_DIR}/tpcconddata/include )
@@ -43,7 +44,7 @@ FIND_PACKAGE( MarlinTPC ) # optional - needed for TrackerRawViewer
 #ENDIF()
 
 
-FOREACH( pkg Marlin MarlinUtil LCCD MarlinTPC)
+FOREACH( pkg Marlin MarlinUtil LCCD )
     IF( ${pkg}_FOUND )
         INCLUDE_DIRECTORIES( ${${pkg}_INCLUDE_DIRS} )
         LINK_LIBRARIES( ${${pkg}_LIBRARIES} )
