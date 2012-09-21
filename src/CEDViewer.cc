@@ -20,6 +20,7 @@
 #include <math.h>
 #include <cmath>
 #include <cstdlib>
+#include <algorithm>
 
 #include <marlin/Global.h>
 #include <gear/GEAR.h>
@@ -430,7 +431,28 @@ void CEDViewer::processEvent( LCEvent * evt ) {
       for( int i=0 ; i< col->getNumberOfElements() ; i++ ){
 	  
         Track* trk = dynamic_cast<Track*>( col->getElementAt(i) ) ;
-        const TrackerHitVec& hits = trk->getTrackerHits() ;
+
+        // -- collect hits from all track segments
+        TrackerHitVec tHV ;
+        if( !trk->getTracks().empty() ){
+          
+          streamlog_out( DEBUG ) << " -- track has "<< trk->getTracks().size() << " subtracks - will use these for displaying hits "
+                                 << std::endl ;
+          
+          std::copy( trk->getTrackerHits().begin() , trk->getTrackerHits().end() , std::back_inserter(  tHV ) ) ;
+          
+          for( unsigned j=0 ,N = trk->getTracks().size() ; j<N ; ++j ){
+
+            const Track* t = trk->getTracks()[j] ; 
+            
+            streamlog_out( DEBUG ) << " -- track j= "<< j << " has " <<  t->getTrackerHits().size() << " hits  "
+                                   << std::endl ;
+            
+            std::copy( t->getTrackerHits().begin() , t->getTrackerHits().end() , std::back_inserter(  tHV ) ) ;
+          }
+          
+        } 
+        const TrackerHitVec& hits = (  tHV.empty() ?  trk->getTrackerHits()  :  tHV  ) ; 
 	  
         layer = ( layer > -1 ? layer : TRACK_LAYER ) ;
         drawParameters[np].Layer = layer ;
@@ -455,9 +477,24 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           
         case 1:  ts = trk->getTrackState( TrackState::AtIP          ) ; break ;
         case 2:  ts = trk->getTrackState( TrackState::AtFirstHit    ) ; break ;
-        case 3:  ts = trk->getTrackState( TrackState::AtLastHit     ) ; break ;
-        case 4:  ts = trk->getTrackState( TrackState::AtCalorimeter ) ; break ;
 
+        case 3: // AtLastHit 
+
+          ts = (  trk->getTracks().empty() ?  trk->getTrackState( TrackState::AtLastHit ) 
+                  :       trk->getTracks().back()->getTrackState( TrackState::AtLastHit ) )   ; 
+          break ;
+          
+        case 4:  // AtCalo
+
+          ts = (  trk->getTracks().empty() ?  trk->getTrackState( TrackState::AtCalorimeter ) 
+                  :       trk->getTracks().back()->getTrackState( TrackState::AtCalorimeter ) )   ; 
+          
+            ml = 1 | ( layer << CED_LAYER_SHIFT );
+            ced_hit_ID( ts->getReferencePoint()[0],
+                        ts->getReferencePoint()[1],
+                        ts->getReferencePoint()[2],
+                        ml , size*10 , _colors[ i % _colors.size() ], trk->id() ) ;
+            break ;
         }
         
         if( ts !=0 ){
@@ -714,7 +751,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
           gear::Vector3D p( h->getPosition()[0] ,  h->getPosition()[1] ,  h->getPosition()[2] ) ;
           
-          if( dec(h)[ lcio::ILDCellID0::subdet ] !=  lcio::ILDDetID::SIT  ) {
+          // trkHit->setType( UTIL::set_bit( trkHit->getType() ,  UTIL::ILDTrkHitTypeBit::ONE_DIMENSIONAL ) ) ;
+          int det =  dec(h)[ lcio::ILDCellID0::subdet ] ;
+          if( det !=  lcio::ILDDetID::SIT &&  det !=  lcio::ILDDetID::SET ) {
 
             ced_hit_ID( p[0], p[1], p[2], marker, layer , size , color, h->id() );	 
 
@@ -813,8 +852,31 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         if (nTracks > 0 ) {
 
           for (unsigned itrack=0; itrack<nTracks; ++itrack) {
-            Track * track = trackVec[itrack];
-            TrackerHitVec hitvec = track->getTrackerHits();
+
+            Track * trk = trackVec[itrack];
+
+            // -- collect hits from all track segments
+            TrackerHitVec tHV ;
+            if( !trk->getTracks().empty() ){
+              
+              streamlog_out( DEBUG ) << " -- track has "<< trk->getTracks().size() << " subtracks - will use these for displaying hits "
+                                     << std::endl ;
+              
+              std::copy( trk->getTrackerHits().begin() , trk->getTrackerHits().end() , std::back_inserter(  tHV ) ) ;
+              
+              for( unsigned j=0 ,N = trk->getTracks().size() ; j<N ; ++j ){
+                
+                const Track* t = trk->getTracks()[j] ; 
+                
+                streamlog_out( DEBUG ) << " -- track j= "<< j << " has " <<  t->getTrackerHits().size() << " hits  "
+                                       << std::endl ;
+                
+                std::copy( t->getTrackerHits().begin() , t->getTrackerHits().end() , std::back_inserter(  tHV ) ) ;
+              }
+              
+            } 
+            const TrackerHitVec& hitvec = (  tHV.empty() ?  trk->getTrackerHits()  :  tHV  ) ; 
+
             int nHits = (int)hitvec.size();
             
             if(nHits > 0){
