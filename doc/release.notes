@@ -8,7 +8,13 @@
 | v01-06 |
  --------
 
- - removed TrackerRawViewer 
+ - display all tracker hits from all segments
+    for Tracks and ReconstructedParticles
+
+  - use last track segment (if any) to get
+    track states at last hit and at calorimeter
+
+  - removed TrackerRawViewer 
      - lives now in MarlinTPC
 
 
