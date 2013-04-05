@@ -502,7 +502,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           
           double bField = Global::GEAR->getBField().at(  gear::Vector3D(0,0,0)  ).z() ; 
 
-          double pt = bField * 3e-4 / std::abs( ts->getOmega() ) ;
+          double pt;
+          if (bField != 0.0 && std::abs(ts->getOmega()) > 0.00001 )
+            pt = bField * 3e-4 / std::abs( ts->getOmega() ) ;
+          else
+            pt = 1.e10;
           double charge = ( ts->getOmega() > 0. ?  1. : -1. ) ;
           
           double px = pt * std::cos(  ts->getPhi() ) ;
