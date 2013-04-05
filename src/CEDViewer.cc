@@ -26,7 +26,7 @@
 #include <gear/GEAR.h>
 #include <gear/BField.h>
 #include <gear/TPCParameters.h>
-#include <gear/PadRowLayout2D.h>
+#include <gear/TPCModule.h>
 #include <gear/CalorimeterParameters.h>
 
 using namespace lcio ;
@@ -290,9 +290,10 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
   if( _useTPCForLimitsOfHelix ){
     try{
+      // Support for multi-module TPCs
       const gear::TPCParameters& gearTPC = Global::GEAR->getTPCParameters() ;
-      const gear::PadRowLayout2D& padLayout = gearTPC.getPadLayout() ;
-      _helix_max_r = padLayout.getPlaneExtent()[1]+300.0;
+
+      _helix_max_r = gearTPC.getPlaneExtent()[1] + 300.0;
       _helix_max_z = gearTPC.getMaxDriftLength()+600.0;
     }
     catch(gear::UnknownParameterException& e) {}
