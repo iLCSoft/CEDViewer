@@ -94,9 +94,9 @@ CEDViewer::CEDViewer() : Processor("CEDViewer") {
 
 
   registerProcessorParameter( "DrawHelixForTrack" , 
-                              "draw a helix for Track objects:0 none, 1: atIP, 2: atFirstHit, 3: atLastHit, 4: atCalorimeter",
+                              "draw a helix for Track objects: -1: none, 0: default, 1: atIP, 2: atFirstHit, 3: atLastHit, 4: atCalorimeter",
                               _drawHelixForTracks ,
-                              1  ) ;
+                              0  ) ;
 
   registerProcessorParameter( "DrawDetectorID" , 
                               "draw detector from GEAR file with given ID (see MarlinCED::newEvent() ) : 0 ILD, -1 none",
@@ -475,7 +475,21 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         const TrackState* ts = 0 ;
 
         switch( _drawHelixForTracks ){
-          
+
+        // Case 0 is the default value which takes the whatever first track state
+        // (e.g. InteractionPoint for ILD, or the simple track for test beam data)
+        // In case of no track state exit with an error
+        case 0:
+          if (trk->getTrackStates().size() == 0) {
+            streamlog_out(ERROR)<<"CEDViewer::processEvent: No track states were found for the tracks in this event. exit(1) will be called"<<std::endl;
+            exit(1);
+          }
+          else {
+            ts = trk->getTrackStates().at(0) ;
+          }
+          break ;
+
+        // The rest states are pre-defined
         case 1:  ts = trk->getTrackState( TrackState::AtIP          ) ; break ;
         case 2:  ts = trk->getTrackState( TrackState::AtFirstHit    ) ; break ;
 
@@ -535,12 +549,13 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           
           ml = marker | ( layer << CED_LAYER_SHIFT ) ;
           
-          if( _drawHelixForTracks && pt > 0.01 ) 
-            
+          if( _drawHelixForTracks >= 0 && pt > 0.01 ) {
+
             MarlinCED::drawHelix( bField , charge, xs, ys, zs , 
                                  px, py, pz, ml , 1 ,  0xdddddd  ,
                                  0.0, _helix_max_r,
                                  _helix_max_z, trk->id() ) ;
+          }
           
         }
         
