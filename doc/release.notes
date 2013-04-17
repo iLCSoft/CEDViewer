@@ -4,6 +4,25 @@
 
 ================================
 
+ --------
+| v01-07 |
+ --------
+
+ - changed the default conventions for the track state to be drawn. Now the following processor options are valid:
+    -1: do not draw helix
+     0: default track state (the 0-th element in the track state vector)
+     (the rest options as before)
+     1: AtIP
+     2: AtFirstHit
+     3: AtLastHit
+     4: AtCalorimeter
+    If no track state were found, exit with an error
+
+ - avoid wrong values for the helix parameters for the case of small curvature
+   or zero magnetic field by assigning large value of Pt to the track
+
+ - update for the multi-module support via generic GEAR interface
+
 
  -----------
 | v01-06-01 |
