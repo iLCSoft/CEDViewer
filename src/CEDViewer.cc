@@ -478,13 +478,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
         // Case 0 is the default value which takes the whatever first track state
         // (e.g. InteractionPoint for ILD, or the simple track for test beam data)
-        // In case of no track state exit with an error
         case 0:
-          if (trk->getTrackStates().size() == 0) {
-            streamlog_out(ERROR)<<"CEDViewer::processEvent: No track states were found for the tracks in this event. exit(1) will be called"<<std::endl;
-            exit(1);
-          }
-          else {
+          if (trk->getTrackStates().size() > 0) {
             ts = trk->getTrackStates().at(0) ;
           }
           break ;
