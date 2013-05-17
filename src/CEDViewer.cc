@@ -378,8 +378,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         MarlinCED::add_layer_description(colName, layer); 
 
 
-
-        int ml = marker | ( layer << CED_LAYER_SHIFT ) ;
         int color =  _colors[ i % _colors.size() ] ;
         for( CalorimeterHitVec::const_iterator it = hits.begin();  it != hits.end() ; it++ ) {
           
@@ -387,7 +385,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           ced_hit_ID( (*it)->getPosition()[0],
                       (*it)->getPosition()[1],
                       (*it)->getPosition()[2],
-                      ml, size , color, clu->id() ) ;
+                      marker, layer, size , color, clu->id() ) ;
           
         } // hits
         
@@ -395,8 +393,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         float y = clu->getPosition()[1] ;
         float z = clu->getPosition()[2] ;
 
-        //hauke hoelbe: add id for picking
-        ced_hit_ID( x,y,z, ml, size*3 , color, clu->id() ) ;
+        ced_hit_ID( x,y,z, marker, layer , size*3 , color, clu->id() ) ;
 
         LCVector3D v(x,y,z) ;
 
@@ -419,10 +416,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
  
         LCVector3D dp( v + d ) , dm( v - d )   ;
 
-        //hauke hoelbe: need the id for picking mode!
         ced_line_ID( dp.x() , dp.y() , dp.z(),  
-                  dm.x() , dm.y() , dm.z(),
-                  ml , 1 , color, clu->id() );	 
+                     dm.x() , dm.y() , dm.z(),
+                     layer  , 1 , color, clu->id() );	 
 	  
 
       } // cluster
@@ -460,15 +456,13 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
         MarlinCED::add_layer_description(colName, layer); 
 
-        int ml = marker | ( layer << CED_LAYER_SHIFT );
-	  
         for( TrackerHitVec::const_iterator it = hits.begin();  it != hits.end() ; it++ ) {
 	    
           //hauke hoelbe: add id for picking
           ced_hit_ID( (*it)->getPosition()[0],
                       (*it)->getPosition()[1],
                       (*it)->getPosition()[2],
-                      ml , size , _colors[ i % _colors.size() ], trk->id() ) ;
+                      marker, layer , size , _colors[ i % _colors.size() ], trk->id() ) ;
           
         } // hits
 	  
@@ -499,12 +493,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           ts = (  trk->getTracks().empty() ?  trk->getTrackState( TrackState::AtCalorimeter ) 
                   :       trk->getTracks().back()->getTrackState( TrackState::AtCalorimeter ) )   ; 
           
-            ml = 1 | ( layer << CED_LAYER_SHIFT );
-            ced_hit_ID( ts->getReferencePoint()[0],
-                        ts->getReferencePoint()[1],
-                        ts->getReferencePoint()[2],
-                        ml , size*10 , _colors[ i % _colors.size() ], trk->id() ) ;
-            break ;
+          ced_hit_ID( ts->getReferencePoint()[0],
+                      ts->getReferencePoint()[1],
+                      ts->getReferencePoint()[2],
+                      1 , layer , size*10 , _colors[ i % _colors.size() ], trk->id() ) ;
+          break ;
         }
         
         if( ts !=0 ){
@@ -542,9 +535,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           layer = ( layer > -1 ? layer : TRACKHELIX_LAYER ) ;
           drawParameters[np].Layer = layer ;
           
-          ml = marker | ( layer << CED_LAYER_SHIFT ) ;
-          
           if( _drawHelixForTracks >= 0 && pt > 0.01 ) {
+
+            const int ml = marker | ( layer << CED_LAYER_SHIFT ) ;
 
             MarlinCED::drawHelix( bField , charge, xs, ys, zs , 
                                  px, py, pz, ml , 1 ,  0xdddddd  ,
@@ -615,9 +608,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
 
         
-        int ml = marker | ( layer << CED_LAYER_SHIFT );
-        
-        
         if( std::fabs( charge ) > 0.0001  ) { 
 	    
 
@@ -627,12 +617,13 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                                  << sqrt(px*px+py*py)
                                  << std::endl ;
 
-          //std::cout<<"Hauke: drawHelix called from cedviewer" << std::endl;
+          const int ml = marker | ( layer << CED_LAYER_SHIFT ) ;
+          
           MarlinCED::drawHelix( bField , charge, x, y, z, 
                                 px, py, pz, ml , size , 0x7af774  ,
                                 0.0,  _helix_max_r ,
                                 _helix_max_z, mcp->id() ) ;	    
-	    
+          
         } else { // neutral
 	    
           int color  ;
@@ -672,11 +663,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
           double length = ( std::abs( pt/pz) > r_max/z_max ) ?  // hit barrel or endcap ? 
           r_max * p / pt  :  std::abs( z_max * p / pz ) ;
           
-          //hauke hoelbe: add id for picking
-          //          ced_line_ID( r_min*px/p ,  r_min*py/p ,  r_min*pz/p , 
           ced_line_ID( x , y , z , 
                        length*px/p ,  length*py/p ,  length*pz/p , 
-                       ml , size, color, mcp->id() );	 
+                       layer  , size, color, mcp->id() );	 
           
         }
       }
@@ -858,7 +847,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
               float x = hit->getPosition()[0];
               float y = hit->getPosition()[1];
               float z = hit->getPosition()[2];
-              ced_hit_ID(x,y,z,marker|(layer<<CED_LAYER_SHIFT),size,color,part->id()); 
+              ced_hit_ID(x,y,z,marker, layer ,size,color,part->id()); 
             }
 
           }
@@ -900,7 +889,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                 float x = (float)hit->getPosition()[0];
                 float y = (float)hit->getPosition()[1];
                 float z = (float)hit->getPosition()[2];
-                ced_hit_ID(x,y,z,marker|(layer<<CED_LAYER_SHIFT),size,color,part->id());
+                ced_hit_ID(x,y,z,marker, layer,size,color,part->id());
               }
             }else{
               //streamlog_out(DEBUG) << "################         No Hits!" << std::endl; 
@@ -912,10 +901,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
               float refx = 0.0;
               float refy = 0.0;
               float refz = 0.0;
-              
-              //line
-              //float momScale = 100;
-              //ced_line_ID(refx, refy, refz, momScale*px, momScale*py, momScale*pz, layer << CED_LAYER_SHIFT, size, color, part->id()); 
               
               //helix
               float charge = (float)part->getCharge();

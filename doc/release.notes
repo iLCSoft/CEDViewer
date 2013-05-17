@@ -4,6 +4,14 @@
 
 ================================
 
+ -----------
+| v01-07-01 |
+ -----------
+     - changed calling attributes of ced_hit_ID to newer version
+       -> needed for CED v01-09 which has no function overloading 
+          in library anymore (c-style)
+
+  
  --------
 | v01-07 |
  --------

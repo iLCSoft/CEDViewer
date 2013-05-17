@@ -24,33 +24,34 @@ using namespace lcio ;
 using namespace marlin ;
 
 /** Define the key layers in the simulation */
-#define PION_LAYER		(1<<CED_LAYER_SHIFT)
-#define PHOTON_LAYER	(2<<CED_LAYER_SHIFT)
-#define NEUTRON_LAYER	(3<<CED_LAYER_SHIFT)		
-#define NHADR_LAYER  	(4<<CED_LAYER_SHIFT)
-#define CHADR_LAYER  	(5<<CED_LAYER_SHIFT)
-#define TPC_LAYER    	(6<<CED_LAYER_SHIFT)
-#define ECAL_LAYER   	(7<<CED_LAYER_SHIFT)
-#define HCAL_LAYER   	(8<<CED_LAYER_SHIFT)
-#define CLUSTER_LAYER	(9<<CED_LAYER_SHIFT)
-#define HIT_LAYER		(0<<CED_LAYER_SHIFT)
+#define PION_LAYER		1
+#define PHOTON_LAYER	        2
+#define NEUTRON_LAYER	        3		
+#define NHADR_LAYER  	        4
+#define CHADR_LAYER  	        5
+#define TPC_LAYER    	        6
+#define ECAL_LAYER   	        7
+#define HCAL_LAYER   	        8
+#define CLUSTER_LAYER	        9
+#define HIT_LAYER		0
 /** Jet layers... */
-#define JET2_LAYER		(12<<CED_LAYER_SHIFT)
-#define JET3_LAYER		(13<<CED_LAYER_SHIFT)
-#define JET4_LAYER		(14<<CED_LAYER_SHIFT)
-#define JET5_LAYER		(15<<CED_LAYER_SHIFT)
-#define JET6_LAYER		(16<<CED_LAYER_SHIFT)
+#define JET2_LAYER		1
+#define JET3_LAYER		1
+#define JET4_LAYER		1
+#define JET5_LAYER		1
+#define JET6_LAYER		1
 /** momentum at ip layer */
-#define MOM_LAYER		(17<<CED_LAYER_SHIFT)
+#define MOM_LAYER		1
 /** Two alternative cluster representations */
-#define BACKUP_LAYER	(18<<CED_LAYER_SHIFT)
-#define BACKUP_LAYER2	(19<<CED_LAYER_SHIFT)
+#define BACKUP_LAYER	        18
+#define BACKUP_LAYER2	        19
+
 /** Two alternative cluster representations */
-#define IP_JET2			(20<<CED_LAYER_SHIFT)
-#define IP_JET3			(21<<CED_LAYER_SHIFT)
-#define IP_JET4			(22<<CED_LAYER_SHIFT)
-#define IP_JET5			(23<<CED_LAYER_SHIFT)
-#define IP_JET6			(24<<CED_LAYER_SHIFT)
+#define IP_JET2			20
+#define IP_JET3			21
+#define IP_JET4			22
+#define IP_JET5			23
+#define IP_JET6			24
 
 DSTViewer aDSTViewer ;
 
@@ -326,7 +327,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 	int colorSteps = 256;
 	int color = returnRGBClusterColor(eneCluster, ene_min, ene_max, colorSteps, scale, colorMap);
 
-	int hit_type = 1 | HIT_LAYER;
+	//	int hit_type = 1 | HIT_LAYER;
 					
 	int cylinder_sides = 30;
 	//problem with fisheye view
@@ -335,7 +336,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 
 
 	//ced_hit(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color);
-	ced_hit_ID(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color, cluster->id()); //hauke
+	ced_hit_ID(center[0],center[1],center[2], 1, HIT_LAYER, (int)(sqrt(2)*sizes[0]/4), color, cluster->id()); //hauke
 
 					
 	int transparency = 0x66;
@@ -463,7 +464,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 	  //ced_hit_ID(i/4*pm[0], i/4*pm[1], i/4*pm[2], layer, 2, color, jet->id()); //hauke
 
 	}
-	ced_hit_ID((i-1)/4*pm[0], (i-1)/4*pm[1], (i-1)/4*pm[2], layer, 2, color, jet->id()); //hauke
+	ced_hit_ID((i-1)/4*pm[0], (i-1)/4*pm[1], (i-1)/4*pm[2], 0, layer, 2, color, jet->id()); //hauke
 
                             
 
