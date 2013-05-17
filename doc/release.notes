@@ -4,22 +4,18 @@
 
 ================================
 
- -----------
-| v01-07-01 |
- -----------
-     - changed calling attributes of ced_hit_ID to newer version
-       -> needed for CED v01-09 which has no function overloading 
-          in library anymore (c-style)
-
-  
  --------
 | v01-07 |
  --------
 
- - changed the default conventions for the track state to be drawn. Now the following processor options are valid:
+   - changed calling attributes of ced_hit_ID to newer version
+     -> needed for CED v01-09 which has no function overloading 
+        in library anymore (c-style)
+ 
+  - changed the default conventions for the track state to be drawn. Now the following processor options are valid
     -1: do not draw helix
      0: default track state (the 0-th element in the track state vector)
-     (the rest options as before)
+      (the rest options as before)
      1: AtIP
      2: AtFirstHit
      3: AtLastHit
