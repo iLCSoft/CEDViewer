@@ -1,0 +1,60 @@
+########################################################
+#
+# pyced is a python interface to the ilcsoft event display
+# based on CED, CEDViewer and LCIO.
+#
+#######################################################
+
+pyced has been developed during the DESYn summerstudent 
+programme 2013 by Bjoern Klaas. See the report:
+pyced_overview.pdf as a quick introduction.
+
+
+Requirements:
+---------------
+ 
+ilcsoft needs to be installed with a Root version that has python 
+enabled and the lcio Root dictionary has to be built.
+For example use 
+
+ /afs/desy.de/project/ilcsoft/sw/x86_64_gcc44_sl6/v01-17-03/
+
+for SL6 and compatible machines.
+
+Run pyced:
+
+Initialize the environment:
+-----------------------------
+
+
+# need to extend the python path and the dynamic search path
+export PYTHONPATH=${LCIO}/src/python:${ROOTSYS}/lib
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CEDLIB:$MULIB
+export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$CEDLIB:$MULIB
+
+where $CEDLIB and $MULIB are the library pathes for the current 
+CED and MarlinUtil versions.
+
+You can use the env.sh script:
+
+source env.sh  /afs/desy.de/project/ilcsoft/sw/x86_64_gcc44_sl6/v01-17-03/init_ilcsoft.sh
+
+for this.
+
+
+Run pyced:
+---------
+
+python -i pyced.py /data/ilcsoft/data/rv01-16-p05_500.sv01-14-01-p00.mILD_o1_v05.E500-TDR_ws.I37623.P6f_bbcyyc.eR.pL-00025-REC.slcio
+
+
+Configuration:
+-------------
+
+Edit pyced.cfg.py as needed. Currently only ReconstructedParticles and MCParticles are drawn.
+Change draw attribute for a givne type to True, to also draw objects of this type.
+
+
+Users can pre-define functions and set cuts in pyced_user.py.
+
