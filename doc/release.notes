@@ -3,6 +3,13 @@
  release notes for CEDViewer
 
 ================================
+ -----------
+| v01-07-02 |
+ -----------
+      - some minor improvements to pyced 
+         - added userDraw() method for
+           drawing additional objects
+         - added example for track cut function
 
  -----------
 | v01-07-01 |

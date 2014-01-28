@@ -105,8 +105,8 @@ def buildTm() :
                     ),
             Track = dict(
                     layer   = 3,
-                    size    = 3,
-                    hitsize = 5,
+                    size    = 1,
+                    hitsize = 3,
                     draw    = False,
                     callDraw = drawTracks
                     ),
@@ -119,7 +119,7 @@ def buildTm() :
             MCParticle = dict(
                     layer   = 0,
                     hitsize = 3,
-                    draw    = True,
+                    draw    = False,
                     callDraw = drawMCParticles
                     ),
             ReconstructedParticle = dict(
@@ -193,7 +193,7 @@ def buildNm() :
             ClupatraTracks              = dict( layer =  6 ) ,    
             ClupatraTrackSegments       = dict( size =  4, layer =  6 ) ,
             CluTrackSegments            = dict( size =  3, layer =  6 ) , 
-            MarlinTrkTracks             = dict( layer =  7 ) ,    
+            MarlinTrkTracks             = dict( layer =  7 , draw= True ) ,    
 
             PandoraClusters             = dict( size =  3, layer =  8 ) ,
             SeedCluster                 = dict( size =  4, layer =  8 ) , 
@@ -201,5 +201,6 @@ def buildNm() :
             PandoraPFOs                 = dict( size =  3, layer =  9 ) ,
             BCALParticles               = dict( size =  3, layer = 19 ) ,    
 
-            MCParticle                  = dict( size =  3, layer =  0 )    
+            MCParticle                  = dict( size =  3, layer =  0 , draw= False ) ,   
+            MCParticlesSkimmed          = dict( size =  3, layer =  0 , draw= True )    
     )

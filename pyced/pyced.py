@@ -34,6 +34,7 @@ from pyLCIO import UTIL, EVENT #, IMPL
 # --- Local/Custom dependencies ---
 from printPDG import printPdg
 
+from ROOT import TVector3
 ####################################################################
 ####################################################################
 
@@ -142,6 +143,11 @@ class PYCED :
         self.lenColors = len(self.colors)
     
     ### END OF setColorSchme #######################################
+
+#--- dymmy function for userDraw method (overwrite in pyced_user.py)
+    def userDraw(self):
+        nothing=42
+
 ### END OF CLASS 'PYCED' ###########################################
 
 # Create a global instance of the class. Will be extended to 
@@ -409,6 +415,7 @@ def drawHits( col ):
             objects[ hit.id() ] = hit
 
 ### END OF drawHits ################################################
+
 
 def drawTracks( col ):
     """Draws collections of type Track.
@@ -796,6 +803,8 @@ def drawEvent(evt):
 
 #        print "\tExecution time " + "%.9f" % (time.time()-colTime)
             
+    g.userDraw()
+
     applyLayerDescription()
     print "Execution time drawEvent(): " + "%.9f" % (time.time()-totTime)
 
@@ -970,6 +979,7 @@ buildNm()
 execfile( "pyced_user.py")
 
 ####################################################################
+
 ####################################################################
 
 if __name__ == "__main__":
