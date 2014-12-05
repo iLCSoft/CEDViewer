@@ -38,12 +38,12 @@
             <layer repeat="1" thickness="143" absorberThickness="2.100000000e+00" cellSize0="5.083333333e+00" cellSize1="5.083333333e+00" />
         </detector>
         <!--detector name="EcalPlug" geartype="CalorimeterParameters">
-            <layout type="Endcap" symmetry="2" phi0="0.000000000e+00" />
-            <dimensions inner_r="2.420000000e+02" outer_r="4.000000000e+02" inner_z="2.450000000e+03" />
-            <layer repeat="19" thickness="5.250000000e+00" absorberThickness="2.100000000e+00" cellSize0="5.083333333e+00" cellSize1="5.083333333e+00" />
-            <layer repeat="1" thickness="6.300000000e+00" absorberThickness="2.100000000e+00" cellSize0="5.083333333e+00" cellSize1="5.083333333e+00" />
-            <layer repeat="9" thickness="7.350000000e+00" absorberThickness="4.200000000e+00" cellSize0="5.083333333e+00" cellSize1="5.083333333e+00" />
-        </detector-->
+         <layout type="Endcap" symmetry="2" phi0="0.000000000e+00" />
+         <dimensions inner_r="2.420000000e+02" outer_r="4.000000000e+02" inner_z="2.450000000e+03" />
+         <layer repeat="19" thickness="5.250000000e+00" absorberThickness="2.100000000e+00" cellSize0="5.083333333e+00" cellSize1="5.083333333e+00" />
+         <layer repeat="1" thickness="6.300000000e+00" absorberThickness="2.100000000e+00" cellSize0="5.083333333e+00" cellSize1="5.083333333e+00" />
+         <layer repeat="9" thickness="7.350000000e+00" absorberThickness="4.200000000e+00" cellSize0="5.083333333e+00" cellSize1="5.083333333e+00" />
+         </detector-->
         <detector name="YokeBarrel" geartype="CalorimeterParameters">
             <layout type="Barrel" symmetry="8" phi0="0.000000000e+00" />
             <dimensions inner_r="3581" outer_z="3575" />
@@ -144,31 +144,31 @@
             <type technology="CCD" />
             <shell halfLength="0.000000000e+00" gap="0.000000000e+00" innerRadius="0.000000000e+00" outerRadius="0.000000000e+00" radLength="0.000000000e+00" />
             <layers>
-		<!-- THIS IS THE Si TRACKER-->
-              <layer nLadders="20" phi0="0.000000000e+00">
- 		<ladder distance="230" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="578" radLength="2.134851878e+02"/>
- 		<sensitive distance="230" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="578" radLength="2.134851878e+02"/>
-              </layer>
-
-              <layer nLadders="38" phi0="0.000000000e+00">
- 		<ladder distance="483" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="749.8" radLength="2.134851878e+02"/>
- 		<sensitive distance="483" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="749.8" radLength="2.134851878e+02"/>
-              </layer>
-
-              <layer nLadders="58" phi0="0.000000000e+00">
- 		<ladder distance="725.5" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="1013.9" radLength="2.134851878e+02"/>
- 		<sensitive distance="725.5" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="1013.9" radLength="2.134851878e+02"/>
-              </layer>
-
-              <layer nLadders="80" phi0="0.000000000e+00">
- 		<ladder distance="988.5" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="1272.3" radLength="2.134851878e+02"/>
- 		<sensitive distance="988.5" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="1272.3" radLength="2.134851878e+02"/>
-              </layer>
-
-              <layer nLadders="102" phi0="0.000000000e+00">
- 		<ladder distance="1239" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="1535.7" radLength="2.134851878e+02"/>
- 		<sensitive distance="1239" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="1535.7" radLength="2.134851878e+02"/>
-              </layer>
+                <!-- THIS IS THE Si TRACKER-->
+                <layer nLadders="20" phi0="0.000000000e+00">
+                    <ladder distance="230" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="578" radLength="2.134851878e+02"/>
+                    <sensitive distance="230" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="578" radLength="2.134851878e+02"/>
+                </layer>
+                
+                <layer nLadders="38" phi0="0.000000000e+00">
+                    <ladder distance="483" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="749.8" radLength="2.134851878e+02"/>
+                    <sensitive distance="483" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="749.8" radLength="2.134851878e+02"/>
+                </layer>
+                
+                <layer nLadders="58" phi0="0.000000000e+00">
+                    <ladder distance="725.5" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="1013.9" radLength="2.134851878e+02"/>
+                    <sensitive distance="725.5" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="1013.9" radLength="2.134851878e+02"/>
+                </layer>
+                
+                <layer nLadders="80" phi0="0.000000000e+00">
+                    <ladder distance="988.5" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="1272.3" radLength="2.134851878e+02"/>
+                    <sensitive distance="988.5" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="1272.3" radLength="2.134851878e+02"/>
+                </layer>
+                
+                <layer nLadders="102" phi0="0.000000000e+00">
+                    <ladder distance="1239" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00"  length="1535.7" radLength="2.134851878e+02"/>
+                    <sensitive distance="1239" thickness="1.000000000e+00"  width="9.988891763e+01" offset="0.000000000e+00" length="1535.7" radLength="2.134851878e+02"/>
+                </layer>
             </layers>
             <parameter name="sensor_length_mm" type="double" value="9.200000000e+01" />
             <parameter name="strip_angle_deg" type="double" value="7.000000000e+00" />
@@ -216,12 +216,12 @@
             <parameter name="FTDDiskSiThickness" type="DoubleVec" value="0.05 0.05 0.05 0.05 0.05 0.05 0.05  0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05 0.05" />
             <parameter name="FTDDiskSupportThickness" type="DoubleVec" value="0.076 0.076 0.076 0.076 0.076 0.076 0.0766  1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1" />
             <!--parameter name="FTDInnerRadius" type="DoubleVec" value="32.696 32.696 32.696 32.696 32.696 32.696 46.8854 79.4241 125.53 171.662 217.766" />
-            <parameter name="FTDOuterRadius" type="DoubleVec" value="102 102 102 102 102 102 175 320 320 320 320" />
-            <parameter name="FTDZCoordinate" type="DoubleVec" value="159.988 162.009 207.012 208.986 254.998 256.996 382.11 665.05 1065.96 1467.11 1868" /-->
+             <parameter name="FTDOuterRadius" type="DoubleVec" value="102 102 102 102 102 102 175 320 320 320 320" />
+             <parameter name="FTDZCoordinate" type="DoubleVec" value="159.988 162.009 207.012 208.986 254.998 256.996 382.11 665.05 1065.96 1467.11 1868" /-->
             <parameter name="FTDInnerRadius" type="DoubleVec" value="27 27 27 28.1 32.8 58.2 96.4 206.7 304.0 399.2 206.7 304.0 399.2 493.5 580.7 658.7 206.7 304.0 399.2 493.5 580.7 658.7 748.4 829.2 913.4 206.7 304.0 399.2 493.5 580.7 658.7 748.4 829.2 913.4 996.0 1079.2 1161.9" />
             <parameter name="FTDOuterRadius" type="DoubleVec" value="115 115 115 115 168.7 168.7 168.7 306.7 404.0 499.2 306.7 404.0 499.2 583.5 670.7 748.7 306.7 404.0 499.2 583.5 670.7 748.7 848.4 919.2 1003.4 306.7 404.0 499.2 583.5 670.7 748.7 841.4 919.2 1003.4 1096.0 1169.2 1251.9" />
             <parameter name="FTDZCoordinate" type="DoubleVec" value="120 160 200 240 280 500 830 787.1 778.8 770.5 1073.3 1065.0 1056.7 1048.5 1041.1 1033.7 1353.8 1345.5 1337.2 1329.0 1321.6 1314.2 1306.8 1299.5 1292.2 1639.2 1630.8 1622.6 1614.3 1606.9 1599.6 1592.2 1584.9 1577.6 1570.2 1562.9 1555.6" />
-
+            
         </detector>
         <detector name="MokkaParameters" geartype="GearParameters">
             <parameter name="Ecal_endcap_outer_radius" type="string" value="2088.8" />
@@ -253,7 +253,7 @@
             <parameter name="tracker_region_rmax" type="string" value="1842.9" />
             <parameter name="tracker_region_zmax" type="string" value="2350" />
         </detector>
-        <detector name="SET" geartype="GearParameters">
+        <!--detector name="SET" geartype="GearParameters">
             <parameter name="SETLayerThickness" type="double" value="2.750000000e-01" />
             <parameter name="SETLayer_RadLen" type="double" value="9.366070445e+01" />
             <parameter name="SETLayer_dEdx" type="double" value="3.883432159e-04" />
@@ -264,7 +264,7 @@
             <parameter name="SETLayerRadius" type="DoubleVec" value="1835 1833" />
             <parameter name="SETSupportLayerHalfLength" type="DoubleVec" value="2350 2350" />
             <parameter name="SETSupportLayerRadius" type="DoubleVec" value="1835.64 1833.64" />
-        </detector>
+        </detector-->
         <!-- <detector name="SIT" geartype="GearParameters"> -->
         <!--     <parameter name="SITModel" type="int" value="1" /> -->
         <!--     <parameter name="SITLayerThickness" type="double" value="2.750000000e-01" /> -->
