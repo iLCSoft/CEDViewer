@@ -2,7 +2,6 @@
 #define CEDViewer_h 1
 
 #include "marlin/Processor.h"
-
 #include "lcio.h"
 #include <string>
 
@@ -88,7 +87,8 @@ class CEDViewer : public Processor {
   float     _helix_max_z;
   bool      _useTPCForLimitsOfHelix;
   int       _waitForKeyboard ;
-  
+  int       _drawHelixForPFOs;
+
   IntVec _colors ;
 
 
