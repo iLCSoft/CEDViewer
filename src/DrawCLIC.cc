@@ -560,7 +560,7 @@ void DrawCLIC::drawDetectorFromGear( gear::GearMgr* gearMgr ){
     float shift_yoke_z_plus  = z_min_yoke_ecap;
     float shift_yoke_z_minus = z_min_yoke_ecap + 2.0*thick_yoke_ecap;
     
-    
+    std::cout<<"test"<<r_min_yoke_ecap<<" "<< r_min_yoke_plug <<std::endl;
     // ========================================================================
     
     
@@ -806,8 +806,8 @@ void DrawCLIC::drawDetectorFromGear( gear::GearMgr* gearMgr ){
     }
     
     if(showYoke){
-        gTV.push_back( CEDGeoTube( r_out_yoke_plug,    r_inn_yoke_plug,            12, 12,        15.0,   0, thick_yoke_plug,  shift_yoker_z_plus,  yokeCol, yokeLayer ,0,0) ) ; //  plug YOKE +Z
-        gTV.push_back( CEDGeoTube( r_out_yoke_plug,    r_inn_yoke_plug,            12, 12,        15.0,   0, thick_yoke_plug, -shift_yoker_z_minus, yokeCol, yokeLayer ,0,0) ) ; //  plug YOKE -Z
+        gTV.push_back( CEDGeoTube( r_out_yoke_plug,    r_inn_yoke_plug,            12, 8,        15.0,   7.5, thick_yoke_plug,  shift_yoker_z_plus,  yokeCol, yokeLayer ,0,0) ) ; //  plug YOKE +Z
+        gTV.push_back( CEDGeoTube( r_out_yoke_plug,    r_inn_yoke_plug,            12, 8,        15.0,   7.5, thick_yoke_plug, -shift_yoker_z_minus, yokeCol, yokeLayer ,0,0) ) ; //  plug YOKE -Z
     }
     
     
@@ -828,8 +828,6 @@ void DrawCLIC::drawDetectorFromGear( gear::GearMgr* gearMgr ){
         gTV.push_back( CEDGeoTube( r_out_yoke_ecap,    r_inn_yoke_ecap,            8, 8,        22.5,   0, thick_yoke_ecap,  shift_yoke_z_plus,   yokeCol,  yokeLayer, 0, 0) ) ; //  endcap YOKE +Z
         gTV.push_back( CEDGeoTube( r_out_yoke_ecap,    r_inn_yoke_ecap,            8, 8,        22.5,   0, thick_yoke_ecap, -shift_yoke_z_minus,  yokeCol,  yokeLayer, 0, 0) ) ;  //  endcap YOKE -Z
     }
-    
-    
     
     // ========================================================================
     
