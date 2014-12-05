@@ -523,7 +523,6 @@ void DrawCLIC::drawDetectorFromGear( gear::GearMgr* gearMgr ){
     
     float r_out_hcal_ecap    = r_max_hcal_ecap/Cos12;
 
-	//std::cout<<"test "<<r_max_hcal_ecap <<" " <<  r_max_hcal_bar <<std::endl;
     //float r_out_hcal_ecap    = r_max_hcal_ecap  ; //fg: the encap driver writes out the outer radius...
     
     float thick_hcal_ecap    = 0.5*(z_max_hcal_ecap -
@@ -560,7 +559,6 @@ void DrawCLIC::drawDetectorFromGear( gear::GearMgr* gearMgr ){
     float shift_yoke_z_plus  = z_min_yoke_ecap;
     float shift_yoke_z_minus = z_min_yoke_ecap + 2.0*thick_yoke_ecap;
     
-    std::cout<<"test"<<r_min_yoke_ecap<<" "<< r_min_yoke_plug <<std::endl;
     // ========================================================================
     
     
@@ -655,8 +653,7 @@ void DrawCLIC::drawDetectorFromGear( gear::GearMgr* gearMgr ){
             double  sizes[3] ;
             double  center[3] ;
             unsigned int color = vxdCol;//0xFFFFFF;
-            //std::cout<<"test "<<vxd_radius<<" "<<_sensitive_offset<<std::endl;
-            
+
             center[0] = (vxd_radius*cosphi - _sensitive_offset*sinphi);
             center[1] = (vxd_radius*sinphi + _sensitive_offset*cosphi);
             center[2] = 0.0;
