@@ -67,6 +67,7 @@ def drawEvents(prev = False):
     while( event != 0 ) :
         g.ced.ced_new_event()
         g.marlinutil.drawDetectorFromGearFile( g.gearFile )
+#        g.cedviewer.drawDetectorFromGearFile( g.gearFile )
         drawEvent( event )
         g.ced.ced_send_event()
 

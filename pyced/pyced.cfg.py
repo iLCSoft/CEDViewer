@@ -2,6 +2,7 @@
 # All global variables are set here, change them if you know what you are doing.
 
 g.gearFile              = "gear_ILD_o1_v05.xml"
+#g.gearFile              = "gear_CLIC_SiD.xml"
 g.host                  = "localhost"
 g.port                  = 7286 
 g.colorScheme           = -1

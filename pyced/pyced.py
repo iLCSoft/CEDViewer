@@ -247,6 +247,7 @@ def init():
 
     g.ced = load_library( "libCED" ) 
     g.marlinutil = load_library( "libMarlinUtil" )
+#    g.cedviewer =  load_library( "libCEDViewer" )
     g.reader = LcioReader( g.fileName )
 
     g.ced.ced_register_elements()
@@ -839,6 +840,7 @@ def drawEvents(prev = False):
     while( event != 0 ) :
         g.ced.ced_new_event()
         g.marlinutil.drawDetectorFromGearFile( g.gearFile )
+#        g.cedviewer.drawDetectorFromGearFile( g.gearFile )
         drawEvent( event )
         g.ced.ced_send_event()
 
