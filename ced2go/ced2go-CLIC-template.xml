@@ -46,12 +46,39 @@
     </processor>
     
     <!--collection to be displayed ( ColName, marker type[0-2], size)-->
+
     <processor name="MyCEDViewer" type="CEDViewer">
         <parameter name="HelixMaxR" value="1265"/>
         <parameter name="HelixMaxZ" value="1657"/>
         <parameter name="DrawHelixForPFOs" value="1"/>
         <parameter name="DrawDetectorID" value="-1"/>
-        <parameter name="ColorScheme" type="int">12 </parameter>
+
+	<!-- Color Scheme - possible options:
+	      Red          0
+	      Orange       1
+	      Plum         2
+	      Violet       3
+	      Blue         4
+	      LightBlue    5
+	      Aquamarine   6
+	      Green        7
+	      Olive        8
+	      Yellow       9
+	      Dark         10
+	      Light        11
+	      Classic      12
+       -->
+        <parameter name="ColorScheme" type="int"> 12 </parameter>
+        <!--minimum energy of MCParticles to be drawn-->
+        <parameter name="MCParticleEnergyCut" type="float">1.0 </parameter>
+        <!--Use the gear parameters to define the max extent of drawing a helix-->
+        <parameter name="UseTPCForLimitsOfHelix" type="bool"> false </parameter>
+        <!--If set true generator status is ignored for MCParticles to be drawn-->
+        <parameter name="UsingParticleGun" type="bool">false </parameter>
+        <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+        <!--parameter name="Verbosity" type="string">DEBUG </parameter-->
+        <!--Wait for Keyboard before proceed-->
+        <parameter name="WaitForKeyboard" type="int">1 </parameter>
         <parameter name="DrawInLayer">
             
             BeamCalHits 0 3 1
