@@ -3,6 +3,21 @@
  release notes for CEDViewer
 
 ================================
+ ------------
+| v01-08-pre |
+ ------------
+       - adapted CED event display for CLIC-Sid detector ( M.Petric/FG)
+          - added new processor DrawCLIC
+       	     - overwrites the drawDetectorFromGEAR method in MarlinUtil
+               ( eventually this code should go to MarlinUtil)
+	     - uses different colors for detector (hardcoded)
+          - added option DrawHelixForPFOs to CEDViewer
+            -> draws the helix in the same colors as the PFO hits
+
+          - added gear file and template to ced2go, use e.g.:
+            ced2go -d ./ced2go/gear_CLIC_SiD.xml -t ./ced2go/ced2go-CLIC-template.xml h_nunu_rec_4019_20994.slcio
+
+
  -----------
 | v01-07-02 |
  -----------
