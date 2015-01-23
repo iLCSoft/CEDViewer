@@ -23,10 +23,10 @@
         
         <!-- limit the number of processed records (run+evt): -->
         <parameter name="MaxRecordNumber" value="5001" />
-        <parameter name="SkipNEvents" value="3" />
+        <parameter name="SkipNEvents" value="0" />
         <parameter name="SupressCheck" value="false" />
         <parameter name="GearXMLFile"> $GearXMLFile$ </parameter>
-        <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> MESSAGE  </parameter>
+        <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> DEBUG MESSAGE  </parameter>
         <!-- parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> MESSAGE  </parameter -->
         
     </global>
@@ -173,9 +173,9 @@
     <processor name="MyDSTViewer" type="DSTViewer">
         <!--CED based event display for DST files-->
         <!--Jet Collections Names'-->
-        <parameter name="JetCollections" type="StringVec" lcioInType="ReconstructedParticle"> Durham_2Jets Durham_3Jets Durham_4Jets Durham_5Jets Durham_6Jets </parameter>
+        <parameter name="JetCollections" type="StringVec" lcioInType="ReconstructedParticle"> Jets Durham_2Jets Durham_3Jets Durham_4Jets Durham_5Jets Durham_6Jets </parameter>
         <!--Particle Collection Name-->
-        <parameter name="ParticleCollection" type="string" lcioInType="ReconstructedParticle"> PandoraPFOs </parameter>
+        <parameter name="ParticleCollection" type="string" lcioInType="ReconstructedParticle"> SelectedPandoraPFOCollection PandoraPFOs </parameter>
         <!--Layer for Reco Particles-->
         <parameter name="LayerReco" type="int" value="9"/>
         <!--Magnetic Field-->

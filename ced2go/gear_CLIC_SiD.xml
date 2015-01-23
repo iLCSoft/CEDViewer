@@ -3,30 +3,30 @@
     <!--Gear XML file automatically created with GearXML::createXMLFile ....-->
     <BField type="ConstantBField" x="0.000000000e+00" y="0.000000000e+00" z="4.000000000e+00" />
     <detectors>
-        <!-- <detector geartype="TPCParameters" name="TPC"> -->
-        <!--     <maxDriftLength value="2.249940000e+03" /> -->
-        <!--     <driftVelocity value="0.000000000e+00" /> -->
-        <!--     <coordinateType value="polar" /> -->
-        <!--     <modules> -->
-        <!--         <module> -->
-        <!--             <moduleID value="0" /> -->
-        <!--             <readoutFrequency value="0.000000000e+00" /> -->
-        <!--             <PadRowLayout2D type="FixedPadSizeDiskLayout" rMin="3.950000000e+02" rMax="1.739000000e+03" padHeight="6.000000000e+00" padWidth="1.000000000e+00" maxRow="224" padGap="0.000000000e+00" /> -->
-        <!--             <offset x_r="0.000000000e+00" y_phi="0.000000000e+00" /> -->
-        <!--             <angle value="0.000000000e+00" /> -->
-        <!--             <enlargeActiveAreaBy value="0.000000000e+00" /> -->
-        <!--         </module> -->
-        <!--     </modules> -->
-        <!--     <parameter name="TPCGasProperties_RadLen" type="double" value="1.155205461e+05" /> -->
-        <!--     <parameter name="TPCGasProperties_dEdx" type="double" value="2.677717223e-07" /> -->
-        <!--     <parameter name="TPCWallProperties_RadLen" type="double" value="8.896317758e+01" /> -->
-        <!--     <parameter name="TPCWallProperties_dEdx" type="double" value="4.364990088e-04" /> -->
-        <!--     <parameter name="tpcInnerRadius" type="double" value="3.290000000e+02" /> -->
-        <!--     <parameter name="tpcInnerWallThickness" type="double" value="1.160000000e+00" /> -->
-        <!--     <parameter name="tpcIonPotential" type="double" value="3.200000000e-08" /> -->
-        <!--     <parameter name="tpcOuterRadius" type="double" value="1.808000000e+03" /> -->
-        <!--     <parameter name="tpcOuterWallThickness" type="double" value="1.780000000e+00" /> -->
-        <!-- </detector> -->
+        <detector geartype="TPCParameters" name="TPC">
+            <maxDriftLength value="1657" />
+            <driftVelocity value="0.000000000e+00" />
+            <coordinateType value="polar" />
+            <modules>
+                <module>
+                    <moduleID value="0" />
+                    <readoutFrequency value="0.000000000e+00" />
+                    <PadRowLayout2D type="FixedPadSizeDiskLayout" rMin="3.950000000e+02" rMax="1265.0" padHeight="6.000000000e+00" padWidth="1.000000000e+00" maxRow="224" padGap="0.000000000e+00" />
+                    <offset x_r="0.000000000e+00" y_phi="0.000000000e+00" />
+                    <angle value="0.000000000e+00" />
+                    <enlargeActiveAreaBy value="0.000000000e+00" />
+                </module>
+            </modules>
+            <parameter name="TPCGasProperties_RadLen" type="double" value="1.155205461e+05" />
+            <parameter name="TPCGasProperties_dEdx" type="double" value="2.677717223e-07" />
+            <parameter name="TPCWallProperties_RadLen" type="double" value="8.896317758e+01" />
+            <parameter name="TPCWallProperties_dEdx" type="double" value="4.364990088e-04" />
+            <parameter name="tpcInnerRadius" type="double" value="3.290000000e+02" />
+            <parameter name="tpcInnerWallThickness" type="double" value="1.160000000e+00" />
+            <parameter name="tpcIonPotential" type="double" value="3.200000000e-08" />
+            <parameter name="tpcOuterRadius" type="double" value="1265.0" />
+            <parameter name="tpcOuterWallThickness" type="double" value="0" />
+        </detector>
         <detector name="EcalBarrel" geartype="CalorimeterParameters">
             <layout type="Barrel" symmetry="12" phi0="0.000000000e+00" />
             <dimensions inner_r="1265" outer_z="1765" />
