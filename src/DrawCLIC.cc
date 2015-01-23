@@ -110,23 +110,23 @@ void DrawCLIC::drawDetectorFromGear( gear::GearMgr* gearMgr ){
     //
     
     //############ TPC #########################
-    bool showTPC=true;
-    
-    float r_min_tpc = 0;
-    float r_max_tpc = 0;
-    float z_max_tpc = 0;
-    
-    try{
-        const gear::TPCParameters&  pTPC      = gearMgr->getTPCParameters();
+  bool showTPC=false ;//true;
+  
+  float r_min_tpc = 0;
+  float r_max_tpc = 0;
+  float z_max_tpc = 0;
+  
+  // try{
+  //       const gear::TPCParameters&  pTPC      = gearMgr->getTPCParameters();
         
-        // Multi-module support
-        const gear::DoubleVec&      planeExt  = pTPC.getPlaneExtent();
-        r_min_tpc = planeExt[0];
-        r_max_tpc = planeExt[1];
-        z_max_tpc = pTPC.getMaxDriftLength();
-    }catch(gear::UnknownParameterException& e){
-        showTPC=false;
-    }
+  //       // Multi-module support
+  //       const gear::DoubleVec&      planeExt  = pTPC.getPlaneExtent();
+  //       r_min_tpc = planeExt[0];
+  //       r_max_tpc = planeExt[1];
+  //       z_max_tpc = pTPC.getMaxDriftLength();
+  //   }catch(gear::UnknownParameterException& e){
+  //       showTPC=false;
+  //   }
     
     
     // ########## F #####################

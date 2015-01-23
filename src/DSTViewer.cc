@@ -35,6 +35,7 @@ using namespace marlin ;
 #define CLUSTER_LAYER	        9
 #define HIT_LAYER		0
 /** Jet layers... */
+#define JET_DEFAULT_LAYER      11 
 #define JET2_LAYER		1
 #define JET3_LAYER		1
 #define JET4_LAYER		1
@@ -301,6 +302,13 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 
 	float phi = cluster->getIPhi();
 	float theta = cluster->getITheta();
+
+	if( phi ==0. && theta==0.){
+	  // use the cluster postion:
+	  theta = atan( sqrt( center[0]*center[0] + center[1]*center[1] ) / center[2]  ) ;
+	  phi = atan2( center[1] , center[0] ) ;
+	}
+
 	float eneCluster = cluster->getEnergy();
 
 	double rotate[] = {0.0, 0.0, 0.0};
@@ -773,7 +781,7 @@ int DSTViewer::returnIpLayer(std::string jetColName){
 	
 int DSTViewer::returnJetLayer(std::string jetColName){
 		
-  int layer = BACKUP_LAYER;
+  int layer = JET_DEFAULT_LAYER;
 
   if (jetColName == "Durham_2Jets"){
     layer = JET2_LAYER;
@@ -789,9 +797,6 @@ int DSTViewer::returnJetLayer(std::string jetColName){
   }
   else if (jetColName == "Durham_6Jets"){
     layer = JET6_LAYER;
-  }
-  else {
-    layer = BACKUP_LAYER;
   }
 	
   return layer;	
@@ -857,77 +862,29 @@ int DSTViewer::returnJetColor(std::string jetColName, int colNumber){
   //int lightblue = 0x55a558e6;
   //int khaki = 0x55f0e68c;
 
-	
-  if (jetColName == "Durham_2Jets"){
-    if (colNumber == 0){
-      color = yellow;
-    }
-    if (colNumber == 1){
-      color = red;
-    }
-  }
-  else if (jetColName == "Durham_3Jets"){
-    if (colNumber == 0){
-      color = yellow;
-    }
-    if (colNumber == 1){
-      color = red;
-    }
-    if (colNumber == 2){
-      color = white;
-    }
-  }
-  else if (jetColName == "Durham_4Jets"){
-    if (colNumber == 0){
-      color = yellow;
-    }
-    if (colNumber == 1){
-      color = red;
-    }
-    if (colNumber == 2){
-      color = white;
-    }
-    if (colNumber == 3){
-      color = fuchsia;
-    }
-  }
-  else if (jetColName == "Durham_5Jets"){
-    if (colNumber == 0){
-      color = yellow;
-    }
-    if (colNumber == 1){
-      color = red;
-    }
-    if (colNumber == 2){
-      color = white;
-    }
-    if (colNumber == 3){
-      color = fuchsia;
-    }
-    if (colNumber == 4){
-      color = black;
-    }
-  }
-  else if (jetColName == "Durham_6Jets"){
-    if (colNumber == 0){
-      color = yellow;
-    }
-    if (colNumber == 1){
-      color = red;
-    }
-    if (colNumber == 2){
-      color = white;
-    }
-    if (colNumber == 3){
-      color = fuchsia;
-    }
-    if (colNumber == 4){
-      color = black;
-    }
-    if (colNumber == 5){
-      color = green;
-    }
-  }
+  // assign the color based on the index in the parameter JetCollections in the steering file
+
+  switch (colNumber){
+  case 0:
+    color = yellow;
+    break ;
+  case 1:
+    color = red;
+    break ;
+  case 2:
+    color = white;
+    break ;
+  case 3:
+    color = fuchsia;
+    break ;
+  case 4:
+    color = black;
+    break ;
+  case 5:
+    color = green;
+    break ;
+
+  } 
 	
   return color;	
 }
