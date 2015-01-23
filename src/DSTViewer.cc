@@ -63,29 +63,29 @@ void DSTViewer::writeLayerDescription(void){
     MarlinCED::set_layer_description("", i);
     }
   */
-  MarlinCED::add_layer_description("Pions", PION_LAYER	>>CED_LAYER_SHIFT);    
-  MarlinCED::add_layer_description("Photons", PHOTON_LAYER	>>CED_LAYER_SHIFT);    
-  MarlinCED::add_layer_description("Neutrons", NEUTRON_LAYER>>CED_LAYER_SHIFT);	   	
-  MarlinCED::add_layer_description("NHadr", NHADR_LAYER  >>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("CHadr", CHADR_LAYER  >>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("TPC", TPC_LAYER    >>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("ECAL", ECAL_LAYER   >>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("HCAL", HCAL_LAYER   >>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("Clusters", CLUSTER_LAYER>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("Hits", HIT_LAYER	>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("JET2", JET2_LAYER	>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("JET3", JET3_LAYER	>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("JET4", JET4_LAYER	>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("JET5", JET5_LAYER	>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("JET6", JET6_LAYER	>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("MOM", MOM_LAYER	>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("Backup1", BACKUP_LAYER	>>CED_LAYER_SHIFT);    
-  MarlinCED::add_layer_description("Backup2", BACKUP_LAYER2>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("IP_JET2", IP_JET2		>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("IP_JET3", IP_JET3		>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("IP_JET4", IP_JET4		>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("IP_JET5", IP_JET5		>>CED_LAYER_SHIFT);	
-  MarlinCED::add_layer_description("IP_JET6", IP_JET6		>>CED_LAYER_SHIFT);	
+  MarlinCED::add_layer_description("Pions", PION_LAYER	);    
+  MarlinCED::add_layer_description("Photons", PHOTON_LAYER	);    
+  MarlinCED::add_layer_description("Neutrons", NEUTRON_LAYER);	   	
+  MarlinCED::add_layer_description("NHadr", NHADR_LAYER  );	
+  MarlinCED::add_layer_description("CHadr", CHADR_LAYER  );	
+  MarlinCED::add_layer_description("TPC", TPC_LAYER    );	
+  MarlinCED::add_layer_description("ECAL", ECAL_LAYER   );	
+  MarlinCED::add_layer_description("HCAL", HCAL_LAYER   );	
+  MarlinCED::add_layer_description("Clusters", CLUSTER_LAYER);	
+  MarlinCED::add_layer_description("Hits", HIT_LAYER	);	
+  MarlinCED::add_layer_description("JET2", JET2_LAYER	);	
+  MarlinCED::add_layer_description("JET3", JET3_LAYER	);	
+  MarlinCED::add_layer_description("JET4", JET4_LAYER	);	
+  MarlinCED::add_layer_description("JET5", JET5_LAYER	);	
+  MarlinCED::add_layer_description("JET6", JET6_LAYER	);	
+  MarlinCED::add_layer_description("MOM", MOM_LAYER	);	
+  MarlinCED::add_layer_description("Backup1", BACKUP_LAYER	);    
+  MarlinCED::add_layer_description("Backup2", BACKUP_LAYER2);	
+  MarlinCED::add_layer_description("IP_JET2", IP_JET2		);	
+  MarlinCED::add_layer_description("IP_JET3", IP_JET3		);	
+  MarlinCED::add_layer_description("IP_JET4", IP_JET4		);	
+  MarlinCED::add_layer_description("IP_JET5", IP_JET5		);	
+  MarlinCED::add_layer_description("IP_JET6", IP_JET6		);	
 }
 
 
@@ -247,12 +247,12 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 				<< " Charge = " << charge
 				<< " E  = " << ene << std::endl;
 				
-      int ml = marker | TPC_LAYER; // this defines the default layer 1
+      int ml = marker | ( TPC_LAYER<<CED_LAYER_SHIFT) ; // this defines the default layer 1
       if (type == 22){
-	ml = marker | ECAL_LAYER; // photons on layer 2
+	ml = marker | (ECAL_LAYER<<CED_LAYER_SHIFT); // photons on layer 2
       }
       if (type ==2112){
-	ml = marker | NEUTRON_LAYER; //neutrons on layer 3
+	ml = marker | (NEUTRON_LAYER<<CED_LAYER_SHIFT); //neutrons on layer 3
       }
 
       int color = returnTrackColor(type);
