@@ -88,8 +88,8 @@ class CEDViewer : public Processor {
   bool      _useTPCForLimitsOfHelix;
   int       _waitForKeyboard ;
   int       _drawHelixForPFOs;
-
-  IntVec _colors ;
+  int       _useColorForHelixTracks ;
+  IntVec    _colors ;
 
 
   int _nRun ;

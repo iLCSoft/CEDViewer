@@ -143,6 +143,11 @@ CEDViewer::CEDViewer() : Processor("CEDViewer") {
                                "draw a helix for PFO objects (usefull for Si tracker): 0: disabled, 1: enabled",
                                _drawHelixForPFOs,
                                (int)0);
+
+    registerProcessorParameter("UseColorForHelixTracks",
+                               "draw helices in the color of the track/PFO: 0: disabled (lightgrey), 1: enabled",
+                               _useColorForHelixTracks,
+                               (int)0);
  
 }
 
@@ -456,6 +461,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                 layer = ( layer > -1 ? layer : TRACK_LAYER ) ;
                 drawParameters[np].Layer = layer ;
                 
+                int color = _colors[ i % _colors.size() ] ;
+
                 MarlinCED::add_layer_description(colName, layer);
                 
                 for( TrackerHitVec::const_iterator it = hits.begin();  it != hits.end() ; it++ ) {
@@ -464,7 +471,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                     ced_hit_ID( (*it)->getPosition()[0],
                                (*it)->getPosition()[1],
                                (*it)->getPosition()[2],
-                               marker, layer , size , _colors[ i % _colors.size() ], trk->id() ) ;
+                               marker, layer , size , color , trk->id() ) ;
                     
                 } // hits
                 
@@ -498,7 +505,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                         ced_hit_ID( ts->getReferencePoint()[0],
                                    ts->getReferencePoint()[1],
                                    ts->getReferencePoint()[2],
-                                   1 , layer , size*10 , _colors[ i % _colors.size() ], trk->id() ) ;
+                                   1 , layer , size*10 , color , trk->id() ) ;
                         break ;
                 }
                 
@@ -541,10 +548,13 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                         
                         const int ml = marker | ( layer << CED_LAYER_SHIFT ) ;
                         
+                        int helixColor = ( _useColorForHelixTracks ? color : 0xdddddd ) ;
+                        
                         MarlinCED::drawHelix( bField , charge, xs, ys, zs ,
-                                             px, py, pz, ml , 1 ,  0xdddddd  ,
+                                             px, py, pz, ml ,  2 , helixColor  ,
                                              0.0, _helix_max_r,
                                              _helix_max_z, trk->id() ) ;
+
                     }
                     
                 }
@@ -745,8 +755,6 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                 
             } else { // LCIO::TRACKERHITPLANE
                 
-                // draw strips for SIT hits - a marker else
-                
                 lcio::CellIDDecoder<TrackerHitPlane> dec( col ) ;
                 
                 LCTypedVector<TrackerHitPlane> hits( col ) ;
@@ -757,25 +765,22 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                     
                     gear::Vector3D p( h->getPosition()[0] ,  h->getPosition()[1] ,  h->getPosition()[2] ) ;
                     
-                    // trkHit->setType( UTIL::set_bit( trkHit->getType() ,  UTIL::ILDTrkHitTypeBit::ONE_DIMENSIONAL ) ) ;
-                    int det =  dec(h)[ lcio::ILDCellID0::subdet ] ;
-                    if( det !=  lcio::ILDDetID::SIT &&  det !=  lcio::ILDDetID::SET ) {
                         
-                        ced_hit_ID( p[0], p[1], p[2], marker, layer , size , color, h->id() );
+                    ced_hit_ID( p[0], p[1], p[2], marker, layer , size , color, h->id() );
                         
-                        continue ;
+                    
+                    // draw an additional line for strip hits 
+                    if(  BitSet32( h->getType() )[ ILDTrkHitTypeBit::ONE_DIMENSIONAL ] ) {
+
+                      double strip_half_length = 50. ; //FIXME: need to get the proper strip length (from the surface !?) 
+                      gear::Vector3D v( strip_half_length , h->getV()[1] ,  h->getV()[0] , gear::Vector3D::spherical ) ;
+                      
+                      gear::Vector3D x0 = p - v ;
+                      gear::Vector3D x1 = p + v ;
+                      
+                      ced_line_ID( x0[0], x0[1], x0[2], x1[0], x1[1], x1[2],
+                                   layer , 1. , color, h->id() );
                     }
-                    
-                    double strip_half_length = 50. ; //mm
-                    gear::Vector3D v( strip_half_length , h->getV()[1] ,  h->getV()[0] , gear::Vector3D::spherical ) ;
-                    
-                    gear::Vector3D x0 = p - v ;
-                    gear::Vector3D x1 = p + v ;
-                    
-                    //        size =1 ;
-                    ced_line_ID( x0[0], x0[1], x0[2], x1[0], x1[1], x1[2],
-                                layer , 1. , color, h->id() );
-                    
                 }
             }
             
@@ -922,8 +927,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                                 double ys = ts->getReferencePoint()[1] +  ts->getD0() * cos( ts->getPhi() ) ;
                                 double zs = ts->getReferencePoint()[2] +  ts->getZ0() ;
                                 
+                                int helixColor = ( _useColorForHelixTracks ? color : 0xdddddd ) ;
+
                                 //helix
-                                MarlinCED::drawHelix(bField, charge, xs, ys, zs, px, py, pz, marker|(layer<<CED_LAYER_SHIFT), size/2, color, 0.0, _helix_max_r, _helix_max_z, part->id() ); //hauke: add id
+                                MarlinCED::drawHelix(bField, charge, xs, ys, zs, px, py, pz, marker|(layer<<CED_LAYER_SHIFT), size/2, 
+                                                     helixColor, 0.0, _helix_max_r, _helix_max_z, part->id() ); //hauke: add id
                             }
                         }
                     }

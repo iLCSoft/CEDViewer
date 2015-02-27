@@ -52,6 +52,8 @@
         <parameter name="HelixMaxZ" value="1657"/>
         <parameter name="DrawHelixForPFOs" value="1"/>
         <parameter name="DrawDetectorID" value="-1"/>
+        <parameter name="UseColorForHelixTracks" value="1"/>
+
 
 	<!-- Color Scheme - possible options:
 	      Red          0
