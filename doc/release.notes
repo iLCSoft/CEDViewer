@@ -3,9 +3,28 @@
  release notes for CEDViewer
 
 ================================
+ -------------
+| v01-10-pre  |
  ------------
-| v01-08-pre |
- ------------
+
+   - F.Gaede
+    - added DrawDetectorDD4hep ( experimental and incomplete )
+    
+    => depends now on DD4hep/Root
+
+
+ -----------
+| v01-09-01 | patch release
+ -----------
+
+   - M.Petric:
+     - updated ced2go template files for new CLIC simulation model
+
+
+ --------
+| v01-09 |
+ --------
+
        - adapted CED event display for CLIC-Sid detector ( M.Petric/FG)
           - added new processor DrawCLIC
        	     - overwrites the drawDetectorFromGEAR method in MarlinUtil
@@ -17,6 +36,8 @@
           - added gear file and template to ced2go, use e.g.:
             ced2go -d ./ced2go/gear_CLIC_SiD.xml -t ./ced2go/ced2go-CLIC-template.xml h_nunu_rec_4019_20994.slcio
 
+
+v01-08 - does not exist 
 
  -----------
 | v01-07-02 |
