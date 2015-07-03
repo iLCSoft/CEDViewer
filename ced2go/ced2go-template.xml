@@ -4,9 +4,9 @@
 
 <!-- Loading shared library : /afs/desy.de/group/it/ilcsoft/v01-07/CEDViewer/v00-07-01/lib/libCEDViewer.so -->
 <!--##########################################
-    #                                        #
+    #                         #
     #     Example steering file for marlin   #
-    #                                        #
+    #                         #
     ##########################################-->
 
 
@@ -41,7 +41,7 @@ $LCIOInputFiles$
 </processor>
 
 
-  <!--collection to be displayed ( ColName, marker type[0-2], size)-->
+  <!--collection to be displayed ( ColName, marker type[0-2], size, layer)-->
 <processor name="MyCEDViewer" type="CEDViewer">
     <parameter name="DrawInLayer"> 
        
@@ -53,14 +53,21 @@ $LCIOInputFiles$
        TPCCollection 0 3 1
        SETCollection 0 3 1
        ETDCollection 0 3 1
+
+       VertexBarrelCollection 0 5 1
+       VertexEndcapCollection 0 5 1
+       InnerTrackerBarrelCollection 0 5 1
+       InnerTrackerEndcapCollection 0 5 1
+       OuterTrackerBarrelCollection 0 5 1
+       OuterTrackerEndcapCollection 0 5 1
        
-       VXDTrackerHits       1 10  11
-       SITTrackerHits       1 10  11
-       TPCTrackerHits       1  5  11
-       FTDTrackerHits       1 10  11
-       FTDStripTrackerHits  1 10  11
-       FTDPixelTrackerHits  1 10  11
-       FTDSpacePoints       1 10  11
+       VXDTrackerHits       0  5  11
+       SITTrackerHits       0  5  11
+       TPCTrackerHits       0  5  11
+       FTDTrackerHits       0  5  11
+       FTDStripTrackerHits  0  5  11
+       FTDPixelTrackerHits  0  5  11
+       FTDSpacePoints       0  5  11
 
        HcalEndCapsCollection       0 3 2
        LHcalCollection             0 3 2
@@ -75,6 +82,17 @@ $LCIOInputFiles$
        EcalEndcapSiliconPreShower  0 3 2  
        HcalBarrelRegCollection     0 3 2
        HcalEndCapRingsCollection   0 3 2
+
+       ECalBarrelCollection 0 3 2
+       ECalEndcapCollection 0 3 2
+       ECalPlugCollection 0 3 2
+       HCalBarrelCollection 0 3 2
+       HCalEndcapCollection 0 3 2
+       HCalRingCollection 0 3 2
+       YokeBarrelCollection 0 3 2
+       YokeEndcapCollection 0 3 2
+       LumiCalCollection 0 3 2
+       BeamCalCollection 0 3 2
 
 
        HCALEndcap   0 5 12
@@ -101,63 +119,35 @@ $LCIOInputFiles$
        MCParticle 0 3 0
 
 
+       VertexBarrelHits 0 5 11
+       VertexEndcapHits 0 5 11
+       InnerTrackerBarrelHits 0 5 11
+       InnerTrackerEndcapHits 0 5 11
+       OuterTrackerBarrelHits 0 5 11
+       OuterTrackerEndcapHits 0 5 11
+
+       ECalBarrelHits 0 3 12
+       ECalEndcapHits 0 3 12
+       ECalPlugHits 0 3 12
+       HCalBarrelHits 0 3 12
+       HCalEndcapHits 0 3 12
+       HCalRingHits 0 3 12
+       YokeBarrelHits 0 3 12
+       YokeEndcapHits 0 3 12
+       LumiCalHits 0 3 12
+       BeamCalHits 0 3 12
+       
+       Tracks 0 3 3
+
+       SelectedPandoraPFOCollection 0 3 4
+       LooseSelectedPandoraPFOCollection 0 3 5
+       TightSelectedPandoraPFOCollection 0 3 6
+       PandoraPFOCollection 0 3 7
+
+
 
 
      </parameter>
-  <XXXparameter name="DrawCollection" type="StringVec">
-
-
-    VXDCollection                 0  1
-    SITCollection                 0  1
-    TPCCollection                 0  1
-    ETDCollection                 0  1
-    FTDCollection                 0  1
-    SETCollection                 0  1
-
-    VTXTrackerHits                2  4
-    SITTrackerHits                2  4
-    AllTPCTrackerHits             2  4
-    ETDTrackerHits                2  4
-    FTDTrackerHits                2  4
-    SETTrackerHits                2  4
-
-    LDCTracks                     0  1
-
-    MuonBarrelCollection          0  1
-    MuonEndCapCollection          0  1
-    BeamCalCollection             0  1
-    EcalBarrelCollection          0  1
-    EcalBarrelSiliconCollection   0  1
-    EcalEndcapCollection          0  1
-    EcalEndcapSiliconCollection   0  1
-    EcalEndcapRingCollection      0  1
-    HcalBarrelRegCollection       0  1
-    HcalEndCapRingsCollection     0  1
-    HcalEndCapsCollection         0  1
-    LHcalCollection               0  1
-    LumiCalCollection             0  1
-
-    LHCAL                         0  1
-    ECALBarrel                    0  1
-    ECALEndcap                    0  1
-    BCAL                          0  1
-    HCALBarrel                    0  1
-    HCALEndcap                    0  1
-    LCAL                          0  1
-    MUON                          0  1
-
-    PandoraClusters               0  1
-
-    MCParticle                    0  1
-
-    PandoraPFOs                   0  1
-
-<!--
-    SiTracks
-    TPCTracks
-    V0RecoParticles
--->
-  </XXXparameter>
 
 </processor>
 

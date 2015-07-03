@@ -12,7 +12,6 @@
 
 <marlin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ilcsoft.desy.de/marlin/marlin.xsd">
     <execute>
-        <processor name="DrawCLIC_begin"/>
         $Viewer$
     </execute>
     
@@ -41,17 +40,12 @@
         <parameter name="FileType" type="string">xml </parameter>
     </processor>
     
-    <processor name="DrawCLIC_begin" type="DrawCLIC">
-        <parameter name="DrawDetector" value="1"/>
-    </processor>
-    
     <!--collection to be displayed ( ColName, marker type[0-2], size)-->
 
     <processor name="MyCEDViewer" type="CEDViewer">
-        <parameter name="HelixMaxR" value="1265"/>
-        <parameter name="HelixMaxZ" value="1657"/>
+        <parameter name="HelixMaxR" value="1510"/>
+        <parameter name="HelixMaxZ" value="2360"/>
         <parameter name="DrawHelixForPFOs" value="1"/>
-        <parameter name="DrawDetectorID" value="-1"/>
         <parameter name="UseColorForHelixTracks" value="1"/>
 
 
@@ -82,22 +76,42 @@
         <!--Wait for Keyboard before proceed-->
         <parameter name="WaitForKeyboard" type="int">1 </parameter>
         <parameter name="DrawInLayer">
-            
-            BeamCalHits 0 3 1
-            EcalBarrelHits 0 3 1
-            EcalEndcapHits 0 3 1
-            HcalBarrelHits 0 3 1
-            HcalEndcapHits 0 3 1
-            HcalPlugHits 0 3 1
-            LumiCalHits 0 3 1
-            MuonBarrelHits 0 3 1
-            MuonEndcapHits 0 3 1
-            
-            SiTrackerBarrelHits 0 3 2
-            SiTrackerEndcapHits 0 3 2
-            SiTrackerForwardHits 0 3 2
-            SiVertexBarrelHits 0 3 2
-            SiVertexEndcapHits 0 3 2
+
+            VertexBarrelCollection 0 5 1
+            VertexEndcapCollection 0 5 1
+            InnerTrackerBarrelCollection 0 5 1
+            InnerTrackerEndcapCollection 0 5 1
+            OuterTrackerBarrelCollection 0 5 1
+            OuterTrackerEndcapCollection 0 5 1
+
+            ECalBarrelCollection 0 3 2
+            ECalEndcapCollection 0 3 2
+            ECalPlugCollection 0 3 2
+            HCalBarrelCollection 0 3 2
+            HCalEndcapCollection 0 3 2
+            HCalRingCollection 0 3 2
+            YokeBarrelCollection 0 3 2
+            YokeEndcapCollection 0 3 2
+            LumiCalCollection 0 3 2
+            BeamCalCollection 0 3 2
+
+            VertexBarrelHits 0 5 11
+            VertexEndcapHits 0 5 11
+            InnerTrackerBarrelHits 0 5 11
+            InnerTrackerEndcapHits 0 5 11
+            OuterTrackerBarrelHits 0 5 11
+            OuterTrackerEndcapHits 0 5 11
+
+            ECalBarrelHits 0 3 12
+            ECalEndcapHits 0 3 12
+            ECalPlugHits 0 3 12
+            HCalBarrelHits 0 3 12
+            HCalEndcapHits 0 3 12
+            HCalRingHits 0 3 12
+            YokeBarrelHits 0 3 12
+            YokeEndcapHits 0 3 12
+            LumiCalHits 0 3 12
+            BeamCalHits 0 3 12
             
             Tracks 0 3 3
 
