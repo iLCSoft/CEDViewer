@@ -53,14 +53,37 @@ class DrawDetectorDD4hep : public Processor {
    */
   virtual void end() ;
 
-  static void drawDD4hepDetector( DD4hep::Geometry::LCDD& lcdd) ;
+  //remove 'static' to access new defined parameter
+  bool detailledDrawing(std::string detName);
+  void drawDD4hepDetector( DD4hep::Geometry::LCDD& lcdd) ;
   
   
  protected:
   bool _begin;
   int _nRun ;
   int _nEvt ;
+  StringVec _detailled;
+
 } ;
+
+
+//Set of geometric parameters for initialization of a CEDGeoTube class object
+struct CEDGeoTubeParams {
+  double Rmax; double Rmin; double inner_symmetry; double outer_symmetry; double phi0; double delta_phi; double delta_z; double z0; 
+  //boolean that decides if the GeoTube is drawn twice at two different zPositions
+  bool isBarrel;
+};
+//Set of geometric parameters for initialization of a CEDGeoBox class object
+struct CEDGeoBox {
+  double  sizes[3] ;
+  double  center[3] ;
+  double rotate[3];
+};
+//Convenient summary of both parameter sets above as (tracker) layers may be drawn as one tube or as a sequence of staves (-->GeoBox)
+struct LayerGeometry {
+  CEDGeoTubeParams tube;
+  std::vector<CEDGeoBox> staves;
+};
 
 #endif
 
