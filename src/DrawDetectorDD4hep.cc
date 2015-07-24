@@ -410,7 +410,7 @@ void DrawDetectorDD4hep::drawDD4hepDetector( DD4hep::Geometry::LCDD& lcdd ){
     det = trackers[i] ;
     detName = trackers[i].name() ;
     ZPlanarData* trkPlanar = 0; ZDiskPetalsData* trkDisk = 0; FixedPadSizeTPCData* trkTPC = 0;
-    streamlog_out( MESSAGE ) << " ......processing THIS IS A TEST" <<  detName << std::endl; 
+    streamlog_out( MESSAGE ) << " ......processing" <<  detName << std::endl; 
     
     bool drawflag = true;
     try{ 
