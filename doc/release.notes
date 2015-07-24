@@ -3,12 +3,12 @@
  release notes for CEDViewer
 
 ================================
- -------------
-| v01-10-pre  |
- ------------
-
-   - F.Gaede
-    - added DrawDetectorDD4hep ( experimental and incomplete )
+ ---------
+| v01-10 |
+ ---------
+    T.Quast, RWTH Aachen
+    - add DrawDetectorDD4hep
+    - general detector (CLIC & ILD) drawing for the event display without GEAR
     
     => depends now on DD4hep/Root
 
