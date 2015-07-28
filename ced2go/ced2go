@@ -1,4 +1,20 @@
 #!/usr/bin/python
+
+###########################################################################
+# Modified ced2go script by Thorben Quast, 28/07/2015
+# allowing easier access to the more detailled detector drawing of CLIC/ILD
+# without GEAR. Modified/added sections are labeled.
+# 
+# Usage:
+# - "ced2go -d <rel. path of detectorFile.xml> <rel. path of slcioFile>" 
+#    triggers the new implemented drawing. CLIC and ILD geometry are 
+#    distinguished by the info tag's name attribute in the geometry file
+# - "ced2go" -d <rel. path of gearFile.xml> <rel. path of slcioFile>
+#    a gear file is assumed to be given and the drawing is performed 
+#    as usual.
+# 
+###########################################################################
+
 import sys
 import re
 if sys.version_info[0] > 2 or ( sys.version_info[0] == 2 and sys.version_info[1]>= 4):
@@ -18,22 +34,28 @@ import sys
 
 import random
 
+''' Start of addition by T. Quast '''
+from xml.dom import minidom 
+sys_path_to_ced2go_template = os.path.abspath(sys.path[0])
+resolutionString = "600x400"
+''' End of addition by T. Quast '''
 
 #templateXMLFile = "/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/template.xml"
-templateXMLFile = os.path.join( os.path.abspath(sys.path[0]), "ced2go-template.xml" )
+templateXMLFile = os.path.join( sys_path_to_ced2go_template, "ced2go-template.xml" )
 
 #Help output
 def help():
+    print "\n-------------- Help -------------"
     print "Usage: " + str(sys.argv[0]) + " [OPTION]  <LCIO Input File>"
     print "Options: "
     print "     -v            Viewer1"
     print "     -v            Viewer2"
-    print "     -d            Gearfile"
+    print "     -d            Detector description or Gear file"
     print "     -h/-?         Help"
     print "     -t            template file ["+templateXMLFile+"]"
     print "All options are optional"
     print "Viewers are e.g. CEDViewer, DSTViewer, GenericViewer"
-
+    print "---------------------------------"
 #import shlex
 #from Tkinter import *
 #import threading
@@ -42,14 +64,13 @@ def help():
 viewer   = "CEDViewer" #default viewer
 
 
-
 if not os.path.isfile(templateXMLFile):
     print "Error: Template File \"" + templateXMLFile + "\" not found!"
     sys.exit()
 
 
 #extractDetector = os.path.join( os.path.abspath(sys.path[0]), "extractdetector" )
-extractDetector = "extractdetector"  #only for test case
+extractDetector = "extractdetector"  #extractdetector.cc is located in the same directory as ced2go
 
 
 #if not os.path.isfile(extractDetector):
@@ -62,14 +83,13 @@ Marlin="Marlin"
 
 keys = {'$LCIOInputFiles$':'', 
         '$GearXMLFile$':'',
-        '$Viewer$':''
+        '$Viewer$':'',
+        '$DD4XMLFile$':''
        }
 
 #Parse the command line arguments
 try: 
     opts, args = getopt.getopt(sys.argv[1:], "hv:d:t:", "help") 
-    #print 'Opts:',opts
-    #print 'Extra parameters:',args
 except getopt.GetoptError, err:
     print str(err)
     help()
@@ -113,20 +133,31 @@ if keys['$Viewer$'] == '': #default
 if not len(args) == 1:
     help()
     sys.exit()
-
-
 #check if lcio file exists
 if not os.path.isfile(args[0]):
-    print "Error: LCIO File \"" + sys.argv[1] + "\" not found!"
+    print "Error: LCIO File \"" + args[0] + "\" not found!"
     help()
     sys.exit()
     
-keys['$LCIOInputFiles$']=args[0]
+keys['$LCIOInputFiles$']=os.path.abspath(args[0])   #this allows for relative path inputs by the user
 
 
 
 if detector != "": #user defined gearfile
-     keys['$GearXMLFile$'] = detector
+    ''' Start of addition by T. Quast '''
+    xmlDetectorFile = minidom.parse(detector)
+    if len(xmlDetectorFile.getElementsByTagName('lccdd')) > 0:
+        keys['$DD4XMLFile$'] = detector
+        templateXMLFile = os.path.join( sys_path_to_ced2go_template, "ced2go-template-DD4.xml" )
+        if xmlDetectorFile.getElementsByTagName('info')[0].attributes['name'].value.find("ILD") != -1:
+            keys['$GearXMLFile$'] = os.path.join( sys_path_to_ced2go_template.replace("bin", "ced2go"), "gear_ILD_o1_v05.xml" )
+        else:
+            keys['$GearXMLFile$'] = os.path.join( sys_path_to_ced2go_template.replace("bin", "ced2go"), "gear_CLIC_SiD.xml" )
+    else:
+        keys['$GearXMLFile$'] = detector
+    #todo: large screen option ?
+    '''End of addition by T.Quast'''
+
 else:  #find out the detector name used in the lcio file
 
     try:
@@ -160,13 +191,6 @@ else:  #find out the detector name used in the lcio file
         print "Error: Unknown detector in LCIO file - provide correct gear file on command line with option -d"
         sys.exit(1)
 
-#root = Tk()
-
-#w=Label(root, text="hello world")
-#w.pack()
-
-#root.mainloop()
-
 
 #replace the words from dict with the keywords in the template file
 templateFH = open(templateXMLFile,'r')
@@ -199,9 +223,9 @@ os.environ['CED_PORT']=str(port)
 
 #start ced and marlin
 if old:
-    os.system(CED + " -geometry 600x400" + " & sleep 1; " + Marlin  + " " + steeringFile);
+    os.system(CED + " -geometry "+resolutionString + " & sleep 1; " + Marlin  + " " + steeringFile);
 else:
-    CEDobj    = subprocess.Popen([CED,'-geometry', '600x400'])
+    CEDobj    = subprocess.Popen([CED,'-geometry', resolutionString])
     Marlinobj = subprocess.Popen([Marlin, steeringFile])
 
     #terminate the both processes when one is closed

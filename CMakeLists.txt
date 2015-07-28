@@ -111,6 +111,7 @@ INSTALL_SHARED_LIBRARY( ${libname} DESTINATION lib )
 ADD_EXECUTABLE( extractdetector ced2go/extractdetector.cc )
 INSTALL( TARGETS extractdetector DESTINATION bin )
 INSTALL( FILES ./ced2go/ced2go-template.xml DESTINATION bin )
+INSTALL( FILES ./ced2go/ced2go-template-DD4.xml DESTINATION bin )
 INSTALL( PROGRAMS ./ced2go/ced2go DESTINATION bin )
 
 

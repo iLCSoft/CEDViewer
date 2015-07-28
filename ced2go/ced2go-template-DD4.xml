@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<!--##########################################
+    #  Example default steering file for     #
+    #  ILD and CLIC when drawn via ced2go    #
+    #  Author: T.Quast, 28/07/2015            #
+    ##########################################
+Usage: This file is used instead of ced2go-template.xml if in 
+"ced2go -d <rel. path of detectorFile.xml> <rel. path of slcio-File>" 
+the detectorFile.xml contains a <lccdd> tag. 
+Otherwise, a Gear file is assumed to be given and the drawing is performed accordingly.
+  -->
+
+
+<marlin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ilcsoft.desy.de/marlin/marlin.xsd">
+ <execute>
+	 <processor name="MyInitializeDD4hep"/>
+         <processor name="MyDrawDetectorDD4hep"/>
+         <XXXprocessor name="MyDrawCLIC"/>
+   <processor name="MyCEDViewer"/>
+ </execute>
+
+ <global>
+   <parameter name="LCIOInputFiles">
+  $LCIOInputFiles$
+   </parameter> 
+   <!--The Gear file is still needed for drawing the reconstructed hits& tracks-->
+   <parameter name="GearXMLFile">
+    $GearXMLFile$
+   </parameter> 
+
+   <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> DEBUG0 MESSAGE  </parameter>  
+ </global>
+
+ <processor name="MyInitializeDD4hep" type="InitializeDD4hep">
+  <parameter name="DD4hepXMLFile">
+    $DD4XMLFile$
+  </parameter>
+</processor>
+
+ <processor name="MyDrawDetectorDD4hep" type="DrawDetectorDD4hep">
+  <parameter name="DrawDetector" type="bool">true </parameter>
+  <parameter name="DetailledDrawing">
+    VXD
+    VertexBarrel
+  </parameter>
+</processor>
+
+<processor name="MyCEDViewer" type="CEDViewer">
+    <parameter name="DrawDetectorID" value="-1"/>
+    <parameter name="DrawInLayer"> 
+      MCParticle    0 3 0 
+      
+      SITCollection   0 3 20 
+      COILCollection    0 3 19 
+      EcalBarrelSiliconCollection   0 3 18 
+      EcalBarrelSiliconPreShowerCollection    0 3 17 
+      EcalEndcapRingCollection    0 3 16 
+      EcalEndcapRingPreShowerCollection   0 3 15 
+      EcalEndcapSiliconCollection   0 3 14 
+      EcalEndcapSiliconPreShowerCollection    0 3 13 
+      FTD_PIXELCollection   0 3 12 
+      FTD_STRIPCollection   0 3 11  
+      HcalBarrelRegCollection   0 3 10 
+      HcalEndCapRingsCollection   0 3 9 
+      HcalEndCapsCollection   0 3 8 
+      LHcalCollection   0 3 7 
+      LumiCalCollection   0 3 6 
+      MuonBarrelCollection    0 3 5 
+      MuonEndCapCollection    0 3 4 
+      SETCollection   0 3 3 
+      TPCCollection   0 3 2 
+      VXDCollection   0 3 1 
+      
+
+     VertexBarrelCollection 0 5 15
+     InnerTrackerBarrelCollection 0 5 14
+     InnerTrackerEndcapCollection 0 5 13 
+     OuterTrackerBarrelCollection 0 5 12
+     OuterTrackerEndcapCollection 0 5 11              
+     HCalBarrelCollection         0 3 10
+     HCalEndcapCollection         0 3 9 
+     HCalRingCollection           0 3 8      
+     ECalBarrelCollection         0 3 7
+     ECalEndcapCollection         0 3 6 
+     ECalPlugCollection           0 3 5        
+     YokeBarrelCollection         0 3 4
+     YokeEndcapCollection         0 3 3
+     LumiCalCollection            0 3 2       
+     BeamCalCollection            0 3 1 
+    </parameter>
+</processor>
+
+
+</marlin>
