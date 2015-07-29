@@ -63,6 +63,7 @@ class DrawDetectorDD4hep : public Processor {
   int _nRun ;
   int _nEvt ;
   StringVec _detailled;
+  bool _surfaces;
 
 } ;
 
