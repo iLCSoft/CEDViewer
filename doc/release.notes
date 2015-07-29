@@ -9,7 +9,9 @@
     T.Quast, RWTH Aachen
     - add DrawDetectorDD4hep
     - general detector (CLIC & ILD) drawing for the event display without GEAR
-    
+    - adapted ced2go to transparently use DD4hep if a compact file is given
+      with -d instead of a Gear file    
+
     => depends now on DD4hep/Root
 
 
