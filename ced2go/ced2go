@@ -53,6 +53,7 @@ def help():
     print "     -d            Detector description or Gear file"
     print "     -h/-?         Help"
     print "     -t            template file ["+templateXMLFile+"]"
+    print "     -s            enables drawing of surfaces, requires no extra argument, "
     print "All options are optional"
     print "Viewers are e.g. CEDViewer, DSTViewer, GenericViewer"
     print "---------------------------------"
@@ -62,6 +63,7 @@ def help():
 
 #The global variables, paths and commands
 viewer   = "CEDViewer" #default viewer
+drawSurfaces = 'false' #default option for drawn surfaces
 
 
 if not os.path.isfile(templateXMLFile):
@@ -84,12 +86,13 @@ Marlin="Marlin"
 keys = {'$LCIOInputFiles$':'', 
         '$GearXMLFile$':'',
         '$Viewer$':'',
-        '$DD4XMLFile$':''
+        '$DD4XMLFile$':'',
+        '$DrawSurfaces$': drawSurfaces
        }
 
 #Parse the command line arguments
 try: 
-    opts, args = getopt.getopt(sys.argv[1:], "hv:d:t:", "help") 
+    opts, args = getopt.getopt(sys.argv[1:], "hv:d:t:s", "help") 
 except getopt.GetoptError, err:
     print str(err)
     help()
@@ -110,6 +113,8 @@ for key in opts:
             sys.exit()
     if key[0]  == "-v":
           keys['$Viewer$'] += "\n<processor name=\"My" + str(key[1]) + "\"/>"
+    if key[0] == "-s":
+        keys['$DrawSurfaces$'] = 'true'
     if key[0] in ("-h", "--help"):
         help()
         sys.exit(0)

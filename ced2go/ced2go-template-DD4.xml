@@ -40,6 +40,9 @@ Otherwise, a Gear file is assumed to be given and the drawing is performed accor
 
  <processor name="MyDrawDetectorDD4hep" type="DrawDetectorDD4hep">
   <parameter name="DrawDetector" type="bool">true </parameter>
+  <parameter name="DrawSurfaces" type="bool">
+    $DrawSurfaces$
+  </parameter>
   <parameter name="DetailledDrawing">
     VXD
     VertexBarrel
