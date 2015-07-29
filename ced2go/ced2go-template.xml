@@ -68,6 +68,7 @@ $LCIOInputFiles$
        FTDStripTrackerHits  0  5  11
        FTDPixelTrackerHits  0  5  11
        FTDSpacePoints       0  5  11
+       SETTrackerHits       0  5  11
 
        HcalEndCapsCollection       0 3 2
        LHcalCollection             0 3 2
