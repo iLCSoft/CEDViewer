@@ -473,56 +473,60 @@ void DrawDetectorDD4hep::drawDD4hepDetector( DD4hep::Geometry::LCDD& lcdd ){
       }
     }
 
+    int layer = detLayer++;
+      
     getVisAttributes(det, color, visible);
+
+    if (this->_surfaces && DrawSurfaces(surfMan, detName, color, layer)){
+      streamlog_out( MESSAGE )<<"Surfaces are drawn"<<std::endl;
+      drawflag = false ;
+    }
+
     //get the visAttributes of the detElement's volume or (if not existing) some default values
     if (drawflag && visible){
       streamlog_out( MESSAGE ) <<" DRAWING " << detName << std::endl;
-      int layer = detLayer++;
       
-      if (this->_surfaces && DrawSurfaces(surfMan, detName, color, layer)){
-        streamlog_out( MESSAGE )<<"Surfaces are drawn"<<std::endl;
-      }else{
-        //the following if statements are exclusive, i.e. only one may apply
-        if(trkPlanar){
-          for (std::vector<DDRec::ZPlanarData::LayerLayout>::iterator thisLayer = trkPlanar->layers.begin(); thisLayer != trkPlanar->layers.end(); thisLayer++){
-            LayerGeometry Geo;
-            Geo = TrackerLayerParameterConversion(thisLayer);
-            if (detailledDrawing(detName)){
-              for( unsigned stave_i=0; stave_i<Geo.staves.size() ; ++stave_i ){
-                ced_geobox_r_ID( Geo.staves[stave_i].sizes, Geo.staves[stave_i].center, Geo.staves[stave_i].rotate, color, layer,0);
-                ced_geobox_r_solid( Geo.staves[stave_i].sizes, Geo.staves[stave_i].center, Geo.staves[stave_i].rotate, color, layer);
-              }
-            }
-            else{ 
-              gTV.push_back( CEDGeoTube( Geo.tube.Rmax, Geo.tube.Rmin, Geo.tube.inner_symmetry, Geo.tube.outer_symmetry, Geo.tube.phi0, Geo.tube.delta_phi, Geo.tube.delta_z,  Geo.tube.z0, color , layer  ,1,1 ) );
-            }
-          }
-        }
-
-        if(trkDisk){ 
-          if (detailledDrawing(detName)){
-            streamlog_out( MESSAGE )<<detName<<": Not drawn for now (appropriate geometry does not exist)"<<std::endl;
-          }
-          else{
-            for (std::vector<DDRec::ZDiskPetalsData::LayerLayout>::iterator thisLayer = trkDisk->layers.begin(); thisLayer != trkDisk->layers.end(); thisLayer++){
-              CEDGeoTubeParams params;    
-              params = PetalParameterConversion(thisLayer);
-              gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
-              //place the second one symmetric to the z-axis. An additional shift by the width of the layer is needed since the appropriate argument represents the left handed start of the geometry
-              gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  -(params.z0+2*params.delta_z), color , layer  ,1,1 ) ) ; 
-              MarlinCED::set_layer_description( detName , layer );
-            }
-          }
-        }
-
-        if(trkTPC) {
-          CEDGeoTubeParams params;    
-          params = TPCParameterConversion(trkTPC);
-          gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
-        }
+      //the following if statements are exclusive, i.e. only one may apply
+      if(trkPlanar){
+	for (std::vector<DDRec::ZPlanarData::LayerLayout>::iterator thisLayer = trkPlanar->layers.begin(); thisLayer != trkPlanar->layers.end(); thisLayer++){
+	  LayerGeometry Geo;
+	  Geo = TrackerLayerParameterConversion(thisLayer);
+	  if (detailledDrawing(detName)){
+	    for( unsigned stave_i=0; stave_i<Geo.staves.size() ; ++stave_i ){
+	      ced_geobox_r_ID( Geo.staves[stave_i].sizes, Geo.staves[stave_i].center, Geo.staves[stave_i].rotate, color, layer,0);
+	      ced_geobox_r_solid( Geo.staves[stave_i].sizes, Geo.staves[stave_i].center, Geo.staves[stave_i].rotate, color, layer);
+	    }
+	  }
+	  else{ 
+	    gTV.push_back( CEDGeoTube( Geo.tube.Rmax, Geo.tube.Rmin, Geo.tube.inner_symmetry, Geo.tube.outer_symmetry, Geo.tube.phi0, Geo.tube.delta_phi, Geo.tube.delta_z,  Geo.tube.z0, color , layer  ,1,1 ) );
+	  }
+	}
       }
-      MarlinCED::set_layer_description( detName , layer );
+
+      if(trkDisk){ 
+	if (detailledDrawing(detName)){
+	  streamlog_out( MESSAGE )<<detName<<": Not drawn for now (appropriate geometry does not exist)"<<std::endl;
+	}
+	else{
+	  for (std::vector<DDRec::ZDiskPetalsData::LayerLayout>::iterator thisLayer = trkDisk->layers.begin(); thisLayer != trkDisk->layers.end(); thisLayer++){
+	    CEDGeoTubeParams params;    
+	    params = PetalParameterConversion(thisLayer);
+	    gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
+	    //place the second one symmetric to the z-axis. An additional shift by the width of the layer is needed since the appropriate argument represents the left handed start of the geometry
+	    gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  -(params.z0+2*params.delta_z), color , layer  ,1,1 ) ) ; 
+	    MarlinCED::set_layer_description( detName , layer );
+	  }
+	}
+      }
+      
+      if(trkTPC) {
+	CEDGeoTubeParams params;    
+	params = TPCParameterConversion(trkTPC);
+	gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
+      }
+      
     }
+    MarlinCED::set_layer_description( detName , layer );
   }
 
 
