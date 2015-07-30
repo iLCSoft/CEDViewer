@@ -53,7 +53,7 @@ def help():
     print "     -d            Detector description or Gear file"
     print "     -h/-?         Help"
     print "     -t            template file ["+templateXMLFile+"]"
-    print "     -s            enables drawing of surfaces, requires no extra argument, "
+    print "     -s            enables preferred `drawing of surfaces (if available), requires no extra argument, "
     print "All options are optional"
     print "Viewers are e.g. CEDViewer, DSTViewer, GenericViewer"
     print "---------------------------------"

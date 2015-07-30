@@ -375,6 +375,8 @@ bool DrawSurfaces(DD4hep::DDRec::SurfaceManager &surfMan, std::string detName, u
       }
     }
   } 
+  if (lineCounter > 0)
+    streamlog_out( MESSAGE )<<"Surfaces have been used."<<std::endl;
   return lineCounter > 0; //at least one line must have been drawn, otherwise the surface is considered to be undrawn
 }
 
@@ -419,33 +421,37 @@ void DrawDetectorDD4hep::drawDD4hepDetector( DD4hep::Geometry::LCDD& lcdd ){
       calo = det.extension<LayeredCalorimeterData>() ; 
     } catch(std::runtime_error& e){
       streamlog_out( MESSAGE ) <<  detName 
-             << " has no extension of type LayeredCalorimeterData - nothing to draw "
+             << " has no extension of type LayeredCalorimeterData. "
              <<   std::endl;  
     }
 
     //get the visAttributes of the detElement's volume or (if not existing) some default values
     getVisAttributes(det, color, visible);
+    int layer = detLayer++;
+    bool isDrawn = this->_surfaces && DrawSurfaces(surfMan, detName, color, layer);
 
     //draw if the object exists and its visibility is set true
-    if( calo != 0 && visible) {                    
-      streamlog_out( MESSAGE ) <<" DRAWING " << detName << std::endl;
-      int layer = detLayer++;
-      if (this->_surfaces && DrawSurfaces(surfMan, detName, color, layer)){
-        streamlog_out( MESSAGE )<<"Surfaces are drawn"<<std::endl;
-      }else{
+    if(visible && !isDrawn) {                    
+      if (calo != 0){
         //get the required parameter set for drawing a CEDGeoTube
         CEDGeoTubeParams params;    
         params = CalorimeterParameterConversion(calo);
         //consistently allocated this helper for linking the element correctly to the GUI control via ID
         gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
-        //gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, 11.5, 0.0, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
-        MarlinCED::set_layer_description( detName , layer );
         if (!params.isBarrel){
           //place the second one symmetric to the z-axis. An additional shift by the width of the layer is needed since the appropriate argument represents the left handed start of the geometry
           gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  - (params.z0+2.0*params.delta_z), color , layer  ,1,1 ) ) ; 
         }
+        isDrawn = true;
       }
+      if (!calo)
+        isDrawn = DrawSurfaces(surfMan, detName, color, layer);
     }
+    if(isDrawn){
+      MarlinCED::set_layer_description( detName , layer );
+      streamlog_out( MESSAGE ) << detName << " has successfully been processed."<< std::endl;
+    }
+    std::cout<<std::endl;
   }
   //--- draw trackers 
   //mostly repetition of the calorimeter 
@@ -455,7 +461,6 @@ void DrawDetectorDD4hep::drawDD4hepDetector( DD4hep::Geometry::LCDD& lcdd ){
     ZPlanarData* trkPlanar = 0; ZDiskPetalsData* trkDisk = 0; FixedPadSizeTPCData* trkTPC = 0;
     streamlog_out( MESSAGE ) << " ......processing" <<  detName << std::endl; 
     
-    bool drawflag = true;
     try{ 
       trkPlanar = det.extension<ZPlanarData>();
     } catch(std::runtime_error& e){
@@ -465,68 +470,69 @@ void DrawDetectorDD4hep::drawDD4hepDetector( DD4hep::Geometry::LCDD& lcdd ){
         try{
           trkTPC = det.extension<FixedPadSizeTPCData>();
         } catch(std::runtime_error& e){
-            drawflag = false; 
             streamlog_out( MESSAGE ) <<  detName 
-             << " has no extension of type ZPlanarData/ZDiskPetalsData - nothing to draw "
+             << " has no extension of type ZPlanarData/ZDiskPetalsData. "
              <<   std::endl;           
         }
       }
     }
 
-    int layer = detLayer++;
-      
+    int layer = detLayer++;  
     getVisAttributes(det, color, visible);
-
-    if (this->_surfaces && DrawSurfaces(surfMan, detName, color, layer)){
-      streamlog_out( MESSAGE )<<"Surfaces are drawn"<<std::endl;
-      drawflag = false ;
-    }
-
+    bool isDrawn = this->_surfaces && DrawSurfaces(surfMan, detName, color, layer);
     //get the visAttributes of the detElement's volume or (if not existing) some default values
-    if (drawflag && visible){
-      streamlog_out( MESSAGE ) <<" DRAWING " << detName << std::endl;
-      
+    if (!isDrawn && visible){
       //the following if statements are exclusive, i.e. only one may apply
       if(trkPlanar){
-	for (std::vector<DDRec::ZPlanarData::LayerLayout>::iterator thisLayer = trkPlanar->layers.begin(); thisLayer != trkPlanar->layers.end(); thisLayer++){
-	  LayerGeometry Geo;
-	  Geo = TrackerLayerParameterConversion(thisLayer);
-	  if (detailledDrawing(detName)){
-	    for( unsigned stave_i=0; stave_i<Geo.staves.size() ; ++stave_i ){
-	      ced_geobox_r_ID( Geo.staves[stave_i].sizes, Geo.staves[stave_i].center, Geo.staves[stave_i].rotate, color, layer,0);
-	      ced_geobox_r_solid( Geo.staves[stave_i].sizes, Geo.staves[stave_i].center, Geo.staves[stave_i].rotate, color, layer);
-	    }
-	  }
-	  else{ 
-	    gTV.push_back( CEDGeoTube( Geo.tube.Rmax, Geo.tube.Rmin, Geo.tube.inner_symmetry, Geo.tube.outer_symmetry, Geo.tube.phi0, Geo.tube.delta_phi, Geo.tube.delta_z,  Geo.tube.z0, color , layer  ,1,1 ) );
-	  }
-	}
+      	for (std::vector<DDRec::ZPlanarData::LayerLayout>::iterator thisLayer = trkPlanar->layers.begin(); thisLayer != trkPlanar->layers.end(); thisLayer++){
+      	  LayerGeometry Geo;
+      	  Geo = TrackerLayerParameterConversion(thisLayer);
+      	  if (detailledDrawing(detName)){
+      	    for( unsigned stave_i=0; stave_i<Geo.staves.size() ; ++stave_i ){
+      	      ced_geobox_r_ID( Geo.staves[stave_i].sizes, Geo.staves[stave_i].center, Geo.staves[stave_i].rotate, color, layer,0);
+      	      ced_geobox_r_solid( Geo.staves[stave_i].sizes, Geo.staves[stave_i].center, Geo.staves[stave_i].rotate, color, layer);
+      	    }
+      	  }
+      	  else{ 
+      	    gTV.push_back( CEDGeoTube( Geo.tube.Rmax, Geo.tube.Rmin, Geo.tube.inner_symmetry, Geo.tube.outer_symmetry, Geo.tube.phi0, Geo.tube.delta_phi, Geo.tube.delta_z,  Geo.tube.z0, color , layer  ,1,1 ) );
+      	  }
+      	}
+        isDrawn = true;
       }
 
       if(trkDisk){ 
-	if (detailledDrawing(detName)){
-	  streamlog_out( MESSAGE )<<detName<<": Not drawn for now (appropriate geometry does not exist)"<<std::endl;
-	}
-	else{
-	  for (std::vector<DDRec::ZDiskPetalsData::LayerLayout>::iterator thisLayer = trkDisk->layers.begin(); thisLayer != trkDisk->layers.end(); thisLayer++){
-	    CEDGeoTubeParams params;    
-	    params = PetalParameterConversion(thisLayer);
-	    gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
-	    //place the second one symmetric to the z-axis. An additional shift by the width of the layer is needed since the appropriate argument represents the left handed start of the geometry
-	    gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  -(params.z0+2*params.delta_z), color , layer  ,1,1 ) ) ; 
-	    MarlinCED::set_layer_description( detName , layer );
-	  }
-	}
+        if (detailledDrawing(detName)){
+          streamlog_out( MESSAGE )<<detName<<": Not drawn for now (appropriate geometry does not exist)"<<std::endl;
+        }
+        else{
+          for (std::vector<DDRec::ZDiskPetalsData::LayerLayout>::iterator thisLayer = trkDisk->layers.begin(); thisLayer != trkDisk->layers.end(); thisLayer++){
+            CEDGeoTubeParams params;    
+            params = PetalParameterConversion(thisLayer);
+            gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
+            //place the second one symmetric to the z-axis. An additional shift by the width of the layer is needed since the appropriate argument represents the left handed start of the geometry
+            gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  -(params.z0+2*params.delta_z), color , layer  ,1,1 ) ) ; 
+            MarlinCED::set_layer_description( detName , layer );
+          }
+        }
+        isDrawn = true;
       }
       
       if(trkTPC) {
-	CEDGeoTubeParams params;    
-	params = TPCParameterConversion(trkTPC);
-	gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
+       CEDGeoTubeParams params;    
+       params = TPCParameterConversion(trkTPC);
+       gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry, params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
+       isDrawn = true;
       }
+
+      if(!trkTPC && !trkDisk && !trkPlanar)//if no simplified geometry is given, try surfaces
+        isDrawn = DrawSurfaces(surfMan, detName, color, layer);
       
     }
-    MarlinCED::set_layer_description( detName , layer );
+    if(isDrawn){
+      MarlinCED::set_layer_description( detName , layer );
+      streamlog_out( MESSAGE ) << detName << " has successfully been processed."<< std::endl;
+    }
+    std::cout<<std::endl;
   }
 
 
@@ -536,42 +542,44 @@ void DrawDetectorDD4hep::drawDD4hepDetector( DD4hep::Geometry::LCDD& lcdd ){
     detName = passiveDets[i].name() ;
     ConicalSupportData* passiveConical = 0; LayeredCalorimeterData* passiveCalo = 0;
     streamlog_out( MESSAGE ) << " ......processing " <<  detName << std::endl;  
-    bool drawflag = true;
     try{ 
         passiveConical = det.extension<ConicalSupportData>();
     } catch(std::runtime_error& e){
       try{
         passiveCalo = det.extension<LayeredCalorimeterData>();
       } catch(std::runtime_error& e){
-        drawflag = false;
           streamlog_out( MESSAGE ) <<  detName 
-             << " has no extension of type ConicalSupportData/LayeredCalorimeterData - nothing to draw "
+             << " has no extension of type ConicalSupportData/LayeredCalorimeterData. "
              <<   std::endl;  
       }
     }
     //get the visAttributes of the detElement's volume or (if not existing) some default values
     getVisAttributes(det, color, visible);
-    if (drawflag && visible){
-      int layer = detLayer++;
-      streamlog_out( MESSAGE ) <<" DRAWING " << detName << std::endl;
-      if (this->_surfaces && DrawSurfaces(surfMan, detName, color, layer)){
-        streamlog_out( MESSAGE )<<"Surfaces are drawn"<<std::endl;
-      }else{
-        if (passiveConical){
-          streamlog_out( MESSAGE )<<detName<<" is not drawn for now (not needed)."<<std::endl;
-          for (std::vector<DDRec::ConicalSupportData::Section>::iterator thisSection = passiveConical->sections.begin(); thisSection != passiveConical->sections.end(); thisSection++){
-          }
+    int layer = detLayer++;
+    bool isDrawn = this->_surfaces && DrawSurfaces(surfMan, detName, color, layer);
+    if (!isDrawn && visible){
+      if (passiveConical){
+        streamlog_out( MESSAGE )<<detName<<" is not drawn for now (not needed)."<<std::endl;
+        for (std::vector<DDRec::ConicalSupportData::Section>::iterator thisSection = passiveConical->sections.begin(); thisSection != passiveConical->sections.end(); thisSection++){
         }
-        if (passiveCalo){
-          for (std::vector<DDRec::LayeredCalorimeterData::Layer>::iterator thisLayer = passiveCalo->layers.begin(); thisLayer != passiveCalo->layers.end(); thisLayer++){
-            CEDGeoTubeParams params;
-            params = CalorimeterLayerParameterConversion(thisLayer);
-            gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry,  params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
-          }
-        }
+        isDrawn = true;
       }
-      MarlinCED::set_layer_description( detName , layer );
+      if (passiveCalo){
+        for (std::vector<DDRec::LayeredCalorimeterData::Layer>::iterator thisLayer = passiveCalo->layers.begin(); thisLayer != passiveCalo->layers.end(); thisLayer++){
+          CEDGeoTubeParams params;
+          params = CalorimeterLayerParameterConversion(thisLayer);
+          gTV.push_back( CEDGeoTube( params.Rmax, params.Rmin, params.outer_symmetry, params.inner_symmetry,  params.phi0, params.delta_phi, params.delta_z,  params.z0, color , layer  ,1,1 ) ) ; 
+        }
+        isDrawn = true;
+      }
+      if (!passiveConical && !passiveCalo)
+        isDrawn = DrawSurfaces(surfMan, detName, color, layer);
     }
+    if (isDrawn){
+      MarlinCED::set_layer_description( detName , layer );
+      streamlog_out( MESSAGE ) << detName << " has successfully been processed."<< std::endl;
+    }
+    std::cout<<std::endl;
   }
   // ========================================================================
   //Draw the tubes:
