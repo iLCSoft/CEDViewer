@@ -47,6 +47,9 @@
     VXD
     VertexBarrel
   </parameter>
+  <parameter name="JetCollections">
+    JetOut  3
+  </parameter>
   <parameter name="DrawInLayer"> 
     VXDCollection 0 5 1
      SITCollection 0 5 1
@@ -142,7 +145,6 @@
      BeamCalHits 0 3 12
      
      Tracks 0 3 3
-     JetOut 0 3 3
 
      SelectedPandoraPFOCollection 0 3 4
      LooseSelectedPandoraPFOCollection 0 3 5
@@ -150,9 +152,6 @@
      PandoraPFOCollection 0 3 7
 
   </parameter>
-  <!--
-    Todo: Jet parameter somehow handled
-    -->
 </processor>
 
 

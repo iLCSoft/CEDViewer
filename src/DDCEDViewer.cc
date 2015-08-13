@@ -139,6 +139,12 @@ DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
             _detailled,
             DetailledLayerExample,
             1  ) ;  
+    StringVec DrawnJets ; DrawnJets.push_back("JetCollectionToBeDrawn" ) ;
+    registerOptionalParameter( "JetCollections" ,
+        "List of jet collections to be drawn as cones.",
+        _jets,
+        DrawnJets,
+        1  ) ; 
     //  
     registerOptionalParameter( "DrawSurfaces" ,
             "Draw the geometry as a set of individual surfaces (if available) instead of simplified structures.",
@@ -360,7 +366,7 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
     }
     
     unsigned nCols = this->drawParameters.size() ;
-    //drawing with 'standard' routines
+    //draw the individual collections as indicated in DrawInLayer
     for(unsigned np=0 ; np < nCols ; ++np){
         
         const std::string & colName = this->drawParameters[np].ColName ;
@@ -370,90 +376,43 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
         
         LCCollection* col = 0 ;
         try{
-            
             col = evt->getCollection( colName ) ;
-            
         }catch(DataNotAvailableException &e){
-            
             streamlog_out( WARNING ) << " collection " << colName <<  " not found ! "   << std::endl ;
             continue ;
         }
         
-        //specific drawing of individual collections
-        if (colName == "JetOut")
-            DDCEDViewer::drawJets(lcdd, layer, np, colName, col);
-        else{
-            //draw the individual collections
-            if( col->getTypeName() == LCIO::CLUSTER ){
-                DDCEDViewer::drawCluster(lcdd, layer, np, colName, marker, col, size);
-            } else if( col->getTypeName() == LCIO::TRACK ){
-                DDCEDViewer::drawTrack(lcdd, layer, np, colName, marker, col, size);
-            } else if( col->getTypeName() == LCIO::MCPARTICLE ){
-                DDCEDViewer::drawMCParticle(lcdd, layer, np, colName, marker, col, size);
-            } else if( col->getTypeName() == LCIO::SIMTRACKERHIT ){
-                DDCEDViewer::drawSIMTrackerHit(layer, np, colName, marker, col, _colors, size);
-            } else if( col->getTypeName() == LCIO::SIMCALORIMETERHIT ){
-                DDCEDViewer::drawSIMCalorimeterHit(layer, np, colName, marker, col, _colors, size);
-            } else if(  col->getTypeName() == LCIO::TRACKERHIT       ||
-                      col->getTypeName() == LCIO::TRACKERHITPLANE  ||
-                      col->getTypeName() == LCIO::TRACKERHITZCYLINDER   ){
-                DDCEDViewer::drawTrackerHit(layer, np, colName, marker, col, size);
-            } else if( col->getTypeName() == LCIO::CALORIMETERHIT ){
-                DDCEDViewer::drawCalorimeterHit(layer, np, colName, marker, col, size);
-            } else if( col->getTypeName() == LCIO::RECONSTRUCTEDPARTICLE ){ 
-                DDCEDViewer::drawReconstructedParticle(lcdd, layer, np, colName, marker, col, size);
-            }    
+        if( col->getTypeName() == LCIO::CLUSTER ){
+            DDCEDViewer::drawCluster(lcdd, layer, np, colName, marker, col, size);
+        } else if( col->getTypeName() == LCIO::TRACK ){
+            DDCEDViewer::drawTrack(lcdd, layer, np, colName, marker, col, size);
+        } else if( col->getTypeName() == LCIO::MCPARTICLE ){
+            DDCEDViewer::drawMCParticle(lcdd, layer, np, colName, marker, col, size);
+        } else if( col->getTypeName() == LCIO::SIMTRACKERHIT ){
+            DDCEDViewer::drawSIMTrackerHit(layer, np, colName, marker, col, _colors, size);
+        } else if( col->getTypeName() == LCIO::SIMCALORIMETERHIT ){
+            DDCEDViewer::drawSIMCalorimeterHit(layer, np, colName, marker, col, _colors, size);
+        } else if(  col->getTypeName() == LCIO::TRACKERHIT       ||
+                  col->getTypeName() == LCIO::TRACKERHITPLANE  ||
+                  col->getTypeName() == LCIO::TRACKERHITZCYLINDER   ){
+            DDCEDViewer::drawTrackerHit(layer, np, colName, marker, col, size);
+        } else if( col->getTypeName() == LCIO::CALORIMETERHIT ){
+            DDCEDViewer::drawCalorimeterHit(layer, np, colName, marker, col, size);
+        } else if( col->getTypeName() == LCIO::RECONSTRUCTEDPARTICLE ){ 
+            DDCEDViewer::drawReconstructedParticle(lcdd, layer, np, colName, marker, col, size);
+        }    
+    }
+    for (int i = 0; i<_jets.size(); i=i+2){
+        try{
+            LCCollection * col = evt->getCollection( _jets[i] );
+            streamlog_out( DEBUG )  << " drawing jets from collection " << _jets[i] << std::endl ;
+            int layer = std::atoi( _jets[i+1].c_str());
+            DDCEDViewer::drawJets(lcdd, layer, _jets[i], col);
+        }catch(DataNotAvailableException &e){
+            streamlog_out( WARNING )<<"No jet collection with name "<<_jets[i]<<std::endl;
         }
     }
 }
-
-void DDCEDViewer::drawJets(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, LCCollection* col){
-    streamlog_out( MESSAGE )  << " drawing jets from collection " << colName << std::endl ;
-
-    //some default color: to be extended
-    float RGBAcolor[4] = {0., 0., 1.0, 0.3};
-    int color = int(RGBAcolor[2]*(15*16+15)) + int(RGBAcolor[1]*(15*16+15))*16*16+ int(RGBAcolor[0]*(15*16+15))*16*16*16*16;
-
-    DDMarlinCED::add_layer_description(colName, layer);
-
-    for (int j=0; j < col->getNumberOfElements(); ++j) { //number of elements in a jet
-        ReconstructedParticle * jet = dynamic_cast<ReconstructedParticle*>( col->getElementAt(j) );
-        streamlog_out( DEBUG )  <<   "     - jet energy " << jet->getEnergy() << std::endl ;
-        streamlog_out( MESSAGE )  <<   "     - jet energy " << jet->getEnergy() << std::endl ;
-        TVector3 v(jet->getMomentum()[0], jet->getMomentum()[1], jet->getMomentum()[2]); 
-        const ReconstructedParticleVec & pv = jet->getParticles();
-        float pt_norm = 0.0;
-        for (unsigned int k = 0; k<pv.size(); ++k){
-            const double * pm = pv[k]->getMomentum();
-            TVector3 pp(pm[0], pm[1] , pm[2]);
-            TVector3 ju = v.Unit();
-            TVector3 pt = pp - (ju.Dot(pp))*ju;
-
-            pt_norm += pt.Mag();
-
-            int LineSize = 1;
-            // start point
-            float refx = 0.0;
-            float refy = 0.0;
-            float refz = 0.0;
-            float momScale = 100;
-
-            int layerIp = layer;
-            ced_line_ID(refx, refy, refz, momScale*pm[0], momScale*pm[1], momScale*pm[2], layerIp, LineSize, color, pv[k]->id());
-        }
-                       
-        double center_c[3] = {0., 0., 0. };
-        double rotation_c[3] = { 0.,  v.Theta()*180./M_PI , v.Phi()*180./M_PI };
-        
-        double scale_pt = 20;
-        double scale_mom = 25;
-        double min_pt = 50;
-      
-        ced_cone_r_ID( min_pt + scale_pt*pt_norm , scale_mom*v.Mag() , center_c, rotation_c, layer, RGBAcolor,jet->id()); 
-        
-    }
-}
-
 
 void DDCEDViewer::drawCluster(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size){
     // find Emin and Emax of cluster collection for drawing
@@ -593,10 +552,6 @@ void DDCEDViewer::drawTrack(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& 
 void DDCEDViewer::drawMCParticle(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size) {
     streamlog_out( DEBUG ) << "  drawing MCParticle collection " << std::endl ;
     //new line drawing implemented by Thorben Quast 07 August 2015
-    CalorimeterDrawParams ECalBarrelParams = getCalorimeterParameters(lcdd, "ECalBarrel");
-    CalorimeterDrawParams ECalEndcapParams = getCalorimeterParameters(lcdd, "ECalEndcap");
-    CalorimeterDrawParams HCalBarrelParams = getCalorimeterParameters(lcdd, "HCalBarrel");
-    CalorimeterDrawParams HCalEndcapParams = getCalorimeterParameters(lcdd, "HCalEndcap");
     for(int i=0; i<col->getNumberOfElements() ; i++){
         MCParticle* mcp = dynamic_cast<MCParticle*> ( col->getElementAt( i ) ) ;
         float charge = mcp->getCharge ();
@@ -645,7 +600,7 @@ void DDCEDViewer::drawMCParticle(DD4hep::Geometry::LCDD& lcdd, int& layer, unsig
                 //refactored length calculation (T. Quast 7 Aug 15) 
                 case 22:
                     color = 0xf9f920;          // photon
-                    length = calculateTrackLength(ECalBarrelParams, ECalEndcapParams, x, y, z, px, py, pz);
+                    length = calculateTrackLength("ecal", lcdd, x, y, z, px, py, pz);
                     break ;
                 case 12:  case 14: case 16: // neutrino
                     color =  0xdddddd  ;
@@ -657,7 +612,7 @@ void DDCEDViewer::drawMCParticle(DD4hep::Geometry::LCDD& lcdd, int& layer, unsig
                     break ;
                 default:
                     color = 0xb900de  ;        // neutral hadron
-                    length = calculateTrackLength(HCalBarrelParams, HCalEndcapParams, x, y, z, px, py, pz);
+                    length = calculateTrackLength("hcal", lcdd, x, y, z, px, py, pz);
             }
             //tracks with vertex outside the according calorimeter are not drawn, length is passed as 0
             ced_line_ID( x , y , z ,
@@ -879,56 +834,62 @@ void DDCEDViewer::drawReconstructedParticle(DD4hep::Geometry::LCDD& lcdd, int& l
     << std::endl;
 }
 
-
-/*
-void DDCEDViewer::drawJets(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, LCCollection* col){
-    streamlog_out( MESSAGE )  << " drawing jets from collection " << colName << std::endl ;
-
-    //some default color: to be extended
-    float RGBAcolor[4] = {0., 0., 1.0, 0.3};
+void DDCEDViewer::drawJets(DD4hep::Geometry::LCDD& lcdd, int layer, std::string colName, LCCollection* col){
+    //default color is orange
+    float RGBAcolor[4] = {.9, .7, .0, 0.25};
     int color = int(RGBAcolor[2]*(15*16+15)) + int(RGBAcolor[1]*(15*16+15))*16*16+ int(RGBAcolor[0]*(15*16+15))*16*16*16*16;
 
+    //only one registration for all jets in CEDViewer
     DDMarlinCED::add_layer_description(colName, layer);
 
     for (int j=0; j < col->getNumberOfElements(); ++j) { //number of elements in a jet
         ReconstructedParticle * jet = dynamic_cast<ReconstructedParticle*>( col->getElementAt(j) );
         streamlog_out( DEBUG )  <<   "     - jet energy " << jet->getEnergy() << std::endl ;
-        streamlog_out( MESSAGE )  <<   "     - jet energy " << jet->getEnergy() << std::endl ;
+
+        //total momentum of the jet
         TVector3 v(jet->getMomentum()[0], jet->getMomentum()[1], jet->getMomentum()[2]); 
+        
+        //init relevant objects for looping over all particles in the jet
         const ReconstructedParticleVec & pv = jet->getParticles();
-        float pt_norm = 0.0;
-        for (unsigned int k = 0; k<pv.size(); ++k){
-            const double * pm = pv[k]->getMomentum();
-            TVector3 pp(pm[0], pm[1] , pm[2]);
+        int N_elements = pv.size();
+        float pt_tot = 0.0; float pt_max = 0.0; float mean_tan_angle = 0.0;
+        std::vector<TVector3> pp; std::vector<float> pt;
+        pp.reserve(N_elements); pt.reserve(N_elements);
+
+        //calculate longitudinal, transverse momentum (w.r. to jet axis) for each particle
+        //from that deduce a pt-weighted mean (tan-) angle and determine the highest pt contribution
+        for (unsigned int k = 0; k<N_elements; ++k){
+            TVector3 pp_k(pv[k]->getMomentum()[0], pv[k]->getMomentum()[1], pv[k]->getMomentum()[2]);
+            pp.push_back(pp_k);
             TVector3 ju = v.Unit();
-            TVector3 pt = pp - (ju.Dot(pp))*ju;
-
-            pt_norm += pt.Mag();
-
-            int LineSize = 1;
-            // start point
-            float refx = 0.0;
-            float refy = 0.0;
-            float refz = 0.0;
-            float momScale = 100;
-
-            int layerIp = layer;
-            ced_line_ID(refx, refy, refz, momScale*pm[0], momScale*pm[1], momScale*pm[2], layerIp, LineSize, color, pv[k]->id());
+            TVector3 pt_k = pp_k - (ju.Dot(pp_k))*ju;  
+            TVector3 pl_k = pp_k - pt_k;
+            pt.push_back(pt_k.Mag());
+            pt_tot += pt[k];
+            pt_max = (pt[k] > pt_max) ? pt[k]: pt_max;
+            mean_tan_angle += pt[k]*(pt[k]/pl_k.Mag());
         }
-                       
+        mean_tan_angle /= pt_tot;
+
+        //draw the line of movement for each particle in the jet
+        for (unsigned int k = 0; k<N_elements; ++k){
+            float center_ref[3] = {0., 0., 0.};
+            //100% * distance = length holds for the entry with highest pt, the others obtain only a respective fraction
+            double momLength = (pt[k]/pt_max)*calculateTrackLength("", lcdd, center_ref[0], center_ref[1], center_ref[2], pp[k].X(), pp[k].Y(), pp[k].Z());                    //line size
+            //approximation: all lines start in origin (TODO, if jet origin known)
+            ced_line_ID(center_ref[0], center_ref[1], center_ref[2], momLength*pp[k].X()/pp[k].Mag(), momLength*pp[k].Y()/pp[k].Mag(), momLength*pp[k].Z()/pp[k].Mag(), layer, 1, color, pv[k]->id());     
+        }
+
+        //calculate the parameters of the jet cone
+        //approximation: all lines start in origin (TODO, if jet origin known)            
         double center_c[3] = {0., 0., 0. };
         double rotation_c[3] = { 0.,  v.Theta()*180./M_PI , v.Phi()*180./M_PI };
-        
-        double scale_pt = 20;
-        double scale_mom = 25;
-        double min_pt = 50;
-      
-        ced_cone_r_ID( min_pt + scale_pt*pt_norm , scale_mom*v.Mag() , center_c, rotation_c, layer, RGBAcolor,jet->id()); 
+        double coneHeight = calculateTrackLength("", lcdd, center_c[0], center_c[1], center_c[2], v.X(), v.Y(), v.Z());
+        //1. baseline radius, 2. height, 3. origin doublet, 4. rotation triplet,...
+        ced_cone_r_ID( mean_tan_angle * coneHeight , coneHeight , center_c, rotation_c, layer, RGBAcolor,jet->id()); 
         
     }
 }
-*/
-
 /********************************************************************
 //Helper functions, might be exported into a utility.cc at some point
 ********************************************************************/
@@ -1003,7 +964,7 @@ CalorimeterDrawParams getCalorimeterParameters(DD4hep::Geometry::LCDD& lcdd, std
         params.delta_r = caloGeo->extent[1]/dd4hep::mm - params.r_inner;
         params.z_0 = caloGeo->extent[2]/dd4hep::mm;
         params.delta_z = (caloGeo->extent[3]/dd4hep::mm - params.z_0);  //we are interested in the full length! 
-                                                        //CEDGeoTube only requires half length as an argument       
+                                                                    //CEDGeoTube only requires half length as an argument       
     }
 
     return params;
@@ -1011,18 +972,33 @@ CalorimeterDrawParams getCalorimeterParameters(DD4hep::Geometry::LCDD& lcdd, std
 
 //It suffices to perform the calculations in the first quadrant due to the detector's symmetry.
 //The signs of the tracks' directions are ultimately determined by the momenta.
-double calculateTrackLength(CalorimeterDrawParams barrel, CalorimeterDrawParams endcap, double x, double y, double z, double px, double py, double pz){
+double calculateTrackLength(std::string type, DD4hep::Geometry::LCDD& lcdd, double x, double y, double z, double px, double py, double pz){
+    double rel_X0;
+    CalorimeterDrawParams barrel; CalorimeterDrawParams endcap;
+    if (type == "ecal"){
+        barrel = getCalorimeterParameters(lcdd, "ECalBarrel");
+        endcap = getCalorimeterParameters(lcdd, "ECalEndcap");
+        rel_X0 = 0.5;
+    }else if(type == "hcal"){
+        barrel = getCalorimeterParameters(lcdd, "HCalBarrel");
+        endcap = getCalorimeterParameters(lcdd, "HCalEndcap");
+        rel_X0 = 0.5;
+    }else{
+        barrel = getCalorimeterParameters(lcdd, "ECalBarrel");
+        endcap = getCalorimeterParameters(lcdd, "ECalEndcap");
+        rel_X0 = 0.;
+    }
+
     if (barrel.delta_z == -1 || endcap.delta_z == -1) return 0;   //the case if the parameters could not be loaded properly
     
     double length;
-    double rel_X0 = 0.5;    //mean interaction length traversing the material perpendicularly; must be <= 1 !
     double pt = sqrt(px*px + py*py);
     double pt_over_pz = pt/fabs(pz);
 
     double r = sqrt(x*x+y*y);
     if (r > barrel.r_inner || r > endcap.r_inner) return 0;
     double p = 2 * (px * x + py * y)/pt;
-    //double sign_r = (x*px + y*py >= 0) ? 1. : -1.;
+
     double q = r*r - barrel.r_inner * barrel.r_inner;
     double distance_to_barrel_r = -p/2 + sqrt(p*p/4 - q);
     

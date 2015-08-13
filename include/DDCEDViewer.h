@@ -94,7 +94,7 @@ class DDCEDViewer : public Processor {
   void drawTrackerHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
   void drawCalorimeterHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
   void drawReconstructedParticle(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
-  void drawJets(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, LCCollection* col);
+  void drawJets(DD4hep::Geometry::LCDD& lcdd, int layer, std::string colName, LCCollection* col);
  
  protected:
 
@@ -138,6 +138,7 @@ class DDCEDViewer : public Processor {
   //detector options
   bool _begin;
   StringVec _detailled;
+  StringVec _jets;
   bool _surfaces;
 } ;
 
@@ -177,7 +178,8 @@ CalorimeterDrawParams getCalorimeterParameters(DD4hep::Geometry::LCDD& lcdd, std
 
 //It suffices to perform the calculations in the first quadrant due to the detector's symmetry.
 //The signs of the tracks' directions are ultimately determined by the momenta.
-double calculateTrackLength(CalorimeterDrawParams barrel, CalorimeterDrawParams endcap, double x, double y, double z, double px, double py, double pz);
+double calculateTrackLength(std::string type, DD4hep::Geometry::LCDD& lcdd, double x, double y, double z, double px, double py, double pz);
+//double calculateTrackLength(CalorimeterDrawParams barrel, CalorimeterDrawParams endcap, double x, double y, double z, double px, double py, double pz);
 
 #endif
 
