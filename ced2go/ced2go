@@ -40,7 +40,7 @@ sys_path_to_ced2go_template = os.path.abspath(sys.path[0])
 resolutionString = "600x400"
 ''' End of addition by T. Quast '''
 
-#templateXMLFile = "/afs/desy.de/user/h/hhoelbe/workspace/ilcsoft/v01-07/Wrapper/template.xml"
+#default steering file template: Gear dependent
 templateXMLFile = os.path.join( sys_path_to_ced2go_template, "ced2go-template.xml" )
 
 #Help output
@@ -50,10 +50,11 @@ def help():
     print "Options: "
     print "     -v            Viewer1"
     print "     -v            Viewer2"
-    print "     -d            Detector description or Gear file"
+    print "     -d            Detector description as LCDD or Gear"
     print "     -h/-?         Help"
     print "     -t            template file ["+templateXMLFile+"]"
-    print "     -s            enables preferred `drawing of surfaces (if available), requires no extra argument, "
+    print "     -s            arg = 1 enables preferred drawing of surfaces (if available); works only with LCDD"
+    print "     -n            number of skipped events at beginning"
     print "All options are optional"
     print "Viewers are e.g. CEDViewer, DSTViewer, GenericViewer"
     print "---------------------------------"
@@ -63,8 +64,6 @@ def help():
 
 #The global variables, paths and commands
 viewer   = "CEDViewer" #default viewer
-drawSurfaces = 'false' #default option for drawn surfaces
-
 
 if not os.path.isfile(templateXMLFile):
     print "Error: Template File \"" + templateXMLFile + "\" not found!"
@@ -87,12 +86,13 @@ keys = {'$LCIOInputFiles$':'',
         '$GearXMLFile$':'',
         '$Viewer$':'',
         '$DD4XMLFile$':'',
-        '$DrawSurfaces$': drawSurfaces
+        '$DrawSurfaces$': 'false',
+        '$SkipNEvents$':'0'
        }
 
 #Parse the command line arguments
 try: 
-    opts, args = getopt.getopt(sys.argv[1:], "hv:d:t:s", "help") 
+    opts, args = getopt.getopt(sys.argv[1:], "hv:d:t:s:n:", "help")
 except getopt.GetoptError, err:
     print str(err)
     help()
@@ -100,7 +100,6 @@ except getopt.GetoptError, err:
 
 detector = ""
 for key in opts:
-    #print key[0] + str(key[1])
     if key[0] == "-d":
         detector=key[1]
         if not os.path.isfile(detector):
@@ -113,8 +112,11 @@ for key in opts:
             sys.exit()
     if key[0]  == "-v":
           keys['$Viewer$'] += "\n<processor name=\"My" + str(key[1]) + "\"/>"
-    if key[0] == "-s":
-        keys['$DrawSurfaces$'] = 'true'
+    if key[0]  == "-s":
+        keys['$DrawSurfaces$'] = 'true' if (key[1] == "1") else 'false'
+
+    if key[0] == "-n":
+        keys['$SkipNEvents$'] = str(key[1])
     if key[0] in ("-h", "--help"):
         help()
         sys.exit(0)
@@ -153,11 +155,8 @@ if detector != "": #user defined gearfile
     xmlDetectorFile = minidom.parse(detector)
     if len(xmlDetectorFile.getElementsByTagName('lccdd')) > 0:
         keys['$DD4XMLFile$'] = detector
+        #use different steering file template
         templateXMLFile = os.path.join( sys_path_to_ced2go_template, "ced2go-template-DD4.xml" )
-        if xmlDetectorFile.getElementsByTagName('info')[0].attributes['name'].value.find("ILD") != -1:
-            keys['$GearXMLFile$'] = os.path.join( sys_path_to_ced2go_template.replace("bin", "ced2go"), "gear_ILD_o1_v05.xml" )
-        else:
-            keys['$GearXMLFile$'] = os.path.join( sys_path_to_ced2go_template.replace("bin", "ced2go"), "gear_CLIC_SiD.xml" )
     else:
         keys['$GearXMLFile$'] = detector
     #todo: large screen option ?

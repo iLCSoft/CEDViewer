@@ -3,32 +3,32 @@
 <!--##########################################
     #  Example default steering file for     #
     #  ILD and CLIC when drawn via ced2go    #
-    #  Author: T.Quast, 28/07/2015            #
+    #  Author: T.Quast, 12/08/2015            #
     ##########################################
-Usage: This file is used instead of ced2go-template.xml if in 
-"ced2go -d <rel. path of detectorFile.xml> <rel. path of slcio-File>" 
-the detectorFile.xml contains a <lccdd> tag. 
-Otherwise, a Gear file is assumed to be given and the drawing is performed accordingly.
+
+    Usage: 
+    This file is used instead of ced2go-template.xml if in 
+    "ced2go -d <rel. path of detectorFile.xml> <rel. path of slcio-File>" 
+    the detectorFile.xml contains a <lccdd> tag. 
   -->
 
 
 <marlin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ilcsoft.desy.de/marlin/marlin.xsd">
  <execute>
 	 <processor name="MyInitializeDD4hep"/>
-         <processor name="MyDrawDetectorDD4hep"/>
-         <XXXprocessor name="MyDrawCLIC"/>
-   <processor name="MyCEDViewer"/>
+     <processor name="MyCEDViewer"/>
  </execute>
 
  <global>
    <parameter name="LCIOInputFiles">
-  $LCIOInputFiles$
+        $LCIOInputFiles$
    </parameter> 
-   <!--The Gear file is still needed for drawing the reconstructed hits& tracks-->
-   <parameter name="GearXMLFile">
-    $GearXMLFile$
-   </parameter> 
-
+   <!--
+        continue here
+    -->
+    <parameter name="SkipNEvents">
+        $SkipNEvents$
+    </parameter>
    <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> DEBUG0 MESSAGE  </parameter>  
  </global>
 
@@ -38,7 +38,7 @@ Otherwise, a Gear file is assumed to be given and the drawing is performed accor
   </parameter>
 </processor>
 
- <processor name="MyDrawDetectorDD4hep" type="DrawDetectorDD4hep">
+<processor name="MyCEDViewer" type="DDCEDViewer">
   <parameter name="DrawDetector" type="bool">true </parameter>
   <parameter name="DrawSurfaces" type="bool">
     $DrawSurfaces$
@@ -47,112 +47,112 @@ Otherwise, a Gear file is assumed to be given and the drawing is performed accor
     VXD
     VertexBarrel
   </parameter>
-</processor>
+  <parameter name="DrawInLayer"> 
+    VXDCollection 0 5 1
+     SITCollection 0 5 1
+     FTD_PIXELCollection 0 5 1
+     FTD_STRIPCollection 0 5 1
+     FTDCollection 0 5 1
+     TPCCollection 0 3 1
+     SETCollection 0 3 1
+     ETDCollection 0 3 1
 
-<processor name="MyCEDViewer" type="CEDViewer">
-    <parameter name="DrawDetectorID" value="-1"/>
-    <parameter name="DrawInLayer"> 
-      VXDCollection 0 5 1
-       SITCollection 0 5 1
-       FTD_PIXELCollection 0 5 1
-       FTD_STRIPCollection 0 5 1
-       FTDCollection 0 5 1
-       TPCCollection 0 3 1
-       SETCollection 0 3 1
-       ETDCollection 0 3 1
+     VertexBarrelCollection 0 5 1
+     VertexEndcapCollection 0 5 1
+     InnerTrackerBarrelCollection 0 5 1
+     InnerTrackerEndcapCollection 0 5 1
+     OuterTrackerBarrelCollection 0 5 1
+     OuterTrackerEndcapCollection 0 5 1
+     
+     VXDTrackerHits       0  5  11
+     SITTrackerHits       0  5  11
+     TPCTrackerHits       0  5  11
+     FTDTrackerHits       0  5  11
+     FTDStripTrackerHits  0  5  11
+     FTDPixelTrackerHits  0  5  11
+     FTDSpacePoints       0  5  11
+     SETTrackerHits       0  5  11
 
-       VertexBarrelCollection 0 5 1
-       VertexEndcapCollection 0 5 1
-       InnerTrackerBarrelCollection 0 5 1
-       InnerTrackerEndcapCollection 0 5 1
-       OuterTrackerBarrelCollection 0 5 1
-       OuterTrackerEndcapCollection 0 5 1
-       
-       VXDTrackerHits       0  5  11
-       SITTrackerHits       0  5  11
-       TPCTrackerHits       0  5  11
-       FTDTrackerHits       0  5  11
-       FTDStripTrackerHits  0  5  11
-       FTDPixelTrackerHits  0  5  11
-       FTDSpacePoints       0  5  11
-       SETTrackerHits       0  5  11
+     HcalEndCapsCollection       0 3 2
+     LHcalCollection             0 3 2
+     LumiCalCollection           0 3 2
+     MuonBarrelCollection        0 3 2
+     MuonEndCapCollection        0 3 2
+     EcalBarrelSiliconCollection 0 3 2  
+     EcalBarrelSiliconPreShower  0 3 2  
+     EcalEndcapRingCollection    0 3 2  
+     EcalEndcapRingPreShower     0 3 2  
+     EcalEndcapSiliconCollection 0 3 2  
+     EcalEndcapSiliconPreShower  0 3 2  
+     HcalBarrelRegCollection     0 3 2
+     HcalEndCapRingsCollection   0 3 2
 
-       HcalEndCapsCollection       0 3 2
-       LHcalCollection             0 3 2
-       LumiCalCollection           0 3 2
-       MuonBarrelCollection        0 3 2
-       MuonEndCapCollection        0 3 2
-       EcalBarrelSiliconCollection 0 3 2  
-       EcalBarrelSiliconPreShower  0 3 2  
-       EcalEndcapRingCollection    0 3 2  
-       EcalEndcapRingPreShower     0 3 2  
-       EcalEndcapSiliconCollection 0 3 2  
-       EcalEndcapSiliconPreShower  0 3 2  
-       HcalBarrelRegCollection     0 3 2
-       HcalEndCapRingsCollection   0 3 2
-
-       ECalBarrelCollection 0 3 2
-       ECalEndcapCollection 0 3 2
-       ECalPlugCollection 0 3 2
-       HCalBarrelCollection 0 3 2
-       HCalEndcapCollection 0 3 2
-       HCalRingCollection 0 3 2
-       YokeBarrelCollection 0 3 2
-       YokeEndcapCollection 0 3 2
-       LumiCalCollection 0 3 2
-       BeamCalCollection 0 3 2
+     ECalBarrelCollection 0 3 2
+     ECalEndcapCollection 0 3 2
+     ECalPlugCollection 0 3 2
+     HCalBarrelCollection 0 3 2
+     HCalEndcapCollection 0 3 2
+     HCalRingCollection 0 3 2
+     YokeBarrelCollection 0 3 2
+     YokeEndcapCollection 0 3 2
+     LumiCalCollection 0 3 2
+     BeamCalCollection 0 3 2
 
 
-       HCALEndcap   0 5 12
-       HCALOther    0 5 12
-       MUON         0 2 12
-       LHCAL        0 3 12  
-       LCAL         0 3 12
-       BCAL         0 3 12
-       ECALBarrel   0 2 12
-       ECALEndcap   0 2 12
-       ECALOther    0 2 12
-       HCALBarrel   0 5 12
+     HCALEndcap   0 5 12
+     HCALOther    0 5 12
+     MUON         0 2 12
+     LHCAL        0 3 12  
+     LCAL         0 3 12
+     BCAL         0 3 12
+     ECALBarrel   0 2 12
+     ECALEndcap   0 2 12
+     ECALOther    0 2 12
+     HCALBarrel   0 5 12
 
-       TruthTracks      0 3 3
-       ForwardTracks    0 3 4
-       SiTracks         0 3 5
-       ClupatraTracks   3 5 6
-       MarlinTrkTracks  3 3 7
-
-
-       PandoraClusters  0 3 8
-       PandoraPFOs      0 3 9
-       
-       MCParticle 0 3 0
+     TruthTracks      0 3 3
+     ForwardTracks    0 3 4
+     SiTracks         0 3 5
+     ClupatraTracks   3 5 6
+     MarlinTrkTracks  3 3 7
 
 
-       VertexBarrelHits 0 5 11
-       VertexEndcapHits 0 5 11
-       InnerTrackerBarrelHits 0 5 11
-       InnerTrackerEndcapHits 0 5 11
-       OuterTrackerBarrelHits 0 5 11
-       OuterTrackerEndcapHits 0 5 11
+     PandoraClusters  0 3 8
+     PandoraPFOs      0 3 9
+     
+     MCParticle 0 3 0
 
-       ECalBarrelHits 0 3 12
-       ECalEndcapHits 0 3 12
-       ECalPlugHits 0 3 12
-       HCalBarrelHits 0 3 12
-       HCalEndcapHits 0 3 12
-       HCalRingHits 0 3 12
-       YokeBarrelHits 0 3 12
-       YokeEndcapHits 0 3 12
-       LumiCalHits 0 3 12
-       BeamCalHits 0 3 12
-       
-       Tracks 0 3 3
 
-       SelectedPandoraPFOCollection 0 3 4
-       LooseSelectedPandoraPFOCollection 0 3 5
-       TightSelectedPandoraPFOCollection 0 3 6
-       PandoraPFOCollection 0 3 7
+     VertexBarrelHits 0 5 11
+     VertexEndcapHits 0 5 11
+     InnerTrackerBarrelHits 0 5 11
+     InnerTrackerEndcapHits 0 5 11
+     OuterTrackerBarrelHits 0 5 11
+     OuterTrackerEndcapHits 0 5 11
 
-    </parameter>
+     ECalBarrelHits 0 3 12
+     ECalEndcapHits 0 3 12
+     ECalPlugHits 0 3 12
+     HCalBarrelHits 0 3 12
+     HCalEndcapHits 0 3 12
+     HCalRingHits 0 3 12
+     YokeBarrelHits 0 3 12
+     YokeEndcapHits 0 3 12
+     LumiCalHits 0 3 12
+     BeamCalHits 0 3 12
+     
+     Tracks 0 3 3
+     JetOut 0 3 3
+
+     SelectedPandoraPFOCollection 0 3 4
+     LooseSelectedPandoraPFOCollection 0 3 5
+     TightSelectedPandoraPFOCollection 0 3 6
+     PandoraPFOCollection 0 3 7
+
+  </parameter>
+  <!--
+    Todo: Jet parameter somehow handled
+    -->
 </processor>
 
 

@@ -213,7 +213,7 @@ $LCIOInputFiles$
  <processor name="MyDSTViewer" type="DSTViewer">
  <!--CED based event display for DST files-->
   <!--Jet Collections Names'-->
-  <parameter name="JetCollections" type="StringVec" lcioInType="ReconstructedParticle"> Durham_2Jets Durham_3Jets Durham_4Jets Durham_5Jets Durham_6Jets </parameter>
+  <parameter name="JetCollections" type="StringVec" lcioInType="ReconstructedParticle"> JetOut Durham_2Jets Durham_3Jets Durham_4Jets Durham_5Jets Durham_6Jets </parameter>
   <!--Particle Collection Name-->
   <parameter name="ParticleCollection" type="string" lcioInType="ReconstructedParticle"> PandoraPFOs </parameter>
   <!--Layer for Reco Particles-->
