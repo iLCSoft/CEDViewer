@@ -37,7 +37,7 @@ import random
 ''' Start of addition by T. Quast '''
 from xml.dom import minidom 
 sys_path_to_ced2go_template = os.path.abspath(sys.path[0])
-resolutionString = "600x400"
+userDefinedXML = False
 ''' End of addition by T. Quast '''
 
 #default steering file template: Gear dependent
@@ -107,6 +107,7 @@ for key in opts:
             sys.exit()
     if key[0] == "-t":
         templateXMLFile=key[1]
+        userDefinedXML = True
         if not os.path.isfile(templateXMLFile):
             print "Error: template \"" + templateXMLFile + "\" not found!"
             sys.exit()
@@ -148,19 +149,16 @@ if not os.path.isfile(args[0]):
     
 keys['$LCIOInputFiles$']=os.path.abspath(args[0])   #this allows for relative path inputs by the user
 
-
-
 if detector != "": #user defined gearfile
     ''' Start of addition by T. Quast '''
     xmlDetectorFile = minidom.parse(detector)
     if len(xmlDetectorFile.getElementsByTagName('lccdd')) > 0:
         keys['$DD4XMLFile$'] = detector
         #use different steering file template
-        templateXMLFile = os.path.join( sys_path_to_ced2go_template, "ced2go-template-DD4.xml" )
+        if not userDefinedXML:
+            templateXMLFile = os.path.join( sys_path_to_ced2go_template, "ced2go-template-DD4.xml" )
     else:
         keys['$GearXMLFile$'] = detector
-    #todo: large screen option ?
-    '''End of addition by T.Quast'''
 
 else:  #find out the detector name used in the lcio file
 
@@ -227,9 +225,9 @@ os.environ['CED_PORT']=str(port)
 
 #start ced and marlin
 if old:
-    os.system(CED + " -geometry "+resolutionString + " & sleep 1; " + Marlin  + " " + steeringFile);
+    os.system(CED + " -geometry "+ "800x600" + " & sleep 1; " + Marlin  + " " + steeringFile);
 else:
-    CEDobj    = subprocess.Popen([CED,'-geometry', resolutionString])
+    CEDobj    = subprocess.Popen([CED,'-geometry', '800x600'])
     Marlinobj = subprocess.Popen([Marlin, steeringFile])
 
     #terminate the both processes when one is closed
