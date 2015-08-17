@@ -179,7 +179,9 @@ CalorimeterDrawParams getCalorimeterParameters(DD4hep::Geometry::LCDD& lcdd, std
 //It suffices to perform the calculations in the first quadrant due to the detector's symmetry.
 //The signs of the tracks' directions are ultimately determined by the momenta.
 double calculateTrackLength(std::string type, DD4hep::Geometry::LCDD& lcdd, double x, double y, double z, double px, double py, double pz);
-//double calculateTrackLength(CalorimeterDrawParams barrel, CalorimeterDrawParams endcap, double x, double y, double z, double px, double py, double pz);
+
+int returnClusterColor(float eneCluster, float cutoff_min, float cutoff_max);
+
 
 #endif
 
