@@ -740,7 +740,7 @@ void DDCEDViewer::drawReconstructedParticle(DD4hep::Geometry::LCDD& lcdd, int& l
     }
     for (int ip(0); ip < nelem; ++ip) {
         int color = _colors[ ip % _colors.size() ] ;
-        
+
         ReconstructedParticle * part = dynamic_cast<ReconstructedParticle*>(col->getElementAt(ip));
         TrackVec trackVec = part->getTracks();
         unsigned nTracks =  (unsigned)trackVec.size();
@@ -764,7 +764,9 @@ void DDCEDViewer::drawReconstructedParticle(DD4hep::Geometry::LCDD& lcdd, int& l
         << " PZ = " << pz
         << " E  = " << ene << std::endl;
 
-
+        //refactored Cluster drawing as ellipsoids 
+        //by Thorben Quast, CERN Summer Student 2015
+        //18 August 2015
         if (nClusters > 0 ) {
             for (int p=0; p<nClusters; p++) {
                 //Energy clusters are drawn as ellipsoids.
@@ -790,7 +792,9 @@ void DDCEDViewer::drawReconstructedParticle(DD4hep::Geometry::LCDD& lcdd, int& l
                 double R[3][3]; 
                 R[0][0] = cos(phi) * sin(theta); R[1][0] = -sin(phi); R[2][0] = -cos(phi)*cos(theta); R[0][1] = sin(phi)*sin(theta); 
                 R[1][1] = cos(phi); R[2][1] = -sin(phi)*cos(theta); R[0][2] = cos(theta); R[1][2] = 0; R[2][2] = sin(theta);
-
+                double tot_x =0;
+                double tot_y =0;
+                double tot_z =0;
                 for (int q = 0; q < nHits; q++){
                     CalorimeterHit * hit = hitvec[q];
                     float x = hit->getPosition()[0];
@@ -802,6 +806,10 @@ void DDCEDViewer::drawReconstructedParticle(DD4hep::Geometry::LCDD& lcdd, int& l
                     x -= cluster_center[0];
                     y -= cluster_center[1];
                     z -= cluster_center[2];
+                    tot_x += x*e;
+                    tot_y += y*e;
+                    tot_z += z*e;
+
                     double new_x = x * R[0][0] + y * R[0][1] + z * R[0][2];
                     double new_y = x * R[1][0] + y * R[1][1] + z * R[1][2];
                     double new_z = x * R[2][0] + y * R[2][1] + z * R[2][2];
@@ -814,21 +822,24 @@ void DDCEDViewer::drawReconstructedParticle(DD4hep::Geometry::LCDD& lcdd, int& l
                 //The result of the rotation by the matrix R, the following coordinates correspond with each other:
                 //  (component in coordinate system with x' || intrinsic direction)       (system in which ellipsoids are initially placed)
                 //                          x'                                      <-->        z       
-                //                          z'                                      <-->        y       
-                //                          y'                                      <-->        x       
-                double sizes[3];
-                sizes[2] = I[0][0];
+                //                          y'                                      <-->        y       
+                //                          z'                                      <-->       -x   
+                //These assignments are corrected for by a modified rotation of the ellipsoid along its y-axis (see declaration of double rotate[])
+
                 //I is not diagonal yet as only one axis was fixed when applying the rotation R.
                 //The remaining lengths are determined by the solution of the 2x2 Eigenvalues (p-q formula).
                 double lambda1 = 0.5*(I[2][2]+I[1][1]) + sqrt( pow(0.5*(I[2][2]+I[1][1]),2 ) + pow(I[2][1],2)-I[2][2]*I[1][1]);
                 double lambda2 = 0.5*(I[2][2]+I[1][1]) - sqrt( pow(0.5*(I[2][2]+I[1][1]),2 ) + pow(I[2][1],2)-I[2][2]*I[1][1]);
-                //The higher Eigenvalue is assigned to the coordinate with an higher entry as its diagonal element.
-                sizes[0] = (I[1][1] > I[2][2]) ? lambda1: lambda2; 
-                sizes[1] = (I[1][1] > I[2][2]) ? lambda2: lambda1;
+                double sizes[3];
+                sizes[0] = I[0][0]; sizes[1] = lambda1; sizes[2] = lambda2;
                 //Remaining: (more or less) Arbitrary rescaling and transformation to a physical length (sqrt + energy division)
                 for (int i=0; i<3; i++)  sizes[i] = sqrt(17.727)*sqrt(sizes[i])/Etot;
 
-                double rotate[] = {0.0, theta*180/M_PI, phi*180/M_PI};
+                double alpha = 0.5*asin(2*I[1][2]/fabs(lambda1-lambda2)) * (I[1][1]-I[2][2])/fabs(I[1][1]-I[2][2]);
+                //We want to rotate the ellipsoid w.r.t. to the y-axis by 90deg - theta. Due to the rotation by R that maps x' <--> z, it is now
+                //upside down such that an additional sign is needed.
+                double rotate[] = {alpha, -(90-theta*180/M_PI), phi*180/M_PI};
+                
                 //The colors (blue and red) are set according the deposited energy in the cluster by comparison to other clusters in the event
                 int ellipsoid_color = returnClusterColor(cluster->getEnergy(), Emin, Emax);
                 
