@@ -936,9 +936,9 @@ void DDCEDViewer::drawJets(DD4hep::Geometry::LCDD& lcdd, int layer, std::string 
         //init relevant objects for looping over all particles in the jet
         const ReconstructedParticleVec & pv = jet->getParticles();
         int N_elements = pv.size();
-        float pt_tot = 0.0; float pt_max = 0.0; float mean_tan_angle = 0.0;
-        std::vector<TVector3> pp; std::vector<float> pt;
-        pp.reserve(N_elements); pt.reserve(N_elements);
+        float pt_tot = 0.0; float E_max = 0.0; float mean_tan_angle = 0.0;
+        std::vector<TVector3> pp; std::vector<float> pt; std::vector<float> E;
+        pp.reserve(N_elements); pt.reserve(N_elements); E.reserve(N_elements);
 
         //calculate longitudinal, transverse momentum (w.r. to jet axis) for each particle
         //from that deduce a pt-weighted mean (tan-) angle and determine the highest pt contribution
@@ -950,8 +950,10 @@ void DDCEDViewer::drawJets(DD4hep::Geometry::LCDD& lcdd, int layer, std::string 
             TVector3 pl_k = pp_k - pt_k;
             pt.push_back(pt_k.Mag());
             pt_tot += pt[k];
-            pt_max = (pt[k] > pt_max) ? pt[k]: pt_max;
+            E.push_back(pv[k]->getEnergy());
+            E_max = (E[k] > E_max) ? E[k]: E_max;
             mean_tan_angle += pt[k]*(pt[k]/pl_k.Mag());
+
         }
         mean_tan_angle /= pt_tot;
 
@@ -959,7 +961,7 @@ void DDCEDViewer::drawJets(DD4hep::Geometry::LCDD& lcdd, int layer, std::string 
         for (unsigned int k = 0; k<N_elements; ++k){
             float center_ref[3] = {0., 0., 0.};
             //100% * distance = length holds for the entry with highest pt, the others obtain only a respective fraction
-            double momLength = (pt[k]/pt_max)*calculateTrackLength("", lcdd, center_ref[0], center_ref[1], center_ref[2], pp[k].X(), pp[k].Y(), pp[k].Z());                    //line size
+            double momLength = (E[k]/E_max)*calculateTrackLength("", lcdd, center_ref[0], center_ref[1], center_ref[2], pp[k].X(), pp[k].Y(), pp[k].Z());                    //line size
             //approximation: all lines start in origin (TODO, if jet origin known)
             ced_line_ID(center_ref[0], center_ref[1], center_ref[2], momLength*pp[k].X()/pp[k].Mag(), momLength*pp[k].Y()/pp[k].Mag(), momLength*pp[k].Z()/pp[k].Mag(), layer, 1, color, pv[k]->id());     
         }
