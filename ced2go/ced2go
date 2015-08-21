@@ -54,7 +54,6 @@ def help():
     print "     -h/-?         Help"
     print "     -t            template file ["+templateXMLFile+"]"
     print "     -s            arg = 1 enables preferred drawing of surfaces (if available); works only with LCDD"
-    print "     -n            number of skipped events at beginning"
     print "All options are optional"
     print "Viewers are e.g. CEDViewer, DSTViewer, GenericViewer"
     print "---------------------------------"
@@ -86,13 +85,18 @@ keys = {'$LCIOInputFiles$':'',
         '$GearXMLFile$':'',
         '$Viewer$':'',
         '$DD4XMLFile$':'',
-        '$DrawSurfaces$': 'false',
-        '$SkipNEvents$':'0'
+        '$DrawSurfaces$': 'false'
        }
-
 #Parse the command line arguments
+commandline = sys.argv[1:]     #is a list
+#parse for Marlin commands that star with '--'
+marlincommands= []
+for entry in reversed(commandline):
+    if entry.startswith("--"):
+        marlincommands.append(entry)
+        commandline.remove(entry)
 try: 
-    opts, args = getopt.getopt(sys.argv[1:], "hv:d:t:s:n:", "help")
+    opts, args = getopt.getopt(commandline, "h:v:d:t:s:", "help")
 except getopt.GetoptError, err:
     print str(err)
     help()
@@ -115,9 +119,6 @@ for key in opts:
           keys['$Viewer$'] += "\n<processor name=\"My" + str(key[1]) + "\"/>"
     if key[0]  == "-s":
         keys['$DrawSurfaces$'] = 'true' if (key[1] == "1") else 'false'
-
-    if key[0] == "-n":
-        keys['$SkipNEvents$'] = str(key[1])
     if key[0] in ("-h", "--help"):
         help()
         sys.exit(0)
@@ -228,7 +229,11 @@ if old:
     os.system(CED + " -geometry "+ "800x600" + " & sleep 1; " + Marlin  + " " + steeringFile);
 else:
     CEDobj    = subprocess.Popen([CED,'-geometry', '800x600'])
-    Marlinobj = subprocess.Popen([Marlin, steeringFile])
+    
+    MarlinCallArgs = [Marlin, steeringFile]
+    for marlinOpt in marlincommands:
+        MarlinCallArgs.append(marlinOpt)
+    Marlinobj = subprocess.Popen(MarlinCallArgs)
 
     #terminate the both processes when one is closed
     while True: 
