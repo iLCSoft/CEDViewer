@@ -328,7 +328,7 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
     
     //-----------------------------------------------------------------------
     if( _useTrackerForLimitsOfHelix ){
-        //only draw the helix in the TPC within the tracker volume
+        //only draw the helix of charged tracks (other than muons) in the TPC within the tracker volume
         _helix_max_r = getTrackerExtent(lcdd)[0];
         _helix_max_z = getTrackerExtent(lcdd)[1];
     }
@@ -586,13 +586,21 @@ void DDCEDViewer::drawMCParticle(DD4hep::Geometry::LCDD& lcdd, int& layer, unsig
             << sqrt(px*px+py*py)
             << std::endl ;
             const int ml = marker | ( layer << CED_LAYER_SHIFT ) ;
-            //temporary variables
-            double _hmr = _helix_max_r;
-            double _hmz = _helix_max_z;
+            //maximal extension of all charged tracks
+            double _hmr, _hmz;
+            switch(std::abs(mcp->getPDG() ) ){
+                case 13:
+                    _hmr = getCalorimeterParameters(lcdd, "HCalBarrel").r_inner + getCalorimeterParameters(lcdd, "HCalBarrel").delta_r; 
+                    _hmz = getCalorimeterParameters(lcdd, "HCalEndcap").z_0 + getCalorimeterParameters(lcdd, "HCalEndcap").delta_z;
+                    break;
+                default:
+                    _hmr = _helix_max_r; 
+                    _hmz = _helix_max_z;
+            }
             DDMarlinCED::drawHelix( bField , charge, x, y, z,
                                  px, py, pz, ml , size , 0x7af774  ,
                                  0.0,  _hmr ,
-                                 _hmz, mcp->id() ) ;
+                                 _hmz, mcp->id() ) ; 
         } else { // neutral
             int color  ;
             double length, yokeR, yokeZ;
