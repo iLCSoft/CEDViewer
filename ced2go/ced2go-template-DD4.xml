@@ -47,23 +47,47 @@
     VXD
     VertexBarrel
   </parameter>
+ <!--CEDViewer: event display of LCIO objects  - based on CED by A.Zhelezov.-->
+  <!--color scheme to be used for drawing - see startup log MESSAGEs for options-->
+  <parameter name="ColorScheme" type="int">10 </parameter>
+  <!--draw detector from GEAR file with given ID (see MarlinCED::newEvent() ) : 0 ILD, 1 CLIC, -1 none-->
+  <parameter name="DrawDetectorID" type="int">0 </parameter>
+  <!--draw a helix for PFO objects (usefull for Si tracker): 0: disabled, 1: enabled-->
+  <parameter name="DrawHelixForPFOs" type="int">0 </parameter>
+  <!--draw a helix for Track objects: -1: none, 0: default, 1: atIP, 2: atFirstHit, 3: atLastHit, 4: atCalorimeter-->
+  <parameter name="DrawHelixForTrack" type="int">0 </parameter>
+  <!--Max R (mm) Extent for drawing Helix if UseTPCForLimitsOfHelix false-->
+  <parameter name="HelixMaxR" type="float">2000 </parameter>
+  <!--Max Z (mm) Extent for drawing Helix if UseTPCForLimitsOfHelix false-->
+  <parameter name="HelixMaxZ" type="float">2500 </parameter>
+  <!--minimum energy of MCParticles to be drawn-->
+  <parameter name="MCParticleEnergyCut" type="float">0.001 </parameter>
+  <!--draw helices in the color of the track/PFO: 0: disabled (lightgrey), 1: enabled-->
+  <parameter name="UseColorForHelixTracks" type="int">0 </parameter>
+  <!--Use the gear parameters to define the max extent of drawing a helix-->
+  <parameter name="UseTPCForLimitsOfHelix" type="bool">true </parameter>
+  <!--If set true generator status is ignored for MCParticles to be drawn-->
+  <parameter name="UsingParticleGun" type="bool">false </parameter>
+  <!--verbosity level of this processor ("DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT")-->
+  <!--parameter name="Verbosity" type="string">DEBUG </parameter-->
+  <!--Wait for Keyboard before proceed-->
+  <parameter name="WaitForKeyboard" type="int">1 </parameter>
   <parameter name="DrawInLayer"> 
     VXDCollection 0 5 1
-     SITCollection 0 5 1
-     FTD_PIXELCollection 0 5 1
-     FTD_STRIPCollection 0 5 1
-     FTDCollection 0 5 1
-     TPCCollection 0 3 1
-     SETCollection 0 3 1
-     ETDCollection 0 3 1
-
-     VertexBarrelCollection 0 5 1
-     VertexEndcapCollection 0 5 1
-     InnerTrackerBarrelCollection 0 5 1
-     InnerTrackerEndcapCollection 0 5 1
-     OuterTrackerBarrelCollection 0 5 1
-     OuterTrackerEndcapCollection 0 5 1
-     
+    SITCollection 0 5 1
+    FTD_PIXELCollection 0 5 1
+    FTD_STRIPCollection 0 5 1
+    FTDCollection 0 5 1
+    TPCCollection 0 3 1
+    SETCollection 0 3 1
+    ETDCollection 0 3 1
+    VertexBarrelCollection 0 5 1
+    VertexEndcapCollection 0 5 1
+    InnerTrackerBarrelCollection 0 5 1
+    InnerTrackerEndcapCollection 0 5 1
+    OuterTrackerBarrelCollection 0 5 1
+    OuterTrackerEndcapCollection 0 5 1
+    
      VXDTrackerHits       0  5  11
      SITTrackerHits       0  5  11
      TPCTrackerHits       0  5  11
@@ -72,6 +96,11 @@
      FTDPixelTrackerHits  0  5  11
      FTDSpacePoints       0  5  11
      SETTrackerHits       0  5  11
+     ITrackerEndcapHits    0 5 11
+     ITrackerHits          0 5 11
+     OTrackerEndcapHits    0 5 11
+     OTrackerHits          0 5 11
+     VXDEndcapTrackerHits  0 5 11
 
      HcalEndCapsCollection       0 3 2
      LHcalCollection             0 3 2
