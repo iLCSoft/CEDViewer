@@ -140,13 +140,6 @@ DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
             _detailled,
             DetailledLayerExample,
             1  ) ;  
-    StringVec DrawnJets ; DrawnJets.push_back("JetCollectionToBeDrawn" ) ;
-    registerOptionalParameter( "JetCollections" ,
-        "List of jet collections to be drawn as cones.",
-        _jets,
-        DrawnJets,
-        1  ) ; 
-    //  
     registerOptionalParameter( "DrawSurfaces" ,
             "Draw the geometry as a set of individual surfaces (if available) instead of simplified structures.",
             _surfaces ,
@@ -383,7 +376,10 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
             continue ;
         }
         
-        if( col->getTypeName() == LCIO::CLUSTER ){
+        if( colName.find("Jet") != std::string::npos ){
+            //Usually jet collections contain the substring "Jet", e.g. "JetOut", "Durham_XJets", ...
+            DDCEDViewer::drawJets(lcdd, layer, colName, col);
+        } else if( col->getTypeName() == LCIO::CLUSTER ){
             DDCEDViewer::drawCluster(lcdd, layer, np, colName, marker, col, size);
         } else if( col->getTypeName() == LCIO::TRACK ){
             DDCEDViewer::drawTrack(lcdd, layer, np, colName, marker, col, size);
@@ -402,16 +398,6 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
         } else if( col->getTypeName() == LCIO::RECONSTRUCTEDPARTICLE ){ 
             DDCEDViewer::drawReconstructedParticle(lcdd, layer, np, colName, marker, col, size);
         }    
-    }
-    for (int i = 0; i<_jets.size(); i=i+2){
-        try{
-            LCCollection * col = evt->getCollection( _jets[i] );
-            streamlog_out( DEBUG )  << " drawing jets from collection " << _jets[i] << std::endl ;
-            int layer = std::atoi( _jets[i+1].c_str());
-            DDCEDViewer::drawJets(lcdd, layer, _jets[i], col);
-        }catch(DataNotAvailableException &e){
-            streamlog_out( WARNING )<<"No jet collection with name "<<_jets[i]<<std::endl;
-        }
     }
 }
 
