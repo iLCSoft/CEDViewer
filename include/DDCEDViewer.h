@@ -143,9 +143,6 @@ class DDCEDViewer : public Processor {
 } ;
 
 
-
-
-
 /***********************************************************************************************
 Helper or 'utility' functions & structures for DDCEDViewer processor.
 
@@ -180,8 +177,7 @@ CalorimeterDrawParams getCalorimeterParameters(DD4hep::Geometry::LCDD& lcdd, std
 //The signs of the tracks' directions are ultimately determined by the momenta.
 double calculateTrackLength(std::string type, DD4hep::Geometry::LCDD& lcdd, double x, double y, double z, double px, double py, double pz);
 
-int returnClusterColor(float eneCluster, float cutoff_min, float cutoff_max);
-
+int returnRGBClusterColor(float eneCluster, float cutoff_min, float cutoff_max, int color_steps, char scale, int colorMap);
 
 #endif
 

@@ -22,6 +22,7 @@
 #include "DD4hep/LCDD.h"
 #include "DD4hep/DD4hepUnits.h" 
 
+#include "ColorMap.h"
 #include "TVector3.h"
 
 using namespace lcio ;
@@ -849,7 +850,7 @@ void DDCEDViewer::drawReconstructedParticle(DD4hep::Geometry::LCDD& lcdd, int& l
                 double rotate[] = {alpha, -(90-theta*180/M_PI), phi*180/M_PI};
                 
                 //The colors (blue and red) are set according the deposited energy in the cluster by comparison to other clusters in the event
-                int ellipsoid_color = returnClusterColor(cluster->getEnergy(), Emin, Emax);
+                int ellipsoid_color = returnRGBClusterColor(cluster->getEnergy(), Emin, Emax, 256, 'a', 3);
                 
                 //Draw the ellipsoids, uncommenting the line with cylinders works as well.
                 ced_ellipsoid_r(sizes, cluster_center, rotate, layer, ellipsoid_color); 
@@ -1145,63 +1146,52 @@ double calculateTrackLength(std::string type, DD4hep::Geometry::LCDD& lcdd, doub
     return fabs(length);
 }
 
-//hard defined color ladder for cluster energy visualization
-int returnClusterColor(float eneCluster, float cutoff_min, float cutoff_max){
+int returnRGBClusterColor(float eneCluster, float cutoff_min, float cutoff_max, int color_steps, char scale, int colorMap){
+    int color = 0x000000; //default colour: black
+    int color_delta = 0; //colour step in the [0, color_steps] spectrum
+    unsigned int rgb[] = {0, 0, 0}; //array of RGB to be returned as one 0x000000 HEX value
+
+    /**
+    * Check the input values for sanity */
     if (cutoff_min > cutoff_max) {
-        std::cout << "Error in 'returnClusterColor': cutoff_min < cutoff_max" << std::endl;
+        std::cout << "Error in 'DSTViewer::returnRGBClusterColor': cutoff_min < cutoff_max" << std::endl;
     }
     if (eneCluster < 0.0) {
-        std::cout << "Error in 'returnClusterColor': eneCluster is negative!" << std::endl;
+        std::cout << "Error in 'DSTViewer::returnRGBClusterColor': eneCluster is negative!" << std::endl;
     }
     if (cutoff_min < 0.0) {
-        std::cout << "Error in 'returnClusterColor': eneCluster is negative!" << std::endl;
+        std::cout << "Error in 'DSTViewer::returnRGBClusterColor': eneCluster is negative!" << std::endl;
+    }
+    if (colorMap < 0 || colorMap > 6) {
+        std::cout << "Error in 'DSTViewer::returnRGBClusterColor': wrong colorMap param!" << std::endl;
     }
     // Input values in log-scale
     float log_ene = std::log(eneCluster+1);
     float log_min = std::log(cutoff_min+1);
     float log_max = std::log(cutoff_max+1);
     float log_delta = log_max - log_min;
-    float log_step = log_delta/10.;
-    float r, b, g;
-    int N = (int) ((log_ene-log_min)/log_step);
-    int color;
-    //dark red - highest energy,
-    //dark blue - lowest energy (similar to 'COLZ' in ROOT)
-    switch(N){
-    case 0:
-        r = 0; g = 0; b = 204;
-        break;
-    case 1:
-        r = 0; g = 0; b = 255;
-        break;
-    case 2:
-        r = 51; g = 51; b = 255;
-        break;
-    case 3:
-        r = 102; g = 102; b = 255;
-        break;
-    case 4:
-        r = 153; g = 153; b = 255;
-        break;
-    case 5:
-        r = 253; g = 153; b = 153;
-        break;
-    case 6:
-        r = 255; g = 102; b = 102;
-        break;
-    case 7:
-        r = 255; g = 51; b = 51;
-        break;
-    case 8:
-        r = 255; g = 0; b = 0;
-        break;
-    case 9:
-        r = 204; g = 0; b = 0;
-        break;
-    default: //should be 10
-        r = 153; g = 0; b = 0;
+    float log_step = log_delta/(float)color_steps;
+
+    switch(scale){
+        case 'a': default: //log
+            color_delta = (int) ((log_ene-log_min)/log_step); // which colour bin does the value go to? We have [0x00,0xFF] bins
+            break;
+        case 'b': //linear
+            color_delta = (int)((eneCluster - cutoff_min)/(cutoff_max - cutoff_min)*color_steps);
+            break;
     }
-    color = ((int(r)<<16) | (int(g)<<8) | (int(b)<<0));         
+
+
+    if (color_delta >= color_steps){
+        color_delta = color_steps;
+    }
+    if (color_delta < 0){
+        color_delta = 0;
+    }
+
+    ColorMap::selectColorMap(colorMap)(rgb, color_delta, 0, color_steps);
+    color = ColorMap::RGB2HEX(rgb[0],rgb[1],rgb[2]);
+
     return color;
 }
 
