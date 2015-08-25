@@ -54,6 +54,7 @@ def help():
     print "     -h/-?         Help"
     print "     -t            template file ["+templateXMLFile+"]"
     print "     -s            arg = 1 enables preferred drawing of surfaces (if available); works only with LCDD"
+    print "     --MarlinParameter=value            overwrites existing parameters in the steering file"
     print "All options are optional"
     print "Viewers are e.g. CEDViewer, DSTViewer, GenericViewer"
     print "---------------------------------"
