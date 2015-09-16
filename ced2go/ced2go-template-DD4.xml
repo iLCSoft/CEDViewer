@@ -23,9 +23,7 @@
    <parameter name="LCIOInputFiles">
       $LCIOInputFiles$
    </parameter> 
-    <parameter name="SkipNEvents">
-      $SkipNEvents$
-    </parameter>
+   <parameter name="SkipNEvents" value="0"/>
    <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> DEBUG0 MESSAGE  </parameter>  
  </global>
 
