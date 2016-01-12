@@ -2,6 +2,7 @@
 #include "DDCEDViewer.h"
 
 #include <iostream>
+#include <set>
 
 #include <EVENT/LCCollection.h>
 #include <EVENT/Cluster.h>
@@ -252,6 +253,39 @@ void DDCEDViewer::init() {
             
     }
     
+    //add DrawInLayer to
+    //std::vector< DrawParameters > drawParameters ;
+    this->drawParameters.reserve( _drawCollections.size() + _drawCollectionsLayer.size()  ) ;
+    
+    if( parameterSet( "DrawCollection" ) ) {
+        
+        unsigned index = 0 ;
+        while( index < _drawCollections.size() ){
+            
+            const std::string & colName = _drawCollections[ index++ ] ;
+            int marker = std::atoi( _drawCollections[ index++ ].c_str() ) ;
+            int size = std::atoi( _drawCollections[ index++ ].c_str() ) ;
+            //std::cout << "#######################      SIZE: " << size << " #######################################" << std::endl;
+            int layer = -1 ;
+            
+            this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
+        }
+    }
+    if( parameterSet( "DrawInLayer" ) ) {
+        
+        unsigned index = 0 ;
+        while( index < _drawCollectionsLayer.size() ){
+            
+            const std::string & colName = _drawCollectionsLayer[ index++ ] ;
+            int marker = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
+            int size   = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
+            int layer  = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
+            
+            this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
+            //std::cout << "layer: " << layer << " description: " << colName << std::endl; //hauke
+        }
+    }
+
     streamlog_out(MESSAGE) << " ---- selected color scheme:  "  << _colorScheme << "\n"
     << "    possible options: "  <<   "\n"
     << "      Red          "     << Red          <<   "\n"
@@ -326,39 +360,41 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
         _helix_max_r = getTrackerExtent(lcdd)[0];
         _helix_max_z = getTrackerExtent(lcdd)[1];
     }
-    //add DrawInLayer to
-    //std::vector< DrawParameters > drawParameters ;
-    this->drawParameters.reserve( _drawCollections.size() + _drawCollectionsLayer.size()  ) ;
+    // //add DrawInLayer to
+    // //std::vector< DrawParameters > drawParameters ;
+    // this->drawParameters.reserve( _drawCollections.size() + _drawCollectionsLayer.size()  ) ;
     
-    if( parameterSet( "DrawCollection" ) ) {
+    // if( parameterSet( "DrawCollection" ) ) {
         
-        unsigned index = 0 ;
-        while( index < _drawCollections.size() ){
+    //     unsigned index = 0 ;
+    //     while( index < _drawCollections.size() ){
             
-            const std::string & colName = _drawCollections[ index++ ] ;
-            int marker = std::atoi( _drawCollections[ index++ ].c_str() ) ;
-            int size = std::atoi( _drawCollections[ index++ ].c_str() ) ;
-            //std::cout << "#######################      SIZE: " << size << " #######################################" << std::endl;
-            int layer = -1 ;
+    //         const std::string & colName = _drawCollections[ index++ ] ;
+    //         int marker = std::atoi( _drawCollections[ index++ ].c_str() ) ;
+    //         int size = std::atoi( _drawCollections[ index++ ].c_str() ) ;
+    //         //std::cout << "#######################      SIZE: " << size << " #######################################" << std::endl;
+    //         int layer = -1 ;
             
-            this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
-        }
-    }
-    if( parameterSet( "DrawInLayer" ) ) {
+    //         this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
+    //     }
+    // }
+    // if( parameterSet( "DrawInLayer" ) ) {
         
-        unsigned index = 0 ;
-        while( index < _drawCollectionsLayer.size() ){
+    //     unsigned index = 0 ;
+    //     while( index < _drawCollectionsLayer.size() ){
             
-            const std::string & colName = _drawCollectionsLayer[ index++ ] ;
-            int marker = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
-            int size   = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
-            int layer  = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
+    //         const std::string & colName = _drawCollectionsLayer[ index++ ] ;
+    //         int marker = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
+    //         int size   = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
+    //         int layer  = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
             
-            this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
-            //std::cout << "layer: " << layer << " description: " << colName << std::endl; //hauke
-        }
-    }
+    //         this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
+    //         //std::cout << "layer: " << layer << " description: " << colName << std::endl; //hauke
+    //     }
+    // }
     
+    std::set< std::string > colsInEvent ;
+
     unsigned nCols = this->drawParameters.size() ;
     //draw the individual collections as indicated in DrawInLayer
     for(unsigned np=0 ; np < nCols ; ++np){
@@ -371,8 +407,11 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
         LCCollection* col = 0 ;
         try{
             col = evt->getCollection( colName ) ;
+
+            colsInEvent.insert( colName ) ;
+
         }catch(DataNotAvailableException &e){
-            streamlog_out( WARNING ) << " collection " << colName <<  " not found ! "   << std::endl ;
+            streamlog_out( DEBUG5 ) << " collection " << colName <<  " not found ! "   << std::endl ;
             continue ;
         }
         
@@ -399,6 +438,25 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
             DDCEDViewer::drawReconstructedParticle(lcdd, layer, np, colName, marker, col, size);
         }    
     }
+
+    streamlog_out( MESSAGE ) << " ++++++++ collections shown on layer [ evt: " << evt->getEventNumber() 
+    <<  " run: " << evt->getRunNumber() << " ] :   +++++++++++++ " << std::endl ;
+    
+    for(unsigned np=0 ; np < nCols ; ++np){
+        
+        const std::string & colName = drawParameters[np].ColName ;
+        //     int size =   drawParameters[np].Size ;
+        //     int marker = drawParameters[np].Marker ;
+        int layer =  drawParameters[np].Layer ;
+        
+        if( colsInEvent.find( colName ) != colsInEvent.end() ) {
+          streamlog_out( MESSAGE )  << "    +++++  " << colName <<  "\t  on layer: " << layer << std::endl ;
+        }
+    }
+    streamlog_out( MESSAGE ) << " ++++++++ use shift-[LN] for LN>10  +++++++++++++ " << std::endl ;
+    
+
+
 }
 
 void DDCEDViewer::drawCluster(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size){

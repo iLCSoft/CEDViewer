@@ -355,7 +355,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
             
         }catch(DataNotAvailableException &e){
             
-            streamlog_out( WARNING ) << " collection " << colName <<  " not found ! "   << std::endl ;
+            streamlog_out( DEBUG5 ) << " collection " << colName <<  " not found ! "   << std::endl ;
             continue ;
             
         }
