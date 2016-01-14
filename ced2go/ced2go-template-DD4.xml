@@ -15,16 +15,19 @@
 
 <marlin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://ilcsoft.desy.de/marlin/marlin.xsd">
  <execute>
-	 <processor name="MyInitializeDD4hep"/>
-     <processor name="MyCEDViewer"/>
- </execute>
+  <!-- <processor name="MyEventSelector"/> -->
+  <!--   <if condition="MyEventSelector"> -->
+      <processor name="MyInitializeDD4hep"/>
+      <processor name="MyCEDViewer"/>
+   <!-- </if> -->
+</execute>
 
  <global>
    <parameter name="LCIOInputFiles">
       $LCIOInputFiles$
    </parameter> 
    <parameter name="SkipNEvents" value="0"/>
-   <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> DEBUG0 MESSAGE  </parameter>  
+   <parameter name="Verbosity" options="DEBUG0-4,MESSAGE0-4,WARNING0-4,ERROR0-4,SILENT"> MESSAGE  </parameter>  
  </global>
 
  <processor name="MyInitializeDD4hep" type="InitializeDD4hep">
@@ -32,6 +35,19 @@
     $DD4XMLFile$
   </parameter>
 </processor>
+
+ <processor name="MyEventSelector" type="EventSelector">
+   <!--event list - pairs of Eventnumber RunNumber-->
+   <parameter name="EventList" type="IntVec"> 
+       28 0
+       33 0
+       52 0
+       63 0
+       73 0
+       78 0
+   </parameter>
+ </processor>
+
 
 <processor name="MyCEDViewer" type="DDCEDViewer">
   <parameter name="DrawDetector" type="bool">true </parameter>
@@ -134,11 +150,11 @@
      ECALOther    0 2 12
      HCALBarrel   0 5 12
 
-     TruthTracks      0 3 3
-     ForwardTracks    0 3 4
-     SiTracks         0 3 5
-     ClupatraTracks   0 5 6
-     MarlinTrkTracks  0 3 7
+     TruthTracks      0 6 3
+     ForwardTracks    0 6 4
+     SiTracks         0 6 5
+     ClupatraTracks   0 6 6
+     MarlinTrkTracks  0 6 7
 
      PandoraClusters  0 3 8
      PandoraPFOs      0 3 9
