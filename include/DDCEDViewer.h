@@ -133,6 +133,7 @@ class DDCEDViewer : public Processor {
   int       _waitForKeyboard ;
   int       _drawHelixForPFOs;
   int       _useColorForHelixTracks ;
+  int       _drawEllipsoidForPFOClusters ;
   IntVec    _colors ;
 
   //detector options
