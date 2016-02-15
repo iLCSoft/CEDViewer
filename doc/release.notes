@@ -3,6 +3,42 @@
  release notes for CEDViewer
 
 ================================
+
+ --------
+| v01-11 |
+ --------
+
+  - ced2go
+    - increased size of tracker hits drawn for tracks
+    - added optional EventSelector to ced2go/ced2go-template-DD4.xml
+     ( commented out )
+  
+ - DDCEDViewer.cc
+   - added printout of shown collections and event number to DDCEDViewer
+   - fixed duplicate drawing of collections in DDCEDViewer
+   - fixed some log levels
+   - introduced flag DrawEllipsoidForPFOClusters
+     (default is Disabled)
+   - draw calorimeter hits for PFO clusters ...
+
+
+T.Quast, RWTH Aachen
+   
+  - ced2go
+   - Allow for Marlin options '--', '-n' option removed due to default 'global.SkipNEvents=...' option
+   - Extend ced2go's help message
+  - DDCEDViewer
+   - Jet collections to be defined in DrawInLayer, jets are drawn if the collection contains the substring 'Jet'
+   - use logarithmic (ROOT) color map for reconstructed clusters' energy visualization
+   - energy-weighted track lengths for jet entities
+   - energy-weighted track lengths for jet entities
+   - Draw energy clusters as ellipsoids. Energy scaling with colors, (energy weighted) spatial extension <--> size of according ellipsoid
+   - Improve jet visualization for CEDViewer
+   - removed GEAR dependencies, merge of processors, adjusted ced2go and add skipNEvents option, 
+     implement jet visualization  (commit requires tip version of MarlinUtil
+
+
+
  ---------
 | v01-10 |
  ---------
