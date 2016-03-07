@@ -446,7 +446,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 						   					   
 	double center_c[3] = {0., 0., 0. };
 	double rotation_c[3] = { 0.,  v.theta()*180./M_PI , v.phi()*180./M_PI };
-	float RGBAcolor[4] = {0.2+0.2*i, 0.2+0.2*i, 1.0-0.25*i, 0.3};
+	float RGBAcolor[4] = { float(0.2+0.2*i), float(0.2+0.2*i), float(1.0-0.25*i), float(0.3)};
 	if (i==0){
 	  RGBAcolor[0] = 1.0;
 	  RGBAcolor[1] = 0.3;

@@ -87,8 +87,8 @@ SET( libname ${PROJECT_NAME} )
 INCLUDE_DIRECTORIES( ./include )
 
 # definitions to pass to the compiler
-ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
-ADD_DEFINITIONS( "-Wno-long-long" )
+#ADD_DEFINITIONS( "-Wall -ansi -pedantic" )
+#ADD_DEFINITIONS( "-Wno-long-long" )
 
 # add library
 AUX_SOURCE_DIRECTORY( ./src library_sources )
