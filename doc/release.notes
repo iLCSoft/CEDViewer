@@ -5,6 +5,15 @@
 ================================
 
  --------
+| v01-12 |
+ --------
+
+F. Gaede
+   - made compatible with c++11
+   - removed -ansi -pedantic -Wno-long-long
+   - fixed narrowing in initializer lists
+
+ --------
 | v01-11 |
  --------
 
