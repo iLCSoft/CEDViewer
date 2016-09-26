@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/bin/env python
 
 ###########################################################################
 # Modified ced2go script by Thorben Quast, 28/07/2015
