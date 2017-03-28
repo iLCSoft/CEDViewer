@@ -1,21 +1,11 @@
-================================
-
- release notes for CEDViewer
-
-================================
-
- --------
-| v01-12 |
- --------
+# v01-12
 
 F. Gaede
    - made compatible with c++11
    - removed -ansi -pedantic -Wno-long-long
    - fixed narrowing in initializer lists
 
- --------
-| v01-11 |
- --------
+# v01-11
 
   - ced2go
     - increased size of tracker hits drawn for tracks
@@ -48,9 +38,7 @@ T.Quast, RWTH Aachen
 
 
 
- ---------
-| v01-10 |
- ---------
+# v01-10
     T.Quast, RWTH Aachen
 
     - add DrawDetectorDD4hep
@@ -62,17 +50,13 @@ T.Quast, RWTH Aachen
     => depends now on DD4hep/Root
 
 
- -----------
-| v01-09-01 | patch release
- -----------
+# v01-09-01 patch release
 
    - M.Petric:
      - updated ced2go template files for new CLIC simulation model
 
 
- --------
-| v01-09 |
- --------
+# v01-09
 
        - adapted CED event display for CLIC-Sid detector ( M.Petric/FG)
           - added new processor DrawCLIC
@@ -88,25 +72,19 @@ T.Quast, RWTH Aachen
 
 v01-08 - does not exist 
 
- -----------
-| v01-07-02 |
- -----------
+# v01-07-02
       - some minor improvements to pyced 
          - added userDraw() method for
            drawing additional objects
          - added example for track cut function
 
- -----------
-| v01-07-01 |
- -----------
+# v01-07-01
    -  added pyced python event display
       (see: ./pyced/README )
     
    - no change to the rest of the code
 
- --------
-| v01-07 |
- --------
+# v01-07
 
    - changed calling attributes of ced_hit_ID to newer version
      -> needed for CED v01-09 which has no function overloading 
@@ -128,9 +106,7 @@ v01-08 - does not exist
  - update for the multi-module support via generic GEAR interface
 
 
- -----------
-| v01-06-01 |
- -----------
+# v01-06-01
 
  - display all tracker hits from all segments
     for Tracks and ReconstructedParticles
@@ -138,34 +114,26 @@ v01-08 - does not exist
   - use last track segment (if any) to get
     track states at last hit and at calorimeter
 
- --------
-| v01-06 |
- --------
+# v01-06
 
   - removed TrackerRawViewer 
      - lives now in MarlinTPC
 
 
- -----------
-| v01-05-02 |
- -----------
+# v01-05-02
 
  - fixed FTD hit collection names 
  - draw all tracks and clusters for recoparticles.
 
 
- -----------
-| v01-05-01 |
- -----------
+# v01-05-01
 
     - added drawing of the strip measurment for SIT TrackerHitPlane
     - fixed ced2go in case variable STANDARDCONFIG is not set
     - made compatible with clang++
 
 
- --------
-| v01-05 |
- --------
+# v01-05
 
     CEDViewer:
       added parameter WaitForKeyboard
@@ -174,16 +142,12 @@ v01-08 - does not exist
       allow to specifiy steering file template on the command line with -t
 
 
- -----------
-| v01-04-01 |
- -----------
+# v01-04-01
      - fixed collection names for ced2go
        (EcalBarrel/EndcapSiliconCollection)
 
 
- --------
-| v01-04 |
- --------
+# v01-04
 
     - Added option to supply limits to helix drawing, other than the extent of the TPC
     - Added option for drawing MC truth info for particle gun events
@@ -224,9 +188,7 @@ v01-08 - does not exist
 
 
 
- --------
-| v01-03 |
- --------
+# v01-03
 
    -  added new TrackerRawViewer
 
@@ -244,9 +206,7 @@ v01-08 - does not exist
 	the marker flags - patch provided by T. Tanabe)
 
 
- --------
-| v01-02 |
- --------
+# v01-02
 
  - cmake changes:
     - simplified CMakeLists.txt
@@ -263,9 +223,7 @@ v01-08 - does not exist
  - removed old steering file
 
 
- --------
-| v01-01 |
- --------
+# v01-01
     new features: (H. Hoelbe, DESY)
     -  CEDViewer: 
         -  Adds now his layer description to CED
@@ -288,45 +246,33 @@ v01-08 - does not exist
     -  CEDViewer:
         - Helix part of tracks was not pickable. fixed
 
- --------
-| v01-00 |
- --------
+# v01-00
      - new release of CEDViewer with 'picking' functionality 
         - implemented  in CEDViewer and GenericViewer
         - see ./doc/CEDPicking.pdf for details   
 
 
- -----------
-| v00-07-02 |
- -----------
+# v00-07-02
 
     - bug fix: incorrect library version numbers
 
- -----------
-| v00-07-01 |
- -----------
+# v00-07-01
 
     - replaced "const double Pi = acos(-1.)" with M_PI from math.h
 
- --------
-| v00-07 |
- --------
+# v00-07
     - implemented a DSTViewer (S. Darasz):
         draws ReconstructedParticles as helices and straight lines;
         Clusters as Cylinders (Ellipsoids) and different jet hypotheses as cones
     - made cmake 2.6 compliant
     - added 32 bit compatibility build option
     
- --------
-| v00-06 |
- --------
+# v00-06
     - made dependent on CED directly 
       -> need CED  >= v00-04-01  
       -> need MarlinUtil >= v00-10 
 
- --------
-| v00-05 |
- --------
+# v00-05
    - VertexViewer processor added   (A.Raspereza)
      allows detailed vertex views in r-phi plane
  
@@ -334,16 +280,12 @@ v01-08 - does not exist
 
    - minor fixes
 
- --------
-| v00-04 |
- --------
+# v00-04
  
  - removed HepPDT dependency
  
 
- --------
-| v00-03 |
- -------
+# v00-03
 
       - cmake is now default build tool:  (J.Engels)
         # edit BuildSetup.cmake as needed
@@ -353,12 +295,7 @@ v01-08 - does not exist
      -> creates plugin library $CEDViewer/lib/libCEDViewer.so
 
 
- --------
-| v00-02 |
- --------
+# v00-02
  
   - added cmake support (epxerimental)
   - renamed Physical_Geometrical_database to PGdb (see MarlinUtil)
-
-
-
