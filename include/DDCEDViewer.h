@@ -10,16 +10,14 @@ date: 10 August 2015
 
 #include "marlin/Processor.h"
 #include "lcio.h"
+
+#include <DD4hep/Detector.h>
+
 #include <string>
 #include <vector>
 
 using namespace lcio ;
 using namespace marlin ;
-namespace DD4hep{ 
-  namespace Geometry{
-    class LCDD ;
-  }
-}
 
 
 
@@ -84,17 +82,17 @@ class DDCEDViewer : public Processor {
  * - removed GEAR dependence
  * - refactored drawing of straight lines up to calorimeters
  */
-  void drawDD4LCIO(LCEvent * evt, DD4hep::Geometry::LCDD& lcdd);
+  void drawDD4LCIO(LCEvent * evt, dd4hep::Detector& theDetector);
   //convenience function to improve readibility of main code
-  void drawCluster(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
-  void drawTrack(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
-  void drawMCParticle(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
+  void drawCluster(dd4hep::Detector& theDetector, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
+  void drawTrack(dd4hep::Detector& theDetector, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
+  void drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
   void drawSIMTrackerHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, std::vector<int>& _colors, int& size);
   void drawSIMCalorimeterHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, std::vector<int>& _colors, int& size);
   void drawTrackerHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
   void drawCalorimeterHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
-  void drawReconstructedParticle(DD4hep::Geometry::LCDD& lcdd, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
-  void drawJets(DD4hep::Geometry::LCDD& lcdd, int layer, std::string colName, LCCollection* col);
+  void drawReconstructedParticle(dd4hep::Detector& theDetector, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
+  void drawJets(dd4hep::Detector& theDetector, int layer, std::string colName, LCCollection* col);
  
  protected:
 
@@ -155,9 +153,8 @@ date: 12 August 2015
 #include <string>
 
 //Includes for detector drawing
-#include "DD4hep/LCDD.h"
+#include "DD4hep/Detector.h"
 #include "DDRec/DetectorData.h"
-using namespace DD4hep::Geometry ;
 
 //structure for calculating the track length of given particles
 struct CalorimeterDrawParams {
@@ -166,17 +163,17 @@ struct CalorimeterDrawParams {
 
 /***lcio draw helpers***/
 //get the outer extents of the tracker
-double* getTrackerExtent(DD4hep::Geometry::LCDD& lcdd);
+double* getTrackerExtent(dd4hep::Detector& theDetector);
 
 //get the outer extents of the yoke
-double* getYokeExtent(DD4hep::Geometry::LCDD& lcdd);
+double* getYokeExtent(dd4hep::Detector& theDetector);
 
 //calculates and returns the relevant calorimeter parameters for track length calculations.
-CalorimeterDrawParams getCalorimeterParameters(DD4hep::Geometry::LCDD& lcdd, std::string name, bool selfCall = false);
+CalorimeterDrawParams getCalorimeterParameters(dd4hep::Detector& theDetector, std::string name, bool selfCall = false);
 
 //It suffices to perform the calculations in the first quadrant due to the detector's symmetry.
 //The signs of the tracks' directions are ultimately determined by the momenta.
-double calculateTrackLength(std::string type, DD4hep::Geometry::LCDD& lcdd, double x, double y, double z, double px, double py, double pz);
+double calculateTrackLength(std::string type, dd4hep::Detector& theDetector, double x, double y, double z, double px, double py, double pz);
 
 int returnRGBClusterColor(float eneCluster, float cutoff_min, float cutoff_max, int color_steps, char scale, int colorMap);
 
