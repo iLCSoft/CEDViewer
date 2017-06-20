@@ -1077,9 +1077,9 @@ double* getYokeExtent(dd4hep::Detector& theDetector){
         if (!isYokeBarrel && !isYokeEndcap)
             continue;
         yoke = calorimeters[i];
-        DD4hep::DDRec::LayeredCalorimeterData* yokeGeo;
+        dd4hep::rec::LayeredCalorimeterData* yokeGeo;
         try{ 
-            yokeGeo = yoke.extension<DD4hep::DDRec::LayeredCalorimeterData>() ; 
+            yokeGeo = yoke.extension<dd4hep::rec::LayeredCalorimeterData>() ; 
         } catch(std::runtime_error& e){
             streamlog_out( MESSAGE ) <<  "MC Particles for " << detName << " cannot be drawn"<<std::endl;
             extent[0] = extent[1] = 0;
@@ -1106,9 +1106,9 @@ CalorimeterDrawParams getCalorimeterParameters(dd4hep::Detector& theDetector, st
             break;
         }
     }
-    DD4hep::DDRec::LayeredCalorimeterData* caloGeo;
+    dd4hep::rec::LayeredCalorimeterData* caloGeo;
     try{ 
-        caloGeo = calo.extension<DD4hep::DDRec::LayeredCalorimeterData>() ; 
+        caloGeo = calo.extension<dd4hep::rec::LayeredCalorimeterData>() ; 
     } catch(std::runtime_error& e){
             if (!selfCall)
                 return getCalorimeterParameters(theDetector, name, true); 
@@ -1118,7 +1118,7 @@ CalorimeterDrawParams getCalorimeterParameters(dd4hep::Detector& theDetector, st
                 return params;
             }
     }
-    if (caloGeo->layoutType == DD4hep::DDRec::LayeredCalorimeterData::BarrelLayout){
+    if (caloGeo->layoutType == dd4hep::rec::LayeredCalorimeterData::BarrelLayout){
         params.r_inner = caloGeo->extent[0]/dd4hep::mm;
         params.delta_r = caloGeo->extent[1]/dd4hep::mm - params.r_inner;
         params.z_0 = 0.;
