@@ -1,3 +1,9 @@
+# v01-14
+
+* 2017-06-20 Andre Sailer ([PR#3](https://github.com/iLCSoft/CEDViewer/pull/3))
+  - Adapt to changes in namespaces and LCDD -->  Detector
+  - Ignore warnings from external header files
+
 # v01-13
 
 # v01-12
