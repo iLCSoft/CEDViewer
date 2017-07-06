@@ -676,8 +676,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                     r_max * p / pt  :  std::abs( z_max * p / pz ) ;
                     
                     ced_line_ID( x , y , z ,
-                                length*px/p ,  length*py/p ,  length*pz/p ,
-                                layer  , size, color, mcp->id() );
+                                 x + length*px/p ,  y + length*py/p ,  z + length*pz/p ,
+                                 layer  , size, color, mcp->id() );
                     
                 }
             }
