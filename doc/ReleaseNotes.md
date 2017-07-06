@@ -1,3 +1,9 @@
+# v01-14-01
+
+* 2017-07-06 Frank Gaede ([PR#4](https://github.com/iLCSoft/CEDViewer/pull/4))
+  - add "EcalXXXCollection" to ced2go  template for drawing SimCalorimeterHits
+  - fix the drawing of non-prompt neutral MCParticles in CEDViewer
+
 # v01-14
 
 * 2017-06-20 Andre Sailer ([PR#3](https://github.com/iLCSoft/CEDViewer/pull/3))
