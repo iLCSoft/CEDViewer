@@ -117,6 +117,9 @@ $LCIOInputFiles$
        ECalBarrelCollection 0 3 2
        ECalEndcapCollection 0 3 2
        ECalPlugCollection 0 3 2
+       EcalBarrelCollection 0 3 2
+       EcalEndcapCollection 0 3 2
+       EcalPlugCollection 0 3 2
        HCalBarrelCollection 0 3 2
        HCalEndcapCollection 0 3 2
        HCalRingCollection 0 3 2
