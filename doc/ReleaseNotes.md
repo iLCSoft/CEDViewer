@@ -1,3 +1,10 @@
+# v01-15
+
+* 2017-09-14 Shaojun Lu ([PR#5](https://github.com/iLCSoft/CEDViewer/pull/5))
+  -   Update the  ced2go template for ILD_l4_v02.
+      - add the Ecal and Hcal collection names from ILD_l4_v02.
+      - remove duplicated  LumiCalCollection.
+
 # v01-14-01
 
 * 2017-07-06 Frank Gaede ([PR#4](https://github.com/iLCSoft/CEDViewer/pull/4))
