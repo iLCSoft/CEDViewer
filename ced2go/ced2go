@@ -54,6 +54,7 @@ def help():
     print "     -h/-?         Help"
     print "     -t            template file ["+templateXMLFile+"]"
     print "     -s            arg = 1 enables preferred drawing of surfaces (if available); works only with LCDD"
+    print "     -n            arg = 1 disable a call to glced for a case to run glced at local host " 
     print "     --MarlinParameter=value            overwrites existing parameters in the steering file"
     print "All options are optional"
     print "Viewers are e.g. CEDViewer, DSTViewer, GenericViewer"
@@ -86,7 +87,8 @@ keys = {'$LCIOInputFiles$':'',
         '$GearXMLFile$':'',
         '$Viewer$':'',
         '$DD4XMLFile$':'',
-        '$DrawSurfaces$': 'false'
+        '$DrawSurfaces$': 'false',
+        '$NoCED$': 'false'
        }
 #Parse the command line arguments
 commandline = sys.argv[1:]     #is a list
@@ -97,7 +99,7 @@ for entry in reversed(commandline):
         marlincommands.append(entry)
         commandline.remove(entry)
 try: 
-    opts, args = getopt.getopt(commandline, "h:v:d:t:s:", "help")
+    opts, args = getopt.getopt(commandline, "h:v:d:t:n:s:", "help")
 except getopt.GetoptError, err:
     print str(err)
     help()
@@ -120,6 +122,8 @@ for key in opts:
           keys['$Viewer$'] += "\n<processor name=\"My" + str(key[1]) + "\"/>"
     if key[0]  == "-s":
         keys['$DrawSurfaces$'] = 'true' if (key[1] == "1") else 'false'
+    if key[0]  == "-n":
+        keys['NoCED$'] = 'true' if ( key[1] == "1" ) else 'false'
     if key[0] in ("-h", "--help"):
         help()
         sys.exit(0)
@@ -208,29 +212,35 @@ xmlFH.close()
 templateFH.close()
 
 #check for a free port for CED 
-for port in range(int(random.random()*6000+1024),200000):
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(('',port))
-    except socket.error, (value,message):
-        if value == 98: #port already in use
-            #print "port " + str(port) + " in use "
-            s.close() 
-            continue 
-        else:
-            print "unknown error: " + message
-            sys.exit()
-    print "Use port " + str(port)
-    s.close()
-    break
-os.environ['CED_PORT']=str(port)
+startced = []
+if keys['$NoCED$'] == 'false':
+    for port in range(int(random.random()*6000+1024),200000):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.bind(('',port))
+        except socket.error, (value,message):
+            if value == 98: #port already in use
+                #print "port " + str(port) + " in use "
+                s.close() 
+                continue 
+            else:
+                print "unknown error: " + message
+                sys.exit()
+        print "Use port " + str(port)
+        s.close()
+        break
+    os.environ['CED_PORT']=str(port)
+    startced = [CED,"-geometry", "800x600","&","sleep 1;"]
 
+startced += [ Marlin, steeringFile ]
+    
 #start ced and marlin
 if old:
-    os.system(CED + " -geometry "+ "800x600" + " & sleep 1; " + Marlin  + " " + steeringFile);
+    os.system(" ".join(startced))
 else:
-    CEDobj    = subprocess.Popen([CED,'-geometry', '800x600'])
-    
+    if keys['$NoCED$'] == 'false':
+        CEDobj    = subprocess.Popen(startced[0:3])
+            
     MarlinCallArgs = [Marlin, steeringFile]
     for marlinOpt in marlincommands:
         MarlinCallArgs.append(marlinOpt)
@@ -242,9 +252,10 @@ else:
             os.kill(CEDobj.pid,15)
             break
 
-        if CEDobj.poll() != None: 
-            os.kill(Marlinobj.pid,15)
-            break
+        if keys['$NoCED$'] == 'false':
+            if CEDobj.poll() != None:
+                os.kill(Marlinobj.pid,15)
+                break
 
         time.sleep(0.5) #sleep for 0.5 seconds
 
