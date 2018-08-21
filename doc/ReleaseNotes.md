@@ -1,3 +1,14 @@
+# v01-16
+
+* 2018-08-21 Frank Gaede ([PR#7](https://github.com/ilcsoft/CEDViewer/pull/7))
+  - improved CEDViewer/DDCEDViewer (also used by ced2go)
+        - print run and event number at end of event
+        - print only shown collections 
+        - added new collections ( mostly calo hits) from ILD mass production
+
+* 2018-08-20 Akiya Miyamoto ([PR#6](https://github.com/ilcsoft/CEDViewer/pull/6))
+  - Added a command line option, "-n 1".   If this option is specified, glced is not executed. This option is useful for a case to run glced at local client and run CEDViewer at remote host.
+
 # v01-15
 
 * 2017-09-14 Shaojun Lu ([PR#5](https://github.com/iLCSoft/CEDViewer/pull/5))
