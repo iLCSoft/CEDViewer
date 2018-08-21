@@ -113,7 +113,6 @@
      OTrackerHits          0 5 11
      VXDEndcapTrackerHits  0 5 11
 
-     HcalEndCapsCollection       0 3 2
      LHcalCollection             0 3 2
      LumiCalCollection           0 3 2
      MuonBarrelCollection        0 3 2
@@ -125,25 +124,32 @@
      EcalEndcapSiliconCollection 0 3 2  
      EcalEndcapSiliconPreShower  0 3 2  
      HcalBarrelRegCollection     0 3 2
-     HcalEndCapRingsCollection   0 3 2
-
-     LHCalCollection             0 3 2
-     EcalBarrelCollection        0 3 2
-     EcalEndcapCollection        0 3 2
-     EcalEndcapRingCollection    0 3 2
-     HcalEndcapsCollection       0 3 2
+     HcalEndCapRingCollection    0 3 2
+     HcalEndCapsCollection       0 3 2
      HcalEndcapRingCollection    0 3 2
+     HcalEndcapsCollection       0 3 2
+
+     ECalBarrelSiHitsEven          0 3 2
+     ECalBarrelSiHitsOdd           0 3 2
+     ECalEndcapSiHitsEven          0 3 2
+     ECalEndcapSiHitsOdd           0 3 2
+     EcalBarrelCollection          0 3 2
+     EcalEndcapsCollection         0 3 2
+     YokeEndcapsCollection         0 3 2
 
      ECalBarrelCollection 0 3 2
      ECalEndcapCollection 0 3 2
      ECalPlugCollection 0 3 2
+     EcalBarrelCollection 0 3 2
+     EcalEndcapCollection 0 3 2
+     EcalPlugCollection 0 3 2
      HCalBarrelCollection 0 3 2
      HCalEndcapCollection 0 3 2
      HCalRingCollection 0 3 2
      YokeBarrelCollection 0 3 2
      YokeEndcapCollection 0 3 2
+     LumiCalCollection 0 3 2
      BeamCalCollection 0 3 2
-
 
      HCALEndcap   0 5 12
      HCALOther    0 5 12
@@ -155,6 +161,13 @@
      ECALEndcap   0 2 12
      ECALOther    0 2 12
      HCALBarrel   0 5 12
+     EcalBarrelCollectionRec      0 5 12
+     EcalEndcapRingCollectionRec  0 5 12
+     EcalEndcapsCollectionRec     0 5 12
+     HcalBarrelCollectionRec      0 5 12
+     HcalEndcapRingCollectionRec  0 5 12
+     HcalEndcapsCollectionRec     0 5 12
+
 
      TruthTracks      0 6 3
      ForwardTracks    0 6 4
