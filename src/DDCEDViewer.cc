@@ -444,8 +444,7 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
         }    
     }
 
-    streamlog_out( MESSAGE ) << " ++++++++ collections shown on layer [ evt: " << evt->getEventNumber() 
-    <<  " run: " << evt->getRunNumber() << " ] :   +++++++++++++ " << std::endl ;
+    streamlog_out( MESSAGE ) << " ++++++++ collections shown on layers:  +++++++++++++ " << std::endl ;
     
     for(unsigned np=0 ; np < nCols ; ++np){
         
@@ -458,6 +457,11 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
           streamlog_out( MESSAGE )  << "    +++++  " << colName <<  "\t  on layer: " << layer << std::endl ;
         }
     }
+
+    streamlog_out( MESSAGE ) << std::endl
+                             <<  " [ evt: " << evt->getEventNumber()
+                             <<  "   run: " << evt->getRunNumber() << " ] " << std::endl ;
+
     streamlog_out( MESSAGE ) << " ++++++++ use shift-[LN] for LN>10  +++++++++++++ " << std::endl ;
     
 
