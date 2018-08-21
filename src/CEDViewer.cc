@@ -21,6 +21,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <algorithm>
+#include <set>
 
 #include <marlin/Global.h>
 #include <gear/GEAR.h>
@@ -340,6 +341,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         }
     }
     
+    std::set< std::string > colsInEvent ;
+
     unsigned nCols = drawParameters.size() ;
     for(unsigned np=0 ; np < nCols ; ++np){
         
@@ -351,7 +354,9 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         LCCollection* col = 0 ;
         try{
             
-            col = evt->getCollection( colName ) ;
+          col = evt->getCollection( colName ) ;
+
+          colsInEvent.insert( colName ) ;
             
         }catch(DataNotAvailableException &e){
             
@@ -957,9 +962,8 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         
     } // while
     
-    streamlog_out( MESSAGE ) << " ++++++++ collections shown on layer [ evt: " << evt->getEventNumber() 
-    <<  " run: " << evt->getRunNumber() << " ] :   +++++++++++++ " << std::endl ;
-    
+    streamlog_out( MESSAGE ) << " ++++++++ collections shown on layers:  +++++++++++++ " << std::endl ;
+
     for(unsigned np=0 ; np < nCols ; ++np){
         
         const std::string & colName = drawParameters[np].ColName ;
@@ -967,12 +971,27 @@ void CEDViewer::processEvent( LCEvent * evt ) {
         //     int marker = drawParameters[np].Marker ;
         int layer =  drawParameters[np].Layer ;
         
-        streamlog_out( MESSAGE )  << "    +++++  " << colName <<  "\t  on layer: " << layer << std::endl ;
+        if( colsInEvent.find( colName ) != colsInEvent.end() ) {
+          streamlog_out( MESSAGE )  << "    +++++  " << colName <<  "\t  on layer: " << layer << std::endl ;
+        }
     }
+    streamlog_out( MESSAGE ) << std::endl
+                             <<  " [ evt: " << evt->getEventNumber()
+                             <<  "   run: " << evt->getRunNumber() << " ] " << std::endl ;
+
     streamlog_out( MESSAGE ) << " ++++++++ use shift-[LN] for LN>10  +++++++++++++ " << std::endl ;
     
     
-    
+
+
+    // print run and event number in layer description 43 and 44
+    // displayed with keybord shortcuts
+    // std::stringstream sr,se ;
+    // sr << "run: " << evt->getRunNumber() ;
+    // se << "evt: " << evt->getEventNumber() ;
+    // MarlinCED::set_layer_description( sr.str().c_str(), 43 );
+    // MarlinCED::set_layer_description( se.str().c_str(), 44 );
+
     //++++++++++++++++++++++++++++++++++++
 
 
