@@ -116,6 +116,15 @@ DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
                                _colorEnergyAuto,
                                bool(false) ) ;
 
+    registerProcessorParameter( "ScaleLineThickness" ,
+                               "Scale the line thickness of drawn helixes",
+                               _scaleLineThickness,
+                               double(1.0) ) ;
+
+    registerProcessorParameter( "ScaleMarkerSize" ,
+                               "Scale the size of the markes",
+                               _scaleMarkerSize,
+                               double(1.0) ) ;
     
     registerProcessorParameter( "MCParticleEnergyCut" ,
                                "minimum energy of MCParticles to be drawn",
@@ -522,12 +531,12 @@ void DDCEDViewer::drawCluster(dd4hep::Detector& /*theDetector*/, int& layer, uns
             ced_hit_ID( (*it)->getPosition()[0],
                        (*it)->getPosition()[1],
                        (*it)->getPosition()[2],
-                       marker, layer, size , color, clu->id() ) ;
+                       marker, layer, size*_scaleMarkerSize , color, clu->id() ) ;
         } 
         float x = clu->getPosition()[0] ;
         float y = clu->getPosition()[1] ;
         float z = clu->getPosition()[2] ;
-        ced_hit_ID( x,y,z, marker, layer , size*3 , color, clu->id() ) ;
+        ced_hit_ID( x,y,z, marker, layer , size*3*_scaleMarkerSize , color, clu->id() ) ;
         LCVector3D v(x,y,z) ;
         LCVector3D d(1.,1.,1.) ;
         float length = 100 + 500 * ( clu->getEnergy() - emin )  / ( emax - emin )  ;
@@ -567,7 +576,7 @@ void DDCEDViewer::drawTrack(dd4hep::Detector& theDetector, int& layer, unsigned&
             ced_hit_ID( (*it)->getPosition()[0],
                        (*it)->getPosition()[1],
                        (*it)->getPosition()[2],
-                       marker, layer , size , color , trk->id() ) ;
+                       marker, layer , size*_scaleMarkerSize , color , trk->id() ) ;
         } // hits
         const TrackState* ts = 0 ;
         switch( _drawHelixForTracks ){
@@ -591,7 +600,7 @@ void DDCEDViewer::drawTrack(dd4hep::Detector& theDetector, int& layer, unsigned&
                 ced_hit_ID( ts->getReferencePoint()[0],
                            ts->getReferencePoint()[1],
                            ts->getReferencePoint()[2],
-                           1 , layer , size*10 , color , trk->id() ) ;
+                           1 , layer , size*10*_scaleMarkerSize , color , trk->id() ) ;
                 break ;
         }
         if( ts !=0 ){
@@ -626,7 +635,7 @@ void DDCEDViewer::drawTrack(dd4hep::Detector& theDetector, int& layer, unsigned&
                 const int ml = marker | ( layer << CED_LAYER_SHIFT ) ;
                 int helixColor = ( _useColorForHelixTracks ? color : 0xdddddd ) ;
                 DDMarlinCED::drawHelix( bField , charge, xs, ys, zs ,
-                                     px, py, pz, ml ,  2 , helixColor  ,
+                                     px, py, pz, ml ,  2*_scaleLineThickness , helixColor  ,
                                      0.0, _helix_max_r,
                                      _helix_max_z, trk->id() ) ;
             }
@@ -683,7 +692,7 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
                     _hmz = _helix_max_z;
             }
             DDMarlinCED::drawHelix( bField , charge, x, y, z,
-                                 px, py, pz, ml , size , 0x7af774  ,
+                                 px, py, pz, ml , size*_scaleLineThickness , 0x7af774  ,
                                  0.0,  _hmr ,
                                  _hmz, mcp->id() ) ; 
         } else { // neutral
@@ -732,7 +741,7 @@ void DDCEDViewer::drawSIMTrackerHit(int& layer, unsigned& np, std::string colNam
         ced_hit_ID( h->getPosition()[0],
                    h->getPosition()[1],
                    h->getPosition()[2],
-                   marker,layer, size , color, id ) ;
+                   marker,layer, size*_scaleMarkerSize , color, id ) ;
         
     }
 }
@@ -756,7 +765,7 @@ void DDCEDViewer::drawSIMCalorimeterHit(int& layer, unsigned& np, std::string co
         ced_hit_ID( h->getPosition()[0],
                    h->getPosition()[1],
                    h->getPosition()[2],
-                   marker,layer, size , color, id ) ;
+                   marker,layer, size*_scaleMarkerSize , color, id ) ;
         
     }
 }
@@ -778,7 +787,7 @@ void DDCEDViewer::drawTrackerHit(int& layer, unsigned& np, std::string colName, 
         for( unsigned i=0,N=hits.size() ; i<N ; ++i){
             TrackerHitPlane* h = hits[i] ;
             TVector3 p(h->getPosition()[0] ,  h->getPosition()[1] ,  h->getPosition()[2]);
-            ced_hit_ID( p.X(), p.Y(), p.Z(), marker, layer , size , color, h->id() );
+            ced_hit_ID( p.X(), p.Y(), p.Z(), marker, layer , size*_scaleMarkerSize , color, h->id() );
             // draw an additional line for strip hits 
             if(  BitSet32( h->getType() )[ ILDTrkHitTypeBit::ONE_DIMENSIONAL ] ) {
                 double strip_half_length = 50. ; //FIXME: need to get the proper strip length (from the surface !?) 
@@ -877,7 +886,7 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
               float x = hit->getPosition()[0];
               float y = hit->getPosition()[1];
               float z = hit->getPosition()[2];
-              ced_hit_ID(x,y,z,marker, layer ,size,color,part->id()); 
+              ced_hit_ID(x,y,z,marker, layer ,size*_scaleMarkerSize,color,part->id());
             }
           }
 
@@ -994,7 +1003,7 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
                         float x = (float)hit->getPosition()[0];
                         float y = (float)hit->getPosition()[1];
                         float z = (float)hit->getPosition()[2];
-                        ced_hit_ID(x,y,z,marker, layer,size,color,part->id());
+                        ced_hit_ID(x,y,z,marker, layer,size*_scaleMarkerSize,color,part->id());
                     }
                 }
                 if((nHits==0 || _drawHelixForPFOs==1) && std::fabs(part->getCharge())>0.001){
@@ -1022,7 +1031,7 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
                         double Zs = ts->getReferencePoint()[2] +  ts->getZ0() ;
                         int helixColor = ( _useColorForHelixTracks ? color : 0xdddddd ) ;
                         //helix
-                        DDMarlinCED::drawHelix(bField, charge, Xs, Ys, Zs, Px, Py, Pz, marker|(layer<<CED_LAYER_SHIFT), size/2,
+                        DDMarlinCED::drawHelix(bField, charge, Xs, Ys, Zs, Px, Py, Pz, marker|(layer<<CED_LAYER_SHIFT), size/2*_scaleLineThickness,
                                              helixColor, 0.0, _helix_max_r, _helix_max_z, part->id() ); //hauke: add id
                     }
                 }
