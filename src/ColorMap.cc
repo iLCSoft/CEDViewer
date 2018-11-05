@@ -205,3 +205,78 @@ colorMapFunc ColorMap::selectColorMap(int cmp)
     return colorMap;
   };
 }
+// taken from https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both#comment66194776_14733008
+RgbColor ColorMap::HsvToRgb(HsvColor in){
+    double      hh, p, q, t, ff;
+    long        i;
+    RgbColor    out;
+
+    if(in.s <= 0.0) {       // < is bogus, just shuts up warnings
+        out.r = in.v;
+        out.g = in.v;
+        out.b = in.v;
+        return out;
+    }
+    hh = in.h;
+    if(hh >= 360.0) hh = 0.0;
+    hh /= 60.0;
+    i = (long)hh;
+    ff = hh - i;
+    p = in.v * (1.0 - in.s);
+    q = in.v * (1.0 - (in.s * ff));
+    t = in.v * (1.0 - (in.s * (1.0 - ff)));
+
+    switch(i) {
+    case 0:
+        out.r = in.v;
+        out.g = t;
+        out.b = p;
+        break;
+    case 1:
+        out.r = q;
+        out.g = in.v;
+        out.b = p;
+        break;
+    case 2:
+        out.r = p;
+        out.g = in.v;
+        out.b = t;
+        break;
+
+    case 3:
+        out.r = p;
+        out.g = q;
+        out.b = in.v;
+        break;
+    case 4:
+        out.r = t;
+        out.g = p;
+        out.b = in.v;
+        break;
+    case 5:
+    default:
+        out.r = in.v;
+        out.g = p;
+        out.b = q;
+        break;
+    }
+    return out;
+}
+
+// Convert a number between min in max to a color between blue(min) and red(max)
+unsigned long ColorMap::NumberToTemperature(double value, double min, double max, double s, double v){
+    if( value > max ){
+        value = max;
+    }else if ( value < min ){
+        value = min;
+    }
+
+    HsvColor hsv;
+    hsv.h = 270 - ( value - min ) / ( max - min ) * 270;
+    hsv.s=s;
+    hsv.v=v;
+
+    RgbColor rgb = ColorMap::HsvToRgb(hsv);
+
+    return ColorMap::RGB2HEX((int)(rgb.r*255),(int)(rgb.g*255),(int)(rgb.b*255));
+}

@@ -85,6 +85,37 @@ DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
                                "color scheme to be used for drawing - see startup log MESSAGEs for options",
                                _colorScheme,
                                10 ) ;
+
+    registerProcessorParameter( "ColorByEnergy" ,
+                               "color recunstructed particle by energy",
+                               _colorEnergy,
+                               bool(false) ) ;
+
+    registerProcessorParameter( "ColorByEnergyMin" ,
+                               "Minimal value for energy which will be represented as blue",
+                               _colorEnergyMin,
+                               double(0.0) ) ;
+
+    registerProcessorParameter( "ColorByEnergyMax" ,
+                               "Maximal value for energy which will be represented as red",
+                               _colorEnergyMax,
+                               double(35.0) ) ;
+
+    registerProcessorParameter( "ColorByEnergySaturation" ,
+                               "Hue value that will be used to determine the pallete",
+                               _colorEnergySaturation,
+                               double(0.8) ) ;
+
+    registerProcessorParameter( "ColorByEnergyBrightness" ,
+                               "Brigtness value that will be used to determine the pallete",
+                               _colorEnergyValue,
+                               double(0.8) ) ;
+
+    registerProcessorParameter( "ColorByEnergyAutoColor" ,
+                               "Automatically adjust event by event the blue to min energy and red to max energy of event",
+                               _colorEnergyAuto,
+                               bool(false) ) ;
+
     
     registerProcessorParameter( "MCParticleEnergyCut" ,
                                "minimum energy of MCParticles to be drawn",
@@ -314,7 +345,7 @@ void DDCEDViewer::init() {
     
 }
 
-void DDCEDViewer::processRunHeader( LCRunHeader* run) {
+void DDCEDViewer::processRunHeader( LCRunHeader* /*run*/) {
     _nRun++ ;
 }
 
@@ -339,11 +370,11 @@ void DDCEDViewer::processEvent( LCEvent * evt ) {
 
 
 
-void DDCEDViewer::check( LCEvent * evt ) { 
+void DDCEDViewer::check( LCEvent * /*evt*/ ) {
     // nothing to check here - could be used to fill checkplots in reconstruction processor
 }
 
-void DDCEDViewer::printParticle(int id, LCEvent * evt){
+void DDCEDViewer::printParticle(int id, LCEvent * /*evt*/){
     streamlog_out( MESSAGE )  << "CEDViewer::printParticle id: " << id << std::endl;
 } 
 
@@ -468,7 +499,7 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
 
 }
 
-void DDCEDViewer::drawCluster(dd4hep::Detector& theDetector, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size){
+void DDCEDViewer::drawCluster(dd4hep::Detector& /*theDetector*/, int& layer, unsigned& np, std::string /*colName*/, int& marker, LCCollection* col, int& size){
     // find Emin and Emax of cluster collection for drawing
     float emin=1.e99, emax=0. ;
     for( int i=0 ; i< col->getNumberOfElements() ; i++ ){
@@ -567,7 +598,7 @@ void DDCEDViewer::drawTrack(dd4hep::Detector& theDetector, int& layer, unsigned&
             double* bFieldVector = new double[3];
             theDetector.field().combinedMagnetic(Position(0,0,0), bFieldVector) ;
             double bField = bFieldVector[2] / dd4hep::tesla;
-            delete bFieldVector;
+            delete[] bFieldVector;
             double pt;
             if (bField != 0.0 && std::abs(ts->getOmega()) > 0.00001 )
                 pt = bField * 3e-4 / std::abs( ts->getOmega() ) ;
@@ -635,7 +666,7 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
             double* bFieldVector = new double[3];
             theDetector.field().combinedMagnetic(Position(0,0,0), bFieldVector) ;
             double bField = bFieldVector[2] / dd4hep::tesla;
-            delete bFieldVector;
+            delete[] bFieldVector;
             streamlog_out( DEBUG ) << "  drawing MCParticle helix for p_t "
             << sqrt(px*px+py*py)
             << std::endl ;
@@ -684,7 +715,7 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
     }
 }
 
-void DDCEDViewer::drawSIMTrackerHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, std::vector<int>& _colors, int& size){
+void DDCEDViewer::drawSIMTrackerHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, std::vector<int>& _Colors, int& size){
     layer = ( layer > -1 ? layer : SIMTRACKERHIT_LAYER ) ;
     this->drawParameters[np].Layer = layer ;
     DDMarlinCED::add_layer_description(colName, layer);
@@ -695,7 +726,7 @@ void DDCEDViewer::drawSIMTrackerHit(int& layer, unsigned& np, std::string colNam
         
         // color code by MCParticle
         const int mci = ( h->getMCParticle() ? h->getMCParticle()->id() :  0 ) ;
-        int color = _colors[  mci % _colors.size() ] ;
+        int color = _Colors[  mci % _Colors.size() ] ;
         
         int id =    h->id();
         ced_hit_ID( h->getPosition()[0],
@@ -706,7 +737,7 @@ void DDCEDViewer::drawSIMTrackerHit(int& layer, unsigned& np, std::string colNam
     }
 }
 
-void DDCEDViewer::drawSIMCalorimeterHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, std::vector<int>& _colors, int& size){
+void DDCEDViewer::drawSIMCalorimeterHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, std::vector<int>& _Colors, int& size){
     layer = ( layer > -1 ? layer : SIMCALORIMETERHIT_LAYER ) ;
     this->drawParameters[np].Layer = layer ;
     
@@ -719,7 +750,7 @@ void DDCEDViewer::drawSIMCalorimeterHit(int& layer, unsigned& np, std::string co
         // color code by MCParticle
         //        const int mci = (  h->getNMCContributions() !=0  ?  h->getParticleCont(0)->id()  :  0 ) ;
         const int mci = (  h->getNMCContributions() !=0  && h->getParticleCont(0) ?  h->getParticleCont(0)->id()  :  0 ) ;
-        int color = _colors[  mci % _colors.size() ] ;
+        int color = _Colors[  mci % _Colors.size() ] ;
         
         int id =    h->id();
         ced_hit_ID( h->getPosition()[0],
@@ -793,7 +824,7 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
         ClusterVec clusterVec = part->getClusters();
         unsigned nClusters = (unsigned)clusterVec.size();
         if (nClusters > 0 ) {
-            for (int p=0; p<nClusters; p++) {
+            for (unsigned int p=0; p<nClusters; p++) {
                 double e = clusterVec[p]->getEnergy();
                 Emin = fmin(Emin, e);
                 Emax = fmax(Emax, e);
@@ -815,6 +846,14 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
         float pz  = (float)part->getMomentum()[2];
         int type = (int)part->getType();
         
+        if( _colorEnergy ){
+          if( _colorEnergyAuto ){
+            color = ColorMap::NumberToTemperature(ene,Emin,Emax,_colorEnergySaturation,_colorEnergyValue);
+          }else{
+            color = ColorMap::NumberToTemperature(ene,_colorEnergyMin,_colorEnergyMax,_colorEnergySaturation,_colorEnergyValue);
+          }
+        }
+
         TotEn += ene;
         TotPX += px;
         TotPY += py;
@@ -848,7 +887,7 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
             //refactored Cluster drawing as ellipsoids 
             //by Thorben Quast, CERN Summer Student 2015
             //18 August 2015
-            for (int p=0; p<nClusters; p++) {
+            for (unsigned int p=0; p<nClusters; p++) {
               //Energy clusters are drawn as ellipsoids.
               //For each cluster, it's (energy weighted) central position, the deposited energy and the intrinsic direction in terms of sperical angles are given.
               //The minimal and maximal deposited energies among all clusters in the displayed event have been determined previously and will be needed for coloring.
@@ -967,7 +1006,7 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
                         double* bFieldVector = new double[3];
                         theDetector.field().combinedMagnetic(Position(0,0,0), bFieldVector) ;
                         double bField = bFieldVector[2] / dd4hep::tesla;
-                        delete bFieldVector;
+                        delete[] bFieldVector;
                         double pt;
                         if (bField != 0.0 && std::abs(ts->getOmega()) > 0.00001 ){
                             pt = bField * 3e-4 / std::abs( ts->getOmega() ) ;
@@ -975,15 +1014,15 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
                             pt = 1.e10;
                         }
                         double charge = ( ts->getOmega() > 0. ?  1. : -1. ) ;
-                        double px = pt * std::cos(  ts->getPhi() ) ;
-                        double py = pt * std::sin(  ts->getPhi() ) ;
-                        double pz = pt * ts->getTanLambda() ;
-                        double xs = ts->getReferencePoint()[0] -  ts->getD0() * sin( ts->getPhi() ) ;
-                        double ys = ts->getReferencePoint()[1] +  ts->getD0() * cos( ts->getPhi() ) ;
-                        double zs = ts->getReferencePoint()[2] +  ts->getZ0() ;
+                        double Px = pt * std::cos(  ts->getPhi() ) ;
+                        double Py = pt * std::sin(  ts->getPhi() ) ;
+                        double Pz = pt * ts->getTanLambda() ;
+                        double Xs = ts->getReferencePoint()[0] -  ts->getD0() * sin( ts->getPhi() ) ;
+                        double Ys = ts->getReferencePoint()[1] +  ts->getD0() * cos( ts->getPhi() ) ;
+                        double Zs = ts->getReferencePoint()[2] +  ts->getZ0() ;
                         int helixColor = ( _useColorForHelixTracks ? color : 0xdddddd ) ;
                         //helix
-                        DDMarlinCED::drawHelix(bField, charge, xs, ys, zs, px, py, pz, marker|(layer<<CED_LAYER_SHIFT), size/2, 
+                        DDMarlinCED::drawHelix(bField, charge, Xs, Ys, Zs, Px, Py, Pz, marker|(layer<<CED_LAYER_SHIFT), size/2,
                                              helixColor, 0.0, _helix_max_r, _helix_max_z, part->id() ); //hauke: add id
                     }
                 }
@@ -1024,7 +1063,7 @@ void DDCEDViewer::drawJets(dd4hep::Detector& theDetector, int layer, std::string
 
         //calculate longitudinal, transverse momentum (w.r. to jet axis) for each particle
         //from that deduce a pt-weighted mean (tan-) angle and determine the highest pt contribution
-        for (unsigned int k = 0; k<N_elements; ++k){
+        for (int k = 0; k<N_elements; ++k){
             TVector3 pp_k(pv[k]->getMomentum()[0], pv[k]->getMomentum()[1], pv[k]->getMomentum()[2]);
             pp.push_back(pp_k);
             TVector3 ju = v.Unit();
@@ -1040,7 +1079,7 @@ void DDCEDViewer::drawJets(dd4hep::Detector& theDetector, int layer, std::string
         mean_tan_angle /= pt_tot;
 
         //draw the line of movement for each particle in the jet
-        for (unsigned int k = 0; k<N_elements; ++k){
+        for (int k = 0; k<N_elements; ++k){
             float center_ref[3] = {0., 0., 0.};
             //100% * distance = length holds for the entry with highest pt, the others obtain only a respective fraction
             double momLength = (E[k]/E_max)*calculateTrackLength("", theDetector, center_ref[0], center_ref[1], center_ref[2], pp[k].X(), pp[k].Y(), pp[k].Z());                    //line size
@@ -1184,13 +1223,13 @@ double calculateTrackLength(std::string type, dd4hep::Detector& theDetector, dou
     //case 2: barrel + endcap hit
     else if(pt_over_pz > distance_to_barrel_r/distance_to_barrel_z){
         //x == path traversed in barrel, rotation symmetry is still assumed at this point which is a valid approximation most of the times
-        double x = (distance_to_barrel_z - distance_to_barrel_r/pt_over_pz)*sqrt(1+pow(pt_over_pz,2));
+        double X = (distance_to_barrel_z - distance_to_barrel_r/pt_over_pz)*sqrt(1+pow(pt_over_pz,2));
         //case 2a: traversed path in the barrel is larger than defined interaction path --> case 1
-        if (x>=rel_X0*barrel.delta_r)
+        if (X>=rel_X0*barrel.delta_r)
             length = rel_X0 * barrel.delta_r + distance_to_barrel_r * sqrt(1. + pow(1./pt_over_pz,2));
         //case 2b: particle is not absorbed in barrel but reaches the endcap --> length as in case 3 minus x
         else{
-            length = (rel_X0 - x / barrel.delta_r) * endcap.delta_z + distance_to_endcap_z * sqrt(1. + pow(pt_over_pz,2));
+            length = (rel_X0 - X / barrel.delta_r) * endcap.delta_z + distance_to_endcap_z * sqrt(1. + pow(pt_over_pz,2));
         }
         //case 2c: distance from z-axis exceeds endcap extension (e.g. if particle travels through gab)
         double length_r = length * pt_over_pz/sqrt(1. + pow(pt_over_pz,2));
@@ -1204,9 +1243,9 @@ double calculateTrackLength(std::string type, dd4hep::Detector& theDetector, dou
     }
     //case 4: part of endcap hit
     else if(pt_over_pz > distance_to_endcap_r/(distance_to_endcap_z + endcap.delta_z)){
-        double x = (distance_to_endcap_r/pt_over_pz - distance_to_endcap_z)*sqrt(1+pow(pt_over_pz,2));
+        double X = (distance_to_endcap_r/pt_over_pz - distance_to_endcap_z)*sqrt(1+pow(pt_over_pz,2));
         //case 4a: traversed path in endcap is larger than defined interaction path --> case 3
-        if (x>=rel_X0*endcap.delta_z)
+        if (X>=rel_X0*endcap.delta_z)
             length = rel_X0 * endcap.delta_z + distance_to_endcap_z * sqrt(1. + pow(pt_over_pz,2));
         //case 4b: particle is not fully absorbed the endcap --> draw up to the yoke
         else

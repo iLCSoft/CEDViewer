@@ -12,6 +12,20 @@
 
 typedef void (*colorMapFunc)(unsigned int*,float,float,float);
 
+typedef struct RgbColor
+{
+    double r;
+    double g;
+    double b;
+} RgbColor;
+
+typedef struct HsvColor
+{
+    double h;
+    double s;
+    double v;
+} HsvColor;
+
 class ColorMap{
  public:
   static void colorMap(unsigned int *rgb,float value,float min,float max);
@@ -24,6 +38,8 @@ class ColorMap{
   static void blueColorMap(unsigned int *rgb,float value,float min,float max);
   static colorMapFunc selectColorMap(int cmp);
   static int RGB2HEX(int red, int green, int blue);
+  static RgbColor HsvToRgb(HsvColor in);
+  static unsigned long NumberToTemperature(double value, double min, double max, double s, double v);
 };
 
 #endif
