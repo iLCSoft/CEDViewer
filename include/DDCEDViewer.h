@@ -130,6 +130,8 @@ class DDCEDViewer : public Processor {
   double    _colorEnergySaturation       = 0.8 ;
   double    _colorEnergyValue            = 0.8 ;
   bool      _colorEnergyAuto             = false ;
+  double    _scaleLineThickness          = 1 ;
+  double    _scaleMarkerSize             = 1 ;
   float     _mcpECut                     = 0.001 ;
   float     _helix_max_r                 = 2000 ;
   float     _helix_max_z                 = 2500 ;

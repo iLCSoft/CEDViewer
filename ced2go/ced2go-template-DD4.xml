@@ -79,6 +79,10 @@
   <parameter name="ColorByEnergyBrightness" type="double">1.0</parameter>
   <!-- Automatically adjust event by event the blue to min energy and red to max energy of event -->
   <parameter name="ColorByEnergyAutoColor" type="bool">false</parameter>
+  <!-- Scale line thickness of drawn helixes, usefull for image dumps -->
+  <parameter name="ScaleLineThickness" type="double">1</parameter>
+  <!-- Scale marker size of cluster markers, usefull for image dumps -->
+  <parameter name="ScaleMarkerSize" type="double">1</parameter>
   <!--Max R (mm) Extent for drawing Helix if UseTPCForLimitsOfHelix false-->
   <parameter name="HelixMaxR" type="float">2000 </parameter>
   <!--Max Z (mm) Extent for drawing Helix if UseTPCForLimitsOfHelix false-->
