@@ -113,32 +113,38 @@ class DDCEDViewer : public Processor {
   static const int Light       =   11 ;
   static const int Classic     =   12 ;
   
-  StringVec _drawCollections ;
-  StringVec _drawCollectionsLayer ;
-  std::vector< DrawParameters > drawParameters ;
+  StringVec _drawCollections{} ;
+  StringVec _drawCollectionsLayer{} ;
+  std::vector< DrawParameters > drawParameters{} ;
 
   //general options
-  int _nRun ;
-  int _nEvt ;
+  int _nRun = 0 ;
+  int _nEvt = 0;
   //lcio options
-  bool      _usingParticleGun ;
-  int       _drawHelixForTracks ;
-  int       _colorScheme ;
-  float     _mcpECut ;
-  float     _helix_max_r;
-  float     _helix_max_z;
-  bool      _useTrackerForLimitsOfHelix;
-  int       _waitForKeyboard ;
-  int       _drawHelixForPFOs;
-  int       _useColorForHelixTracks ;
-  int       _drawEllipsoidForPFOClusters ;
-  IntVec    _colors ;
+  bool      _usingParticleGun            = false ;
+  int       _drawHelixForTracks          = 0 ;
+  int       _colorScheme                 = 10 ;
+  bool      _colorEnergy                 = false ;
+  double    _colorEnergyMin              = 0.0 ;
+  double    _colorEnergyMax              = 35.0 ;
+  double    _colorEnergySaturation       = 0.8 ;
+  double    _colorEnergyValue            = 0.8 ;
+  bool      _colorEnergyAuto             = false ;
+  float     _mcpECut                     = 0.001 ;
+  float     _helix_max_r                 = 2000 ;
+  float     _helix_max_z                 = 2500 ;
+  bool      _useTrackerForLimitsOfHelix  = true ;
+  int       _waitForKeyboard             = 1 ;
+  int       _drawHelixForPFOs            = 0 ;
+  int       _useColorForHelixTracks      = 0 ;
+  int       _drawEllipsoidForPFOClusters = 0 ;
+  IntVec    _colors{} ;
 
   //detector options
-  bool _begin;
-  StringVec _detailled;
-  StringVec _jets;
-  bool _surfaces;
+  bool _begin          = false;
+  StringVec _detailled{};
+  StringVec _jets{};
+  bool _surfaces       = false;
 } ;
 
 
