@@ -30,6 +30,8 @@
 #include <gear/TPCModule.h>
 #include <gear/CalorimeterParameters.h>
 
+#include "ColorMap.h"
+
 using namespace lcio ;
 using namespace marlin ;
 
@@ -93,11 +95,50 @@ CEDViewer::CEDViewer() : Processor("CEDViewer") {
                               layerExample ,
                               layerExample.size() ) ;
     
-    
     registerProcessorParameter( "DrawHelixForTrack" ,
                                "draw a helix for Track objects: -1: none, 0: default, 1: atIP, 2: atFirstHit, 3: atLastHit, 4: atCalorimeter",
                                _drawHelixForTracks ,
                                0  ) ;
+
+    registerProcessorParameter( "ColorByEnergy" ,
+                               "color recunstructed particle by energy",
+                               _colorEnergy,
+                               bool(false) ) ;
+
+    registerProcessorParameter( "ColorByEnergyMin" ,
+                               "Minimal value for energy which will be represented as blue",
+                               _colorEnergyMin,
+                               double(0.0) ) ;
+
+    registerProcessorParameter( "ColorByEnergyMax" ,
+                               "Maximal value for energy which will be represented as red",
+                               _colorEnergyMax,
+                               double(35.0) ) ;
+
+    registerProcessorParameter( "ColorByEnergySaturation" ,
+                               "Hue value that will be used to determine the pallete",
+                               _colorEnergySaturation,
+                               double(0.8) ) ;
+
+    registerProcessorParameter( "ColorByEnergyBrightness" ,
+                               "Brigtness value that will be used to determine the pallete",
+                               _colorEnergyValue,
+                               double(0.8) ) ;
+
+    registerProcessorParameter( "ColorByEnergyAutoColor" ,
+                               "Automatically adjust event by event the blue to min energy and red to max energy of event",
+                               _colorEnergyAuto,
+                               bool(false) ) ;
+
+    registerProcessorParameter( "ScaleLineThickness" ,
+                               "Scale the line thickness of drawn helixes",
+                               _scaleLineThickness,
+                               double(1.0) ) ;
+
+    registerProcessorParameter( "ScaleMarkerSize" ,
+                               "Scale the size of the markes",
+                               _scaleMarkerSize,
+                               double(1.0) ) ;
     
     registerProcessorParameter( "DrawDetectorID" ,
                                "draw detector from GEAR file with given ID (see MarlinCED::newEvent() ) : 0 ILD, 1 CLIC, -1 none",
@@ -279,7 +320,7 @@ void CEDViewer::init() {
     
 }
 
-void CEDViewer::processRunHeader( LCRunHeader* run) {
+void CEDViewer::processRunHeader( LCRunHeader* /*run*/) {
     _nRun++ ;
 }
 
@@ -397,7 +438,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                     ced_hit_ID( (*it)->getPosition()[0],
                                (*it)->getPosition()[1],
                                (*it)->getPosition()[2],
-                               marker, layer, size , color, clu->id() ) ;
+                               marker, layer, size*_scaleMarkerSize , color, clu->id() ) ;
                     
                 } // hits
                 
@@ -405,7 +446,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                 float y = clu->getPosition()[1] ;
                 float z = clu->getPosition()[2] ;
                 
-                ced_hit_ID( x,y,z, marker, layer , size*3 , color, clu->id() ) ;
+                ced_hit_ID( x,y,z, marker, layer , size*3*_scaleMarkerSize , color, clu->id() ) ;
                 
                 LCVector3D v(x,y,z) ;
                 
@@ -476,7 +517,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                     ced_hit_ID( (*it)->getPosition()[0],
                                (*it)->getPosition()[1],
                                (*it)->getPosition()[2],
-                               marker, layer , size , color , trk->id() ) ;
+                               marker, layer , size*_scaleMarkerSize , color , trk->id() ) ;
                     
                 } // hits
                 
@@ -510,7 +551,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                         ced_hit_ID( ts->getReferencePoint()[0],
                                    ts->getReferencePoint()[1],
                                    ts->getReferencePoint()[2],
-                                   1 , layer , size*10 , color , trk->id() ) ;
+                                   1 , layer , size*10*_scaleMarkerSize , color , trk->id() ) ;
                         break ;
                 }
                 
@@ -556,7 +597,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                         int helixColor = ( _useColorForHelixTracks ? color : 0xdddddd ) ;
                         
                         MarlinCED::drawHelix( bField , charge, xs, ys, zs ,
-                                             px, py, pz, ml ,  2 , helixColor  ,
+                                             px, py, pz, ml ,  2*_scaleLineThickness , helixColor  ,
                                              0.0, _helix_max_r,
                                              _helix_max_z, trk->id() ) ;
 
@@ -637,7 +678,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                     const int ml = marker | ( layer << CED_LAYER_SHIFT ) ;
                     
                     MarlinCED::drawHelix( bField , charge, x, y, z,
-                                         px, py, pz, ml , size , 0x7af774  ,
+                                         px, py, pz, ml , size*_scaleLineThickness , 0x7af774  ,
                                          0.0,  _helix_max_r ,
                                          _helix_max_z, mcp->id() ) ;
                     
@@ -709,7 +750,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                 ced_hit_ID( h->getPosition()[0],
                            h->getPosition()[1],
                            h->getPosition()[2],
-                           marker,layer, size , color, id ) ;
+                           marker,layer, size*_scaleMarkerSize , color, id ) ;
                 
             }
             
@@ -733,7 +774,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                 ced_hit_ID( h->getPosition()[0],
                            h->getPosition()[1],
                            h->getPosition()[2],
-                           marker,layer, size , color, id ) ;
+                           marker,layer, size*_scaleMarkerSize , color, id ) ;
                 
             }
             
@@ -771,7 +812,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                     gear::Vector3D p( h->getPosition()[0] ,  h->getPosition()[1] ,  h->getPosition()[2] ) ;
                     
                         
-                    ced_hit_ID( p[0], p[1], p[2], marker, layer , size , color, h->id() );
+                    ced_hit_ID( p[0], p[1], p[2], marker, layer , size*_scaleMarkerSize , color, h->id() );
                         
                     
                     // draw an additional line for strip hits 
@@ -814,6 +855,20 @@ void CEDViewer::processEvent( LCEvent * evt ) {
             MarlinCED::add_layer_description(colName, layer);
             
             int nelem = col->getNumberOfElements();
+            //Determine the maximal and minimal cluster energy depositions in the event for color scaling (-->when drawing ellipsoids/cylinders).
+            double Emin = 99999.; double Emax = 0;
+            for (int ip(0); ip < nelem; ++ip) {
+                ReconstructedParticle * part = dynamic_cast<ReconstructedParticle*>(col->getElementAt(ip));
+                ClusterVec clusterVec = part->getClusters();
+                unsigned nClusters = (unsigned)clusterVec.size();
+                if (nClusters > 0 ) {
+                    for (unsigned int p=0; p<nClusters; p++) {
+                        double e = clusterVec[p]->getEnergy();
+                        Emin = fmin(Emin, e);
+                        Emax = fmax(Emax, e);
+                    }
+                }
+            }
             
             float TotEn = 0.0;
             float TotPX = 0.0;
@@ -835,6 +890,15 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                 float py  = (float)part->getMomentum()[1];
                 float pz  = (float)part->getMomentum()[2];
                 int type = (int)part->getType();
+
+                if( _colorEnergy ){
+                   if( _colorEnergyAuto ){
+                       color = ColorMap::NumberToTemperature(ene,Emin,Emax,_colorEnergySaturation,_colorEnergyValue);
+                   }else{
+                       color = ColorMap::NumberToTemperature(ene,_colorEnergyMin,_colorEnergyMax,_colorEnergySaturation,_colorEnergyValue);
+                   }
+                }
+
                 
                 TotEn += ene;
                 TotPX += px;
@@ -859,7 +923,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                             float x = hit->getPosition()[0];
                             float y = hit->getPosition()[1];
                             float z = hit->getPosition()[2];
-                            ced_hit_ID(x,y,z,marker, layer ,size,color,part->id()); 
+                            ced_hit_ID(x,y,z,marker, layer ,size*_scaleMarkerSize,color,part->id());
                         }
                         
                     }
@@ -901,7 +965,7 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                                 float x = (float)hit->getPosition()[0];
                                 float y = (float)hit->getPosition()[1];
                                 float z = (float)hit->getPosition()[2];
-                                ced_hit_ID(x,y,z,marker, layer,size,color,part->id());
+                                ced_hit_ID(x,y,z,marker, layer,size*_scaleMarkerSize,color,part->id());
                             }
                         }
                         if((nHits==0 || _drawHelixForPFOs==1) && std::fabs(part->getCharge())>0.001){
@@ -923,19 +987,19 @@ void CEDViewer::processEvent( LCEvent * evt ) {
                                 }
                                 double charge = ( ts->getOmega() > 0. ?  1. : -1. ) ;
                                 
-                                double px = pt * std::cos(  ts->getPhi() ) ;
-                                double py = pt * std::sin(  ts->getPhi() ) ;
-                                double pz = pt * ts->getTanLambda() ;
+                                double Px = pt * std::cos(  ts->getPhi() ) ;
+                                double Py = pt * std::sin(  ts->getPhi() ) ;
+                                double Pz = pt * ts->getTanLambda() ;
                                 
                                 
-                                double xs = ts->getReferencePoint()[0] -  ts->getD0() * sin( ts->getPhi() ) ;
-                                double ys = ts->getReferencePoint()[1] +  ts->getD0() * cos( ts->getPhi() ) ;
-                                double zs = ts->getReferencePoint()[2] +  ts->getZ0() ;
+                                double Xs = ts->getReferencePoint()[0] -  ts->getD0() * sin( ts->getPhi() ) ;
+                                double Ys = ts->getReferencePoint()[1] +  ts->getD0() * cos( ts->getPhi() ) ;
+                                double Zs = ts->getReferencePoint()[2] +  ts->getZ0() ;
                                 
                                 int helixColor = ( _useColorForHelixTracks ? color : 0xdddddd ) ;
 
                                 //helix
-                                MarlinCED::drawHelix(bField, charge, xs, ys, zs, px, py, pz, marker|(layer<<CED_LAYER_SHIFT), size/2, 
+                                MarlinCED::drawHelix(bField, charge, Xs, Ys, Zs, Px, Py, Pz, marker|(layer<<CED_LAYER_SHIFT), size/2*_scaleLineThickness,
                                                      helixColor, 0.0, _helix_max_r, _helix_max_z, part->id() ); //hauke: add id
                             }
                         }
@@ -1005,11 +1069,11 @@ void CEDViewer::processEvent( LCEvent * evt ) {
 
 
 
-void CEDViewer::check( LCEvent * evt ) { 
+void CEDViewer::check( LCEvent * /*evt*/ ) {
     // nothing to check here - could be used to fill checkplots in reconstruction processor
 }
 
-void CEDViewer::printParticle(int id, LCEvent * evt){
+void CEDViewer::printParticle(int id, LCEvent * /*evt*/){
     streamlog_out( MESSAGE )  << "CEDViewer::printParticle id: " << id << std::endl;
 } 
 

@@ -74,26 +74,34 @@ class CEDViewer : public Processor {
   
   /** Input collection name.
    */
-  StringVec _drawCollections ;
-  StringVec _drawCollectionsLayer ;
+  StringVec _drawCollections {};
+  StringVec _drawCollectionsLayer {};
 
-  bool      _usingParticleGun ;
-  int       _drawHelixForTracks ;
-  int       _drawDetectorID  ;
-  int       _colorScheme ;
-  float     _mcpECut ;
+  bool      _usingParticleGun            = false ;
+  int       _drawHelixForTracks          = 0 ;
+  bool      _colorEnergy                 = false ;
+  double    _colorEnergyMin              = 0.0 ;
+  double    _colorEnergyMax              = 35.0 ;
+  double    _colorEnergySaturation       = 0.8 ;
+  double    _colorEnergyValue            = 0.8 ;
+  bool      _colorEnergyAuto             = false ;
+  double    _scaleLineThickness          = 1 ;
+  double    _scaleMarkerSize             = 1 ;
+  int       _drawDetectorID              = 0  ;
+  int       _colorScheme                 = 10;
+  float     _mcpECut                     = 0.001;
 
-  float     _helix_max_r;
-  float     _helix_max_z;
-  bool      _useTPCForLimitsOfHelix;
-  int       _waitForKeyboard ;
-  int       _drawHelixForPFOs;
-  int       _useColorForHelixTracks ;
-  IntVec    _colors ;
+  float     _helix_max_r                 = 2000 ;
+  float     _helix_max_z                 = 2500 ;
+  bool      _useTPCForLimitsOfHelix      = false ;
+  int       _waitForKeyboard             = 1 ;
+  int       _drawHelixForPFOs            = 0 ;
+  int       _useColorForHelixTracks      = 0;
+  IntVec    _colors {};
 
 
-  int _nRun ;
-  int _nEvt ;
+  int _nRun = 0 ;
+  int _nEvt = 0 ;
 } ;
 
 #endif
