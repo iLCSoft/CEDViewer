@@ -272,7 +272,7 @@ unsigned long ColorMap::NumberToTemperature(double value, double min, double max
     }
 
     HsvColor hsv;
-    hsv.h = 270 - ( value - min ) / ( max - min ) * 270;
+    hsv.h = 240 - ( value - min ) / ( max - min ) * 240;
     hsv.s=s;
     hsv.v=v;
 

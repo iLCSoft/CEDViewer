@@ -828,9 +828,13 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
     
     //Determine the maximal and minimal cluster energy depositions in the event for color scaling (-->when drawing ellipsoids/cylinders).
     double Emin = 99999.; double Emax = 0;
+    double pEmin = 99999.; double pEmax = 0;
     for (int ip(0); ip < nelem; ++ip) {
         ReconstructedParticle * part = dynamic_cast<ReconstructedParticle*>(col->getElementAt(ip));
         ClusterVec clusterVec = part->getClusters();
+        float pene = part->getEnergy();
+        pEmin = fmin(pEmin, pene);
+        pEmax = fmax(pEmax, pene);
         unsigned nClusters = (unsigned)clusterVec.size();
         if (nClusters > 0 ) {
             for (unsigned int p=0; p<nClusters; p++) {
@@ -857,7 +861,7 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
         
         if( _colorEnergy ){
           if( _colorEnergyAuto ){
-            color = ColorMap::NumberToTemperature(ene,Emin,Emax,_colorEnergySaturation,_colorEnergyValue);
+            color = ColorMap::NumberToTemperature(ene,pEmin,pEmax,_colorEnergySaturation,_colorEnergyValue);
           }else{
             color = ColorMap::NumberToTemperature(ene,_colorEnergyMin,_colorEnergyMax,_colorEnergySaturation,_colorEnergyValue);
           }
