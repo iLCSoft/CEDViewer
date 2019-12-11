@@ -1,3 +1,12 @@
+# v01-17
+
+* 2018-11-06 Marko Petric ([PR#9](https://github.com/iLCSoft/CEDViewer/pull/9))
+  - DDCEDViewer
+    - Add option to color reconstructed particles by energy
+      - the color range is from lowest blue to highest red, with possibility of the user to change brightens and saturation of the color pallet.
+      - the color range can be fixed from a minimal energy to a maximal for all events or auto adopted event by event to span from min to max energy of a given/current event
+    - Add option for scaling line thickness of helices and marker size, this is needed for good image dumps, since the displayed sizes differ from the ones in the dumped image
+
 # v01-16
 
 * 2018-08-21 Frank Gaede ([PR#7](https://github.com/ilcsoft/CEDViewer/pull/7))
