@@ -446,8 +446,8 @@ void draw_MC_Charged_Hadrons(LCEvent * evt, float ecut){
 	    x1 = 0.0;
 	    y1 = 0.0;
 	    z1 = 0.0;
-	    for (int i = 0; i < npt+1; i++) {
-	      step = st*i;                     // helix length
+	    for (int i2 = 0; i2 < npt+1; i2++) {
+	      step = st*i2;                     // helix length
 	      tet = charge*BFIELD*EC*step/pr;
 	      sint = sin(tet);
 	      sintt = (sint/tet);
@@ -490,7 +490,7 @@ void MC_Particles_Balance(LCEvent * evt){
   int idpdg;
   const double* mom;
   float enr;
-  double mass;
+  //double mass;
    LCCollection* mcpCol = evt->getCollection("MCParticle" ) ;  
 //-----------------------------------------------------------------------
 // Calculate balance at IP taking into account everything
@@ -556,7 +556,7 @@ void MC_Particles_Balance(LCEvent * evt){
      idpdg = imc-> getPDG (); 
      mom = imc-> getMomentum (); 
      enr = imc-> getEnergy (); 
-     mass = imc-> getMass (); 
+     //mass = imc-> getMass (); 
      //    float cch = imc-> getCharge (); 
      if( imc-> getGeneratorStatus() == 1 ) { // stable particles only   
        px = mom[0]; 
@@ -684,7 +684,7 @@ void print_MC_Particles(LCEvent * evt, float ecut){
   int idpdg;
   const double* mom;
   float enr;
-  float mass;
+  //float mass;
   LCCollection* mcpCol = evt->getCollection("MCParticle" ) ;  
 //-----------------------------------------------------------------------
 //            Print  Pi zeros
@@ -713,7 +713,7 @@ void print_MC_Particles(LCEvent * evt, float ecut){
     idpdg = imc-> getPDG (); 
     mom = imc-> getMomentum (); 
     enr = imc-> getEnergy (); 
-    mass = imc-> getMass (); 
+    //mass = imc-> getMass (); 
     if( imc-> getGeneratorStatus() == 1 ) { // stable particles only   
       if((My_iabs(idpdg)==12)||(My_iabs(idpdg)==14)||(My_iabs(idpdg)==16)) { // neutrinos   
 	  n_nu ++;
@@ -733,7 +733,7 @@ void print_MC_Particles(LCEvent * evt, float ecut){
     idpdg = imc-> getPDG (); 
     mom = imc-> getMomentum (); 
     enr = imc-> getEnergy (); 
-    mass = imc-> getMass (); 
+    //mass = imc-> getMass (); 
     if( imc-> getGeneratorStatus() == 1 ) { // stable particles only   
       if(My_iabs(idpdg)==13) { // mu+ mu- 
 	  n_mu ++;
@@ -753,7 +753,7 @@ void print_MC_Particles(LCEvent * evt, float ecut){
     idpdg = imc-> getPDG (); 
     mom = imc-> getMomentum (); 
     enr = imc-> getEnergy (); 
-    mass = imc-> getMass (); 
+    //mass = imc-> getMass (); 
     if( imc-> getGeneratorStatus() == 1 ) { // stable particles only   
       if(My_iabs(idpdg)==11) { //  e+ e-
 	  n_elect ++;
@@ -773,7 +773,7 @@ void print_MC_Particles(LCEvent * evt, float ecut){
     idpdg = imc-> getPDG (); 
     mom = imc-> getMomentum (); 
     enr = imc-> getEnergy (); 
-    mass = imc-> getMass (); 
+    //mass = imc-> getMass (); 
     if( imc-> getGeneratorStatus() == 1 ) { // stable particles only   
       if(idpdg == 22) { // photon
 	if (enr > ecut) {//  All gammas with E > 20 MeV
@@ -795,7 +795,7 @@ void print_MC_Particles(LCEvent * evt, float ecut){
     idpdg = imc-> getPDG (); 
     mom = imc-> getMomentum (); 
     enr = imc-> getEnergy (); 
-    mass = imc-> getMass (); 
+    //mass = imc-> getMass (); 
     if( imc-> getGeneratorStatus() == 1 ) { // stable particles only   
       if((My_iabs(idpdg)==2112)||(My_iabs(idpdg)== 311)||
 	 (My_iabs(idpdg)== 130)||(My_iabs(idpdg)== 310)||
@@ -819,7 +819,7 @@ void print_MC_Particles(LCEvent * evt, float ecut){
     idpdg = imc-> getPDG (); 
     mom = imc-> getMomentum (); 
     enr = imc-> getEnergy (); 
-    mass = imc-> getMass (); 
+    //mass = imc-> getMass (); 
     if( imc-> getGeneratorStatus() == 1 ) { // stable particles only   
       if(!(My_iabs(idpdg)==12) && !(My_iabs(idpdg)==14) && !(My_iabs(idpdg)==16) &&  // neutrinos   
 	 !(My_iabs(idpdg)==13) && // mu+ mu- 

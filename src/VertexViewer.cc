@@ -150,7 +150,7 @@ void VertexViewer::init() {
 }
 
 
-void VertexViewer::processRunHeader( LCRunHeader* run) { 
+void VertexViewer::processRunHeader( LCRunHeader* /*run*/) { 
   _nRun++ ;
   _nEvt = 0;
 } 
@@ -194,7 +194,7 @@ void VertexViewer::processEvent( LCEvent * evt ) {
       int nLayersVTX = vxdLayerLayout.getNLayers();
       int nLadders = 0;
       float ladder_phi0, ladder_distance, ladder_thickness, ladder_width, ladder_length, ladder_offset;
-      float sensitive_distance, sensitive_thickness, sensitive_width, sensitive_length, sensitive_offset;
+      float sensitive_distance, sensitive_thickness;
       float x0,y0,x1,y1;
   
       for (int i=0; i<nLayersVTX; i++) {
@@ -209,9 +209,6 @@ void VertexViewer::processEvent( LCEvent * evt ) {
   
         sensitive_distance = float(vxdLayerLayout.getSensitiveDistance(i));
         sensitive_thickness = float(vxdLayerLayout.getSensitiveThickness(i));
-        sensitive_width = float(vxdLayerLayout.getSensitiveWidth(i));
-        sensitive_length = float(vxdLayerLayout.getSensitiveLength(i));
-        sensitive_offset = float (vxdLayerLayout.getSensitiveOffset(i));
   
         float ft_xplmat,ft_yplmat;
   
@@ -405,14 +402,14 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 		  zmax = z;
 	      } 	
 	      ClusterShapes * shapes = new ClusterShapes(nhits,ah,xh,yh,zh);
-	      float zBegin, zEnd;
+	      //float zBegin, zEnd;
 	      if (fabs(zmin)<fabs(zmax)) {
-		zBegin = zmin;
-		zEnd   = zmax;
+		//zBegin = zmin;
+		//zEnd   = zmax;
 	      }
 	      else {
-		zBegin = zmax;
-		zEnd   = zmin;
+		//zBegin = zmax;
+		//zEnd   = zmin;
 	      }
 	      //	      float signPz = zEnd - zBegin;		
 	      //	      float dz = (zmax - zmin) / 100.;
@@ -607,14 +604,14 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 		zmax = z;
 	    } 	
 	    ClusterShapes * shapes = new ClusterShapes(nhits,ah,xh,yh,zh);
-	    float zBegin, zEnd;
+	    //float zBegin, zEnd;
 	    if (fabs(zmin)<fabs(zmax)) {
-	      zBegin = zmin;
-	      zEnd   = zmax;
+	      //zBegin = zmin;
+	      //zEnd   = zmax;
 	    }
 	    else {
-	      zBegin = zmax;
-	      zEnd   = zmin;
+	      //zBegin = zmax;
+	      //zEnd   = zmin;
 	    }
 	    //	    float signPz = zEnd - zBegin;		
 	    //float dz = (zmax - zmin) / 100.;
@@ -735,7 +732,7 @@ void VertexViewer::processEvent( LCEvent * evt ) {
 }
 
 
-void VertexViewer::check( LCEvent * evt ) { }
+void VertexViewer::check( LCEvent * /*evt*/ ) { }
   
 void VertexViewer::end(){ } 
 

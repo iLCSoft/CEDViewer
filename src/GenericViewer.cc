@@ -183,7 +183,7 @@ void GenericViewer::init() {
 }
 
 
-void GenericViewer::processRunHeader( LCRunHeader* run) { 
+void GenericViewer::processRunHeader( LCRunHeader* /*run*/) { 
   _nRun++ ;
   _nEvt = 0;
 } 
@@ -813,7 +813,7 @@ MarlinCED::add_layer_description("Reconstructed", _layerReco);
 }
 
 
-void GenericViewer::check( LCEvent * evt ) { }
+void GenericViewer::check( LCEvent * /*evt*/ ) { }
   
 void GenericViewer::end(){ } 
 

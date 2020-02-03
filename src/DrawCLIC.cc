@@ -66,14 +66,14 @@ void DrawCLIC::init() {
 }
 
 
-void DrawCLIC::processRunHeader( LCRunHeader* run) {
+void DrawCLIC::processRunHeader( LCRunHeader* /*run*/) {
     
     _nRun++ ;
 }
 
 
 
-void DrawCLIC::processEvent( LCEvent * evt ) {
+void DrawCLIC::processEvent( LCEvent * /*evt*/ ) {
     
     MarlinCED::newEvent(this , -1 );
     drawGEARDetector();
@@ -83,7 +83,7 @@ void DrawCLIC::processEvent( LCEvent * evt ) {
 
 
 
-void DrawCLIC::check( LCEvent * evt ) {
+void DrawCLIC::check( LCEvent * /*evt*/ ) {
     // nothing to check here - could be used to fill checkplots in reconstruction processor
 }
 

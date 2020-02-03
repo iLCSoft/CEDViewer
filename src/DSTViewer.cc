@@ -153,7 +153,7 @@ void DSTViewer::init() {
 
 /**
  * Process run header (?) */
-void DSTViewer::processRunHeader( LCRunHeader* run) { 
+void DSTViewer::processRunHeader( LCRunHeader* /*run*/) { 
   _nRun++ ;
   _nEvt = 0;
 } 
@@ -333,29 +333,29 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 	char scale = 'a'; // 'b': linear, 'a': log
 	int colorMap = 3; //jet: 3
 	int colorSteps = 256;
-	int color = returnRGBClusterColor(eneCluster, ene_min, ene_max, colorSteps, scale, colorMap);
+	int color2 = returnRGBClusterColor(eneCluster, ene_min, ene_max, colorSteps, scale, colorMap);
 
 	//	int hit_type = 1 | HIT_LAYER;
 					
 	int cylinder_sides = 30;
 	//problem with fisheye view
-	ced_geocylinder_r(sizes[0]/2, sizes[2], center, rotate, cylinder_sides, color, CLUSTER_LAYER); 
+	ced_geocylinder_r(sizes[0]/2, sizes[2], center, rotate, cylinder_sides, color2, CLUSTER_LAYER); 
 
 
 
-	//ced_hit(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color);
-	ced_hit_ID(center[0],center[1],center[2], 1, HIT_LAYER, (int)(sqrt(2)*sizes[0]/4), color, cluster->id()); //hauke
+	//ced_hit(center[0],center[1],center[2], hit_type, (int)(sqrt(2)*sizes[0]/4), color2);
+	ced_hit_ID(center[0],center[1],center[2], 1, HIT_LAYER, (int)(sqrt(2)*sizes[0]/4), color2, cluster->id()); //hauke
 
 					
 	int transparency = 0x66;
-	int rgba = addAlphaChannelToColor(color, transparency);
+	int rgba = addAlphaChannelToColor(color2, transparency);
 					
 	//ced_cluellipse_r((float)sizes[0], (float)sizes[2], center_r, rotate, BACKUP_LAYER, rgba);
 	ced_cluellipse_r_ID((float)sizes[0], (float)sizes[2], center_r, rotate, BACKUP_LAYER, rgba, cluster->id()); //hauke
 
 					
 	transparency = 0xCC;
-	rgba = addAlphaChannelToColor(color, transparency);
+	rgba = addAlphaChannelToColor(color2, transparency);
 					
 	//ced_ellipsoid_r(sizes, center, rotate, BACKUP_LAYER2, rgba); 
 	ced_ellipsoid_r_ID(sizes, center, rotate, BACKUP_LAYER2, rgba, cluster->id()); //hauke
@@ -368,7 +368,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 	//int ml_line = 9;
 	float radius = (float)0.5*sizes[2];
 	float arrow = 0.2*radius;
-	int color_arrow = color + 0x009900; //colour of the needle
+	int color_arrow = color2 + 0x009900; //colour of the needle
 
 	float xEnd = center[0] + (radius - arrow) * std::sin(theta)*std::cos(phi);
 	float yEnd = center[1] + (radius - arrow) * std::sin(theta)*std::sin(phi);
@@ -379,8 +379,8 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 	float zArrowEnd = center[2] + (radius) * std::cos(theta);
 
 	// this is the direction arrow
-	//ced_line(center[0],center[1],center[2], xEnd, yEnd, zEnd, CLUSTER_LAYER, sizeLine, color);					
-	ced_line_ID(center[0],center[1],center[2], xEnd, yEnd, zEnd, CLUSTER_LAYER, sizeLine, color,cluster->id()); //hauke
+	//ced_line(center[0],center[1],center[2], xEnd, yEnd, zEnd, CLUSTER_LAYER, sizeLine, color2);					
+	ced_line_ID(center[0],center[1],center[2], xEnd, yEnd, zEnd, CLUSTER_LAYER, sizeLine, color2,cluster->id()); //hauke
 
 	//ced_line(xEnd, yEnd, zEnd, xArrowEnd, yArrowEnd, zArrowEnd, CLUSTER_LAYER, sizeLine, color_arrow);
 	ced_line_ID(xEnd, yEnd, zEnd, xArrowEnd, yArrowEnd, zArrowEnd, CLUSTER_LAYER, sizeLine, color_arrow, cluster->id());//hauke
@@ -394,15 +394,15 @@ void DSTViewer::processEvent( LCEvent * evt ) {
 
       streamlog_out( DEBUG )  << " drawing jets from collection " << _jetCollections[i] << std::endl ;
 
-      LCCollection * col = evt->getCollection( _jetCollections[i] );
+      LCCollection * col2 = evt->getCollection( _jetCollections[i] );
 						
-      int nelem = col->getNumberOfElements();
+      int nelem2 = col2->getNumberOfElements();
 						
       //int color = 0x000000;
 						
 						
-      for (int j=0; j < nelem; ++j) { //number of elements in a jet
-	ReconstructedParticle * jet = dynamic_cast<ReconstructedParticle*>( col->getElementAt(j) );
+      for (int j=0; j < nelem2; ++j) { //number of elements in a jet
+	ReconstructedParticle * jet = dynamic_cast<ReconstructedParticle*>( col2->getElementAt(j) );
 	streamlog_out( DEBUG )  <<   "     - jet energy " << jet->getEnergy() << std::endl ;
 						
 	const double * mom = jet->getMomentum() ;
@@ -462,17 +462,17 @@ void DSTViewer::processEvent( LCEvent * evt ) {
                             
 
 	const double *pm=jet->getMomentum(); 
-	int color = int(RGBAcolor[2]*(15*16+15)) + int(RGBAcolor[1]*(15*16+15))*16*16+ int(RGBAcolor[0]*(15*16+15))*16*16*16*16;
+	int color2 = int(RGBAcolor[2]*(15*16+15)) + int(RGBAcolor[1]*(15*16+15))*16*16+ int(RGBAcolor[0]*(15*16+15))*16*16*16*16;
 
-	//printf("RGBAcolor: %f %f %f color: %x\n", RGBAcolor[0], RGBAcolor[1], RGBAcolor[2], color);
-	//ced_line_ID(0.0, 0.0, 0.0, 33*pm[0], 33*pm[1], 33*pm[2], layer, 1, color, jet->id()); //hauke
-	int i;
-	for(i=1;i<104;i++){
-	  ced_line_ID((i-1)/4*pm[0], (i-1)/4*pm[1], (i-1)/4*pm[2], i/4*pm[0], i/4*pm[1], i/4*pm[2], layer, 1, color, jet->id()); //hauke
-	  //ced_hit_ID(i/4*pm[0], i/4*pm[1], i/4*pm[2], layer, 2, color, jet->id()); //hauke
+	//printf("RGBAcolor: %f %f %f color: %x\n", RGBAcolor[0], RGBAcolor[1], RGBAcolor[2], color2);
+	//ced_line_ID(0.0, 0.0, 0.0, 33*pm[0], 33*pm[1], 33*pm[2], layer, 1, color2, jet->id()); //hauke
+	int i2;
+	for(i2=1;i2<104;i2++){
+	  ced_line_ID((i2-1)/4*pm[0], (i2-1)/4*pm[1], (i2-1)/4*pm[2], i2/4*pm[0], i2/4*pm[1], i2/4*pm[2], layer, 1, color2, jet->id()); //hauke
+	  //ced_hit_ID(i2/4*pm[0], i2/4*pm[1], i2/4*pm[2], layer, 2, color, jet->id()); //hauke
 
 	}
-	ced_hit_ID((i-1)/4*pm[0], (i-1)/4*pm[1], (i-1)/4*pm[2], 0, layer, 2, color, jet->id()); //hauke
+	ced_hit_ID((i2-1)/4*pm[0], (i2-1)/4*pm[1], (i2-1)/4*pm[2], 0, layer, 2, color2, jet->id()); //hauke
 
                             
 
@@ -515,7 +515,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
   _nEvt++;
 }
 
-void DSTViewer::check( LCEvent * evt ) { }
+void DSTViewer::check( LCEvent * /*evt*/ ) { }
 
 void DSTViewer::end(){ } 
 
@@ -841,7 +841,7 @@ int DSTViewer::addAlphaChannelToColor(int color, int alphaChannel){
 }
 	
 	
-int DSTViewer::returnJetColor(std::string jetColName, int colNumber){
+int DSTViewer::returnJetColor(std::string /*jetColName*/, int colNumber){
   int color = 0x00000000;
 		
   int white = 0x55555555;
