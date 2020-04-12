@@ -96,22 +96,21 @@ class DDCEDViewer : public Processor {
  
  protected:
 
-  static const int ncol = 20 ;
-  static const int nscheme = 10 ;
-  static const int Red         =   0 ;
-  static const int Orange      =   1 ;
-  static const int Plum        =   2 ;
-  static const int Violet      =   3 ;
-  static const int Blue        =   4 ;
-  static const int LightBlue   =   5 ;
-  static const int Aquamarine  =   6 ;
-  static const int Green       =   7 ;
-  static const int Olive       =   8 ;
-  static const int Yellow      =   9 ;
-  
-  static const int Dark        =   10 ;
-  static const int Light       =   11 ;
-  static const int Classic     =   12 ;
+  constexpr static int ncol = 20 ;
+  constexpr static int nscheme = 10 ;
+  constexpr static int Red         =   0 ;
+  constexpr static int Orange      =   1 ;
+  constexpr static int Plum        =   2 ;
+  constexpr static int Violet      =   3 ;
+  constexpr static int Blue        =   4 ;
+  constexpr static int LightBlue   =   5 ;
+  constexpr static int Aquamarine  =   6 ;
+  constexpr static int Green       =   7 ;
+  constexpr static int Olive       =   8 ;
+  constexpr static int Yellow      =   9 ;
+  constexpr static int Dark        =   10 ;
+  constexpr static int Light       =   11 ;
+  constexpr static int Classic     =   12 ;
   
   StringVec _drawCollections{} ;
   StringVec _drawCollectionsLayer{} ;
