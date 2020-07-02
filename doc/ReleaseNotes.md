@@ -1,3 +1,9 @@
+# v01-17-01
+
+* 2020-04-13 Frank Gaede ([PR#13](https://github.com/iLCSoft/CEDViewer/pull/13))
+  - make compatible w/ -std=c++17 
+         - needed on macos w/ clang
+
 # v01-17
 
 * 2018-11-06 Marko Petric ([PR#9](https://github.com/iLCSoft/CEDViewer/pull/9))
