@@ -15,13 +15,15 @@
 # 
 ###########################################################################
 
+from __future__ import print_function
+
 import sys
 import re
 if sys.version_info[0] > 2 or ( sys.version_info[0] == 2 and sys.version_info[1]>= 4):
     import subprocess
     old = 0
 else:
-    print "Warning: Python Version < 2.4..."
+    print ("Warning: Python Version < 2.4...")
     old = 1
     import popen2
 import os
@@ -45,20 +47,20 @@ templateXMLFile = os.path.join( sys_path_to_ced2go_template, "ced2go-template.xm
 
 #Help output
 def help():
-    print "\n-------------- Help -------------"
-    print "Usage: " + str(sys.argv[0]) + " [OPTION]  <LCIO Input File>"
-    print "Options: "
-    print "     -v            Viewer1"
-    print "     -v            Viewer2"
-    print "     -d            Detector description as LCDD or Gear"
-    print "     -h/-?         Help"
-    print "     -t            template file ["+templateXMLFile+"]"
-    print "     -s            arg = 1 enables preferred drawing of surfaces (if available); works only with LCDD"
-    print "     -n            arg = 1 disable a call to glced for a case to run glced at local host " 
-    print "     --MarlinParameter=value            overwrites existing parameters in the steering file"
-    print "All options are optional"
-    print "Viewers are e.g. CEDViewer, DSTViewer, GenericViewer"
-    print "---------------------------------"
+    print ("\n-------------- Help -------------")
+    print ("Usage: " + str(sys.argv[0]) + " [OPTION]  <LCIO Input File>")
+    print ("Options: ")
+    print ("     -v            Viewer1")
+    print ("     -v            Viewer2")
+    print ("     -d            Detector description as LCDD or Gear")
+    print ("     -h/-?         Help")
+    print ("     -t            template file ["+templateXMLFile+"]")
+    print ("     -s            arg = 1 enables preferred drawing of surfaces (if available); works only with LCDD")
+    print ("     -n            arg = 1 disable a call to glced for a case to run glced at local host " )
+    print ("     --MarlinParameter=value            overwrites existing parameters in the steering file")
+    print ("All options are optional")
+    print ("Viewers are e.g. CEDViewer, DSTViewer, GenericViewer")
+    print ("---------------------------------")
 #import shlex
 #from Tkinter import *
 #import threading
@@ -67,7 +69,7 @@ def help():
 viewer   = "CEDViewer" #default viewer
 
 if not os.path.isfile(templateXMLFile):
-    print "Error: Template File \"" + templateXMLFile + "\" not found!"
+    print ("Error: Template File \"" + templateXMLFile + "\" not found!")
     sys.exit()
 
 
@@ -76,7 +78,7 @@ extractDetector = "extractdetector"  #extractdetector.cc is located in the same 
 
 
 #if not os.path.isfile(extractDetector):
-#    print "Error: Helper Tool \"" + extractDetector + "\" not found!"
+#    print ("Error: Helper Tool \"" + extractDetector + "\" not found!")
 #    sys.exit()
 
 steeringFile="/tmp/ced2go_" + os.environ['USER'] + "_steering.xml"
@@ -100,8 +102,8 @@ for entry in reversed(commandline):
         commandline.remove(entry)
 try: 
     opts, args = getopt.getopt(commandline, "h:v:d:t:n:s:", "help")
-except getopt.GetoptError, err:
-    print str(err)
+except getopt.GetoptError as err:
+    print (str(err))
     help()
     sys.exit(2)
 
@@ -110,13 +112,13 @@ for key in opts:
     if key[0] == "-d":
         detector=key[1]
         if not os.path.isfile(detector):
-            print "Error: Gearfile \"" + detector + "\" not found!"
+            print ("Error: Gearfile \"" + detector + "\" not found!")
             sys.exit()
     if key[0] == "-t":
         templateXMLFile=key[1]
         userDefinedXML = True
         if not os.path.isfile(templateXMLFile):
-            print "Error: template \"" + templateXMLFile + "\" not found!"
+            print ("Error: template \"" + templateXMLFile + "\" not found!")
             sys.exit()
     if key[0]  == "-v":
           keys['$Viewer$'] += "\n<processor name=\"My" + str(key[1]) + "\"/>"
@@ -134,12 +136,12 @@ if keys['$Viewer$'] == '': #default
 
 #class Thread1(threading.Thread):
 #    def run(self):
-#        print "thread 1 startet and block"
+#        print ("thread 1 startet and block")
 #        while True:
 #            pass
 
 #Thread1().start()
-#print "main sleep 5sec"
+#print ("main sleep 5sec")
 #time.sleep(5)
 #sys.exit()
 
@@ -149,7 +151,7 @@ if not len(args) == 1:
     sys.exit()
 #check if lcio file exists
 if not os.path.isfile(args[0]):
-    print "Error: LCIO File \"" + args[0] + "\" not found!"
+    print ("Error: LCIO File \"" + args[0] + "\" not found!")
     help()
     sys.exit()
     
@@ -171,7 +173,7 @@ else:  #find out the detector name used in the lcio file
     try:
         standartconfig=os.environ["STANDARDCONFIG"]
     except: 
-        print "Error: $STANDARDCONFIG not set. Either use option -d to point to your gearfile or set STANDARDCONFIG appropriately"
+        print ("Error: $STANDARDCONFIG not set. Either use option -d to point to your gearfile or set STANDARDCONFIG appropriately")
         sys.exit(1)
 
     gearfiles={'ILD_00':standartconfig + '/mc2008/gear_ILD_00.xml',
@@ -187,16 +189,16 @@ else:  #find out the detector name used in the lcio file
 
     detector=detector.rstrip() #remove newline
 
-    print '"' + detector + '"'
+    print ('"' + detector + '"')
 
     tmp = detector.split("\n")
     if len(tmp) != 1:
-        print "Warning: LCIO File contains more than one detector model, try the first one"
+        print ("Warning: LCIO File contains more than one detector model, try the first one")
         detector=tmp[0]
     try: 
         keys['$GearXMLFile$'] = gearfiles[detector] 
     except(KeyError):
-        print "Error: Unknown detector in LCIO file - provide correct gear file on command line with option -d"
+        print ("Error: Unknown detector in LCIO file - provide correct gear file on command line with option -d")
         sys.exit(1)
 
 
@@ -218,15 +220,16 @@ if keys['$NoCED$'] == 'false':
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.bind(('',port))
-        except socket.error, (value,message):
+        except socket.error as err:
+            value,message = err
             if value == 98: #port already in use
-                #print "port " + str(port) + " in use "
+                #print ("port " + str(port) + " in use ")
                 s.close() 
                 continue 
             else:
-                print "unknown error: " + message
+                print ("unknown error: " + message)
                 sys.exit()
-        print "Use port " + str(port)
+        print ("Use port " + str(port))
         s.close()
         break
     os.environ['CED_PORT']=str(port)
@@ -259,4 +262,4 @@ else:
 
         time.sleep(0.5) #sleep for 0.5 seconds
 
-print "Done"
+print ("Done")
