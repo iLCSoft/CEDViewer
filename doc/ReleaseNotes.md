@@ -1,3 +1,11 @@
+# v01-18
+
+* 2021-06-30 scott snyder ([PR#15](https://github.com/iLCSoft/CEDViewer/pull/15))
+  - Fix miscellaneous compilation warnings.
+
+* 2021-06-30 scott snyder ([PR#14](https://github.com/iLCSoft/CEDViewer/pull/14))
+  - Updated ced2go for python3 compatibility.
+
 # v01-17-01
 
 * 2020-04-13 Frank Gaede ([PR#13](https://github.com/iLCSoft/CEDViewer/pull/13))
