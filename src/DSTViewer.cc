@@ -207,8 +207,19 @@ void DSTViewer::processEvent( LCEvent * evt ) {
     for (int ip(0); ip < nelem; ++ip) {
       ReconstructedParticle * part = dynamic_cast<ReconstructedParticle*>(col->getElementAt(ip));
 
-      //TrackVec trackVec = part->getTracks();
-      //int nTracks =  (int)trackVec.size();
+      TrackVec tracks = part->getTracks();
+      int nTracks =  tracks.size();
+
+      double xs = 0.;
+      double ys = 0.;
+      double zs = 0.;
+      if (nTracks > 0) {
+          Track* track = tracks[0];
+          xs = track->getReferencePoint()[0] - track->getD0() * std::sin( track->getPhi() );
+          ys = track->getReferencePoint()[1] + track->getD0() * std::cos( track->getPhi() );
+          zs = track->getReferencePoint()[2] + track->getZ0();
+      }
+
       // this is needed for Calorimeter Hits display
       ClusterVec clusterVec = part->getClusters();
       int nClusters = (int)clusterVec.size();
@@ -262,9 +273,7 @@ void DSTViewer::processEvent( LCEvent * evt ) {
       /** Draw the helix and straight lines */
       //MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, ml, size, color, 0.0, padLayout.getPlaneExtent()[1], 
       //				gearTPC.getMaxDriftLength());
-							
-      MarlinCED::drawHelix(bField, charge, refx, refy, refz, px, py, pz, ml, size, color, 0.0, padLayout.getPlaneExtent()[1], 
-			   gearTPC.getMaxDriftLength(), part->id() ); //hauke: add id
+      MarlinCED::drawHelix(bField, charge, xs, ys, zs, px, py, pz, ml, size, color, 0.0, padLayout.getPlaneExtent()[1], gearTPC.getMaxDriftLength(), part->id() ); //hauke: add id  
 
       //				/** Draw momentum lines from the ip */
       char Mscale = 'b'; // 'b': linear, 'a': log
@@ -888,4 +897,3 @@ int DSTViewer::returnJetColor(std::string /*jetColName*/, int colNumber){
 	
   return color;	
 }
-
