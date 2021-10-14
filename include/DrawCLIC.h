@@ -65,12 +65,9 @@ class DrawCLIC : public Processor {
   
   
  protected:
-  bool _begin;
-  int _nRun ;
-  int _nEvt ;
+  bool _begin{};
+  int _nRun{} ;
+  int _nEvt{} ;
 } ;
 
 #endif
-
-
-
