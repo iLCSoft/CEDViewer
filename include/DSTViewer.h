@@ -40,8 +40,8 @@ class DSTViewer : public Processor {
   
  protected:
 
-  int _nRun ;
-  int _nEvt ;
+  int _nRun{} ;
+  int _nEvt{} ;
   // bool dispHelix;
   
 //  std::vector<std::string> _caloHitCollections;
@@ -52,28 +52,28 @@ class DSTViewer : public Processor {
 //  std::string _trueTracksCollection;
 //  std::string _clustersCollection;
 //  std::string _tracksCollection;
-  std::string _particleCollection;
+  std::string _particleCollection{};
   
-  StringVec _jetCollections;
+  StringVec _jetCollections{};
 
-  int _layerCaloHit;
-  int _layerSimCaloHit;
-  int _layerTrackerHit;
-  int _layerSimTrackerHit;
-  int _layerTrueClusters;
-  int _layerTrueTracks;
-  int _layerClusters;
-  int _layerTracks;
-  int _layerMCP;
-  int _layerBosons;
-  int _layerReco;
+  int _layerCaloHit{};
+  int _layerSimCaloHit{};
+  int _layerTrackerHit{};
+  int _layerSimTrackerHit{};
+  int _layerTrueClusters{};
+  int _layerTrueTracks{};
+  int _layerClusters{};
+  int _layerTracks{};
+  int _layerMCP{};
+  int _layerBosons{};
+  int _layerReco{};
   
 
-  int _detModel;
+  int _detModel{};
 
-  int _waitForKeyboard;
+  int _waitForKeyboard{};
 
-  std::map<MCParticle *, int > _mcpList;
+  std::map<MCParticle *, int > _mcpList{};
   
   int returnTrackColor(int type);
   
@@ -122,13 +122,10 @@ class DSTViewer : public Processor {
   	
   	float * returnConeColor(std::string jetColName);
 
-  	float _bField;
+  	float _bField{};
     
     void writeLayerDescription(void);
 
 } ;
 
 #endif
-
-
-

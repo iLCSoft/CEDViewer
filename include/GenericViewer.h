@@ -91,45 +91,42 @@ class GenericViewer : public Processor {
   
  protected:
 
-  int _nRun ;
-  int _nEvt ;
+  int _nRun{} ;
+  int _nEvt{} ;
   
-  std::vector<std::string> _caloHitCollections;
-  std::vector<std::string> _simCaloHitCollections;
-  std::vector<std::string> _trackerHitCollections;
-  std::vector<std::string> _simTrackerHitCollections;
-  std::string _trueClustersCollection;
-  std::string _trueTracksCollection;
-  std::string _clustersCollection;
-  std::string _tracksCollection;
-  std::string _particleCollection;
+  std::vector<std::string> _caloHitCollections{};
+  std::vector<std::string> _simCaloHitCollections{};
+  std::vector<std::string> _trackerHitCollections{};
+  std::vector<std::string> _simTrackerHitCollections{};
+  std::string _trueClustersCollection{};
+  std::string _trueTracksCollection{};
+  std::string _clustersCollection{};
+  std::string _tracksCollection{};
+  std::string _particleCollection{};
 
-  int _layerCaloHit;
-  int _layerSimCaloHit;
-  int _layerTrackerHit;
-  int _layerSimTrackerHit;
-  int _layerTrueClusters;
-  int _layerTrueTracks;
-  int _layerClusters;
-  int _layerTracks;
-  int _layerMCP;
-  int _layerBosons;
-  int _layerReco;
+  int _layerCaloHit{};
+  int _layerSimCaloHit{};
+  int _layerTrackerHit{};
+  int _layerSimTrackerHit{};
+  int _layerTrueClusters{};
+  int _layerTrueTracks{};
+  int _layerClusters{};
+  int _layerTracks{};
+  int _layerMCP{};
+  int _layerBosons{};
+  int _layerReco{};
 
-  int _detModel;
+  int _detModel{};
 
-  int _waitForKeyboard;
+  int _waitForKeyboard{};
 
-  std::map<MCParticle *, int > _mcpList;
+  std::map<MCParticle *, int > _mcpList{};
   
   int returnColor(int counter);
 
-  float _bField;
+  float _bField{};
 
 
 } ;
 
 #endif
-
-
-
