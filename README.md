@@ -1,5 +1,5 @@
 # CEDViewer
-[![Build Status](https://travis-ci.org/iLCSoft/CEDViewer.svg?branch=master)](https://travis-ci.org/iLCSoft/CEDViewer)
+[![build](https://github.com/iLCSoft/CEDViewer/actions/workflows/linux.yml/badge.svg)](https://github.com/iLCSoft/CEDViewer/actions/workflows/linux.yml)
 [![Build Status](https://scan.coverity.com/projects/12339/badge.svg)](https://scan.coverity.com/projects/ilcsoft-cedviewer)
 
 CEDViewer processor for the CED event display
