@@ -1,3 +1,15 @@
+# v01-19
+
+* 2021-11-01 Thomas Madlener ([PR#19](https://github.com/iLCSoft/CEDViewer/pull/19))
+  - Fix coverity CI workflow
+
+* 2021-11-01 Bohdan Dudar ([PR#17](https://github.com/iLCSoft/CEDViewer/pull/17))
+  - Fix position of the tracks displated by the DSTViewer (fixes #16)
+  - Fix CEDViewer `Weff-c++` warnings
+
+* 2021-10-29 Thomas Madlener ([PR#18](https://github.com/iLCSoft/CEDViewer/pull/18))
+  - Migrate CI to github actions
+
 # v01-18
 
 * 2021-06-30 scott snyder ([PR#15](https://github.com/iLCSoft/CEDViewer/pull/15))
