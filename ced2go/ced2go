@@ -125,7 +125,7 @@ for key in opts:
     if key[0]  == "-s":
         keys['$DrawSurfaces$'] = 'true' if (key[1] == "1") else 'false'
     if key[0]  == "-n":
-        keys['NoCED$'] = 'true' if ( key[1] == "1" ) else 'false'
+        keys['$NoCED$'] = 'true' if ( key[1] == "1" ) else 'false'
     if key[0] in ("-h", "--help"):
         help()
         sys.exit(0)
