@@ -19,13 +19,7 @@ from __future__ import print_function
 
 import sys
 import re
-if sys.version_info[0] > 2 or ( sys.version_info[0] == 2 and sys.version_info[1]>= 4):
-    import subprocess
-    old = 0
-else:
-    print ("Warning: Python Version < 2.4...")
-    old = 1
-    import popen2
+import subprocess
 import os
 import signal
 import time
@@ -182,10 +176,7 @@ else:  #find out the detector name used in the lcio file
             'LDC_GLD_01Sc':standartconfig+ '/mc2008/gear_LDC_GLD_01Sc.xml'
     }
 
-    if old:
-        detector=os.popen(extractDetector + " " + keys['$LCIOInputFiles$']).readline()
-    else:
-        detector= str(subprocess.Popen([extractDetector,keys['$LCIOInputFiles$']], stdout=subprocess.PIPE).communicate()[0])
+    detector= str(subprocess.Popen([extractDetector,keys['$LCIOInputFiles$']], stdout=subprocess.PIPE).communicate()[0])
 
     detector=detector.rstrip() #remove newline
 
@@ -238,28 +229,25 @@ if keys['$NoCED$'] == 'false':
 startced += [ Marlin, steeringFile ]
     
 #start ced and marlin
-if old:
-    os.system(" ".join(startced))
-else:
-    if keys['$NoCED$'] == 'false':
-        CEDobj    = subprocess.Popen(startced[0:3])
+if keys['$NoCED$'] == 'false':
+    CEDobj    = subprocess.Popen(startced[0:3])
             
-    MarlinCallArgs = [Marlin, steeringFile]
-    for marlinOpt in marlincommands:
-        MarlinCallArgs.append(marlinOpt)
-    Marlinobj = subprocess.Popen(MarlinCallArgs)
+MarlinCallArgs = [Marlin, steeringFile]
+for marlinOpt in marlincommands:
+    MarlinCallArgs.append(marlinOpt)
+Marlinobj = subprocess.Popen(MarlinCallArgs)
 
-    #terminate the both processes when one is closed
-    while True: 
-        if Marlinobj.poll() != None:
-            os.kill(CEDobj.pid,15)
+#terminate the both processes when one is closed
+while True:
+    if Marlinobj.poll() != None:
+        os.kill(CEDobj.pid,15)
+        break
+
+    if keys['$NoCED$'] == 'false':
+        if CEDobj.poll() != None:
+            os.kill(Marlinobj.pid,15)
             break
 
-        if keys['$NoCED$'] == 'false':
-            if CEDobj.poll() != None:
-                os.kill(Marlinobj.pid,15)
-                break
-
-        time.sleep(0.5) #sleep for 0.5 seconds
+    time.sleep(0.5) #sleep for 0.5 seconds
 
 print ("Done")
