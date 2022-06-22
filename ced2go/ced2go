@@ -225,6 +225,11 @@ if keys['$NoCED$'] == 'false':
         break
     os.environ['CED_PORT']=str(port)
     startced = [CED,"-geometry", "800x600","&","sleep 1;"]
+    # Make sure to pop the CED_HOST from the environment, because otherwise CED
+    # will try to connect to it. See https://github.com/iLCSoft/CEDViewer/issues/21
+    orig_ced_host = os.environ.pop('CED_HOST', None)
+    if orig_ced_host:
+        print('Unset CED_HOST env variable. Original value: {}'.format(orig_ced_host))
 
 startced += [ Marlin, steeringFile ]
     
