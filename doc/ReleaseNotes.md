@@ -1,3 +1,12 @@
+# v01-19-01
+
+* 2022-06-22 Thomas Madlener ([PR#23](https://github.com/iLCSoft/CEDViewer/pull/23))
+  - Make sure that `ced2go` can be run without the `-n` argument even if `CED_HOST` is set. Fixes #21
+  - Remove some compatibility code for python < 2.4
+
+* 2022-03-11 Bohdan Dudar ([PR#20](https://github.com/iLCSoft/CEDViewer/pull/20))
+  - Fix typo bug in the ced2go local host argument option
+
 # v01-19
 
 * 2021-11-01 Thomas Madlener ([PR#19](https://github.com/iLCSoft/CEDViewer/pull/19))
