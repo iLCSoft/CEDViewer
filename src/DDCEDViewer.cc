@@ -20,7 +20,7 @@
 
 #include "DDMarlinCED.h"
 #include <cmath>
-#include "DD4hep/DD4hepUnits.h" 
+#include "DD4hep/DD4hepUnits.h"
 
 #include "ColorMap.h"
 #include "TVector3.h"
@@ -46,35 +46,35 @@ using dd4hep::Position;
 DDCEDViewer aDDCEDViewer ;
 
 DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
-    
+
     // modify processor description
     _description = "DDCEDViewer: event display of LCIO objects  - based on CED by A.Zhelezov." ;    //todo
-    
+
     StringVec cluExample ;
     cluExample.push_back("CalorimeterHits" ) ;
     cluExample.push_back("0" ) ;
     cluExample.push_back("3" ) ;
-    
+
     registerOptionalParameter( "DrawCollection" ,
                               "collection to be displayed ( ColName, marker type[0-2], size)"  ,
                               _drawCollections ,
                               cluExample ,
                               cluExample.size() ) ;
-    
+
     StringVec TPClayerExample ;
     TPClayerExample.push_back("TPCTracks" ) ;
     TPClayerExample.push_back("0" ) ;
     TPClayerExample.push_back("3" ) ;
     TPClayerExample.push_back("4" ) ;
-    
+
     /*****options for LCIO drawing*****/
     registerOptionalParameter( "DrawInLayer" ,
                               "collection to be displayed ( ColName, marker type[0-2], size, layer)",
                               _drawCollectionsLayer ,
                               TPClayerExample ,
                               TPClayerExample.size() ) ;
-    
-    
+
+
     registerProcessorParameter( "DrawHelixForTrack" ,
                                "draw a helix for Track objects: -1: none, 0: default, 1: atIP, 2: atFirstHit, 3: atLastHit, 4: atCalorimeter",
                                _drawHelixForTracks ,
@@ -125,39 +125,39 @@ DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
                                "Scale the size of the markes",
                                _scaleMarkerSize,
                                double(1.0) ) ;
-    
+
     registerProcessorParameter( "MCParticleEnergyCut" ,
                                "minimum energy of MCParticles to be drawn",
                                _mcpECut ,
                                float(0.001) ) ;
-    
-    
+
+
     registerProcessorParameter( "UsingParticleGun" ,
                                "If set true generator status is ignored for MCParticles to be drawn",
                                _usingParticleGun ,
                                bool(false) ) ;
-    
+
     registerProcessorParameter( "UseTrackerExtentForLimitsOfHelix" ,
                                "Use the gear parameters to define the max extent of drawing a helix",
                                //_useTPCForLimitsOfHelix ,
                                _useTrackerForLimitsOfHelix ,
                                bool(true) ) ;
-    
+
     registerProcessorParameter( "HelixMaxR" ,
                                "Max R (mm) Extent for drawing Helix if UseTPCForLimitsOfHelix false",
                                _helix_max_r ,
                                float(2000.0) ) ;
-    
+
     registerProcessorParameter( "HelixMaxZ" ,
                                "Max Z (mm) Extent for drawing Helix if UseTPCForLimitsOfHelix false",
                                _helix_max_z ,
                                float(2500.0) ) ;
-    
+
     registerProcessorParameter("WaitForKeyboard",
                                "Wait for Keyboard before proceed",
                                _waitForKeyboard,
                                (int)1);
-    
+
     registerProcessorParameter("DrawHelixForPFOs",
                                "draw a helix for PFO objects (usefull for Si tracker): 0: disabled, 1: enabled",
                                _drawHelixForPFOs,
@@ -172,7 +172,7 @@ DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
                                 "draw an ellipsoid for the Clusters of PFO objects: 0: disabled, 1: enabled",
                                 _drawEllipsoidForPFOClusters,
                                 0  ) ;
-        
+
 
     /*****options for detector drawing*****/
     registerProcessorParameter( "DrawDetector" ,
@@ -185,68 +185,68 @@ DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
             "List of detector names that are printed in more detail.",
             _detailled,
             DetailledLayerExample,
-            1  ) ;  
+            1  ) ;
     registerOptionalParameter( "DrawSurfaces" ,
             "Draw the geometry as a set of individual surfaces (if available) instead of simplified structures.",
             _surfaces ,
             (bool)0  ) ;
- 
+
 }
 
 void DDCEDViewer::init() {
-    
+
     // usually a good idea to
     streamlog_out(DEBUG) << "   init called  " << std::endl ;
     printParameters() ;
     DDMarlinCED::init(this) ;
-    
-    
+
+
     static unsigned bojum_colors[ncol*nscheme]={
         0x510000,0x660202,0x720202,0x840202,0x960303,0xa80303,0xbc0303,
         0xce0404,0xe00404,0xef0404,0xff0000,0xfc0505,0xf91111,0xf92222,
         0xfc4949,0xf97777,0xf98e8e,0xf9aeae,0xf7b2b2,0xf7cdcd,
-        
+
         0x512401,0x662d03,0x7a3602,0x934204,0xa54a04,0xb75103,0xc65803,
         0xd35e04,0xe56604,0xff6e00,0xf4710c,0xf4791a,0xf9842a,0xf98f3e,
         0xf99d57,0xf9a768,0xf9b47f,0xf9bf93,0xf9c9a4,0xf9d2b3,
-        
+
         0x48014c,0x610266,0x700277,0x93039b,0xb103ba,0xc904d3,0xda04e5,
         0xe604f2,0xfa00ff,0xf00ffc,0xec1df7,0xef2ff9,0xeb42f4,0xec58f4,
         0xed6bf4,0xf486f9,0xf59af9,0xf8b5fc,0xf4c3f7,0xf8d6f9,
-        
+
         0x2d0251,0x3d026d,0x4a0284,0x550399,0x5f03aa,0x6903bc,0x7102cc,
         0x8004e5,0x9800ff,0x8e0ef7,0x9922f9,0xa134f9,0xa845f9,0xb057f9,
         0xbc70f9,0xbf77f9,0xc98ef9,0xd3a4f9,0xddbbf9,0xecd6ff,
-        
+
         0x00004f,0x020268,0x03037f,0x030399,0x0303b2,0x0404cc,0x0404e0,
         0x0404ef,0x0000ff,0x0c0cf9,0x1b1bf9,0x2a2af9,0x3939f9,0x4d4df9,
         0x6363f9,0x7272f9,0x8484f9,0x9898f9,0xb3b3f9,0xcacaf9,
-        
+
         0x01434c,0x025c68,0x027382,0x04899b,0x0397aa,0x03abc1,0x04b9d1,
         0x04cbe5,0x00d8ff,0x0cdef9,0x1bddf7,0x2ae1f9,0x3ddff4,0x59e4f7,
         0x6be9f9,0x7cebf9,0x94f0fc,0xa3edf7,0xb6f2f9,0xc7f4f9,
-        
+
         0x014443,0x01605f,0x027f7d,0x039996,0x03b2af,0x01c6c3,0x04ddda,
         0x04efeb,0x00ffff,0x09f9f5,0x0ef9f5,0x20f9f6,0x32fcf9,0x3ef9f6,
         0x52f9f7,0x6bf9f7,0x7ff9f7,0x95f9f8,0xb1f9f8,0xcaf9f9,
-        
+
         0x016001,0x027002,0x027f02,0x029102,0x05aa05,0x05bf05,0x06d306,
         0x04e504,0x00ff00,0x09f909,0x18f918,0x2cf92c,0x43f943,0x52f952,
         0x63f963,0x77f977,0x8bf98b,0x9ff99f,0xb3f9b3,0xcaf9ca,
-        
+
         0x344701,0x4b6603,0x608202,0x739b04,0x83b203,0x96cc04,0xa7e204,
         0xb1ef04,0xb6ff00,0xbaf713,0xbff725,0xc5f73b,0xcbf751,0xd3f968,
         0xd7f97a,0xd8f48b,0xe2f9a2,0xe1f4ad,0xe7f7bb,0xe9f4c8,
-        
+
         0x565501,0x727002,0x898702,0xa5a303,0xb7b403,0xd1cd04,0xe2df04,
         0xefeb04,0xffff00,0xf9f509,0xf9f618,0xf9f62a,0xf7f43b,0xf9f64a,
         0xf9f759,0xf9f76b,0xf9f77c,0xf9f88b,0xf9f89f,0xfcfbbd
     };
-    
-    
-    
+
+
+
     switch (_colorScheme) {
-            
+
         case Red         :
         case Orange      :
         case Plum        :
@@ -257,26 +257,26 @@ void DDCEDViewer::init() {
         case Green       :
         case Olive       :
         case Yellow      :
-            
+
             for(int i = 0 ; i<ncol ; ++i)
                 _colors.push_back( bojum_colors[  ( _colorScheme * ncol  ) + i ] ) ;
-            
+
             break;
-            
+
         case Dark:
-            
+
             for(int i = 0 ; i<ncol ; ++i )
                 for(int j = 0 ; j<nscheme ; ++j )
                     _colors.push_back( bojum_colors[  ( j * ncol  ) + i ] ) ;
             break ;
-            
+
         case Light:
-            
+
             for(int i = ncol-1 ; i>=0 ; --i )
                 for(int j = 0 ; j<nscheme ; ++j )
                     _colors.push_back( bojum_colors[  ( j * ncol  ) + i ] ) ;
             break ;
-            
+
         case Classic:
         default:
             _colors.push_back( 0xff00ff );
@@ -286,7 +286,7 @@ void DDCEDViewer::init() {
             _colors.push_back( 0xff00ff );
             _colors.push_back( 0x00ffff );
             _colors.push_back( 0xffffff );
-            
+
             _colors.push_back( 0xff88ff );
             _colors.push_back( 0x88ff88 );
             _colors.push_back( 0xffff88 );
@@ -295,37 +295,37 @@ void DDCEDViewer::init() {
             _colors.push_back( 0x88ffff );
             _colors.push_back( 0xffffff );
             break ;
-            
+
     }
-    
+
     //add DrawInLayer to
     //std::vector< DrawParameters > drawParameters ;
     this->drawParameters.reserve( _drawCollections.size() + _drawCollectionsLayer.size()  ) ;
-    
+
     if( parameterSet( "DrawCollection" ) ) {
-        
+
         unsigned index = 0 ;
         while( index < _drawCollections.size() ){
-            
+
             const std::string & colName = _drawCollections[ index++ ] ;
             int marker = std::atoi( _drawCollections[ index++ ].c_str() ) ;
             int size = std::atoi( _drawCollections[ index++ ].c_str() ) ;
             //std::cout << "#######################      SIZE: " << size << " #######################################" << std::endl;
             int layer = -1 ;
-            
+
             this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
         }
     }
     if( parameterSet( "DrawInLayer" ) ) {
-        
+
         unsigned index = 0 ;
         while( index < _drawCollectionsLayer.size() ){
-            
+
             const std::string & colName = _drawCollectionsLayer[ index++ ] ;
             int marker = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
             int size   = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
             int layer  = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
-            
+
             this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
             //std::cout << "layer: " << layer << " description: " << colName << std::endl; //hauke
         }
@@ -347,11 +347,11 @@ void DDCEDViewer::init() {
     << "      Light        "     << Light        <<   "\n"
     << "      Classic      "     << Classic      <<   "\n"
     << " -------- " << std::endl ;
-    
-    
+
+
     _nRun = 0 ;
     _nEvt = 0 ;
-    
+
 }
 
 void DDCEDViewer::processRunHeader( LCRunHeader* /*run*/) {
@@ -363,7 +363,7 @@ void DDCEDViewer::processEvent( LCEvent * evt ) {
     // Reset drawing buffer and START drawing collection
 
     DDMarlinCED::newEvent(this) ;
-    
+
     //added by Thorben Quast for removing GEAR dependencies
     dd4hep::Detector& theDetector = dd4hep::Detector::getInstance();
 
@@ -385,20 +385,20 @@ void DDCEDViewer::check( LCEvent * /*evt*/ ) {
 
 void DDCEDViewer::printParticle(int id, LCEvent * /*evt*/){
     streamlog_out( MESSAGE )  << "CEDViewer::printParticle id: " << id << std::endl;
-} 
+}
 
 
-void DDCEDViewer::end(){ 
-    streamlog_out(DEBUG2 ) << "end() :" << " processed " << _nEvt 
+void DDCEDViewer::end(){
+    streamlog_out(DEBUG2 ) << "end() :" << " processed " << _nEvt
     << " events in " << _nRun << " runs "
     << std::endl ;
 }
 
 void DDCEDViewer::drawDD4LCIO(LCEvent * evt, dd4hep::Detector& theDetector){
 DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
-    
+
     pHandler.update(evt);
-    
+
     //-----------------------------------------------------------------------
     if( _useTrackerForLimitsOfHelix ){
         //only draw the helix of charged tracks (other than muons) in the TPC within the tracker volume
@@ -408,47 +408,47 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
     // //add DrawInLayer to
     // //std::vector< DrawParameters > drawParameters ;
     // this->drawParameters.reserve( _drawCollections.size() + _drawCollectionsLayer.size()  ) ;
-    
+
     // if( parameterSet( "DrawCollection" ) ) {
-        
+
     //     unsigned index = 0 ;
     //     while( index < _drawCollections.size() ){
-            
+
     //         const std::string & colName = _drawCollections[ index++ ] ;
     //         int marker = std::atoi( _drawCollections[ index++ ].c_str() ) ;
     //         int size = std::atoi( _drawCollections[ index++ ].c_str() ) ;
     //         //std::cout << "#######################      SIZE: " << size << " #######################################" << std::endl;
     //         int layer = -1 ;
-            
+
     //         this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
     //     }
     // }
     // if( parameterSet( "DrawInLayer" ) ) {
-        
+
     //     unsigned index = 0 ;
     //     while( index < _drawCollectionsLayer.size() ){
-            
+
     //         const std::string & colName = _drawCollectionsLayer[ index++ ] ;
     //         int marker = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
     //         int size   = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
     //         int layer  = std::atoi( _drawCollectionsLayer[ index++ ].c_str() ) ;
-            
+
     //         this->drawParameters.push_back(DrawParameters( colName,size,marker,layer ) );
     //         //std::cout << "layer: " << layer << " description: " << colName << std::endl; //hauke
     //     }
     // }
-    
+
     std::set< std::string > colsInEvent ;
 
     unsigned nCols = this->drawParameters.size() ;
     //draw the individual collections as indicated in DrawInLayer
     for(unsigned np=0 ; np < nCols ; ++np){
-        
+
         const std::string & colName = this->drawParameters[np].ColName ;
         int size =   this->drawParameters[np].Size ;
         int marker = this->drawParameters[np].Marker ;
         int layer =  this->drawParameters[np].Layer ;
-        
+
         LCCollection* col = 0 ;
         try{
             col = evt->getCollection( colName ) ;
@@ -459,7 +459,7 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
             streamlog_out( DEBUG5 ) << " collection " << colName <<  " not found ! "   << std::endl ;
             continue ;
         }
-        
+
         if( colName.find("Jet") != std::string::npos ){
             //Usually jet collections contain the substring "Jet", e.g. "JetOut", "Durham_XJets", ...
             DDCEDViewer::drawJets(theDetector, layer, colName, col);
@@ -479,20 +479,20 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
             DDCEDViewer::drawTrackerHit(layer, np, colName, marker, col, size);
         } else if( col->getTypeName() == LCIO::CALORIMETERHIT ){
             DDCEDViewer::drawCalorimeterHit(layer, np, colName, marker, col, size);
-        } else if( col->getTypeName() == LCIO::RECONSTRUCTEDPARTICLE ){ 
+        } else if( col->getTypeName() == LCIO::RECONSTRUCTEDPARTICLE ){
             DDCEDViewer::drawReconstructedParticle(theDetector, layer, np, colName, marker, col, size);
-        }    
+        }
     }
 
     streamlog_out( MESSAGE ) << " ++++++++ collections shown on layers:  +++++++++++++ " << std::endl ;
-    
+
     for(unsigned np=0 ; np < nCols ; ++np){
-        
+
         const std::string & colName = drawParameters[np].ColName ;
         //     int size =   drawParameters[np].Size ;
         //     int marker = drawParameters[np].Marker ;
         int layer =  drawParameters[np].Layer ;
-        
+
         if( colsInEvent.find( colName ) != colsInEvent.end() ) {
           streamlog_out( MESSAGE )  << "    +++++  " << colName <<  "\t  on layer: " << layer << std::endl ;
         }
@@ -503,7 +503,7 @@ DDCEDPickingHandler &pHandler=DDCEDPickingHandler::getInstance();
                              <<  "   run: " << evt->getRunNumber() << " ] " << std::endl ;
 
     streamlog_out( MESSAGE ) << " ++++++++ use shift-[LN] for LN>10  +++++++++++++ " << std::endl ;
-    
+
 
 
 }
@@ -532,7 +532,7 @@ void DDCEDViewer::drawCluster(dd4hep::Detector& /*theDetector*/, int& layer, uns
                        (*it)->getPosition()[1],
                        (*it)->getPosition()[2],
                        marker, layer, size*_scaleMarkerSize , color, clu->id() ) ;
-        } 
+        }
         float x = clu->getPosition()[0] ;
         float y = clu->getPosition()[1] ;
         float z = clu->getPosition()[2] ;
@@ -649,11 +649,11 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
     for(int i=0; i<col->getNumberOfElements() ; i++){
         MCParticle* mcp = dynamic_cast<MCParticle*> ( col->getElementAt( i ) ) ;
         float charge = mcp->getCharge ();
-        if( mcp-> getGeneratorStatus() != 1 && _usingParticleGun == false ) 
+        if( mcp-> getGeneratorStatus() != 1 && _usingParticleGun == false )
             continue ; // stable particles only
-        if ( mcp->getEnergy() < _mcpECut ) 
+        if ( mcp->getEnergy() < _mcpECut )
             continue ;           // ECut ?
-        
+
         streamlog_out( DEBUG ) << "  drawing MCParticle pdg "
         << mcp->getPDG()
         << " genstat: " << mcp->getGeneratorStatus()
@@ -661,7 +661,7 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
         layer = ( layer > -1 ? layer : MCPARTICLE_LAYER ) ;
         this->drawParameters[np].Layer = layer ;
         DDMarlinCED::add_layer_description(colName, layer);
-        
+
         double px = mcp->getMomentum()[0];
         double py = mcp->getMomentum()[1];
         double pz = mcp->getMomentum()[2];
@@ -670,7 +670,7 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
         double x = mcp->getVertex()[0] ;
         double y = mcp->getVertex()[1] ;
         double z = mcp->getVertex()[2] ;
-        
+
         if( std::fabs( charge ) > 0.0001  ) {
             double* bFieldVector = new double[3];
             theDetector.field().combinedMagnetic(Position(0,0,0), bFieldVector) ;
@@ -684,22 +684,22 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
             double _hmr, _hmz;
             switch(std::abs(mcp->getPDG() ) ){
                 case 13:
-                    _hmr = getCalorimeterParameters(theDetector, "HCalBarrel").r_inner + getCalorimeterParameters(theDetector, "HCalBarrel").delta_r; 
+                    _hmr = getCalorimeterParameters(theDetector, "HCalBarrel").r_inner + getCalorimeterParameters(theDetector, "HCalBarrel").delta_r;
                     _hmz = getCalorimeterParameters(theDetector, "HCalEndcap").z_0 + getCalorimeterParameters(theDetector, "HCalEndcap").delta_z;
                     break;
                 default:
-                    _hmr = _helix_max_r; 
+                    _hmr = _helix_max_r;
                     _hmz = _helix_max_z;
             }
             DDMarlinCED::drawHelix( bField , charge, x, y, z,
                                  px, py, pz, ml , size*_scaleLineThickness , 0x7af774  ,
                                  0.0,  _hmr ,
-                                 _hmz, mcp->id() ) ; 
+                                 _hmz, mcp->id() ) ;
         } else { // neutral
             int color  ;
             double length, yokeR, yokeZ;
             switch(  std::abs(mcp->getPDG() )  ){
-                //refactored length calculation (T. Quast 7 Aug 15) 
+                //refactored length calculation (T. Quast 7 Aug 15)
                 case 22:
                     color = 0xf9f920;          // photon
                     length = calculateTrackLength("ecal", theDetector, x, y, z, px, py, pz);
@@ -730,43 +730,43 @@ void DDCEDViewer::drawSIMTrackerHit(int& layer, unsigned& np, std::string colNam
     DDMarlinCED::add_layer_description(colName, layer);
 
     for( int i=0, n=col->getNumberOfElements(); i<n ; i++ ){
-        
+
         SimTrackerHit* h = dynamic_cast<SimTrackerHit*>( col->getElementAt(i) ) ;
-        
+
         // color code by MCParticle
         const int mci = ( h->getMCParticle() ? h->getMCParticle()->id() :  0 ) ;
         int color = _Colors[  mci % _Colors.size() ] ;
-        
+
         int id =    h->id();
         ced_hit_ID( h->getPosition()[0],
                    h->getPosition()[1],
                    h->getPosition()[2],
                    marker,layer, size*_scaleMarkerSize , color, id ) ;
-        
+
     }
 }
 
 void DDCEDViewer::drawSIMCalorimeterHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, std::vector<int>& _Colors, int& size){
     layer = ( layer > -1 ? layer : SIMCALORIMETERHIT_LAYER ) ;
     this->drawParameters[np].Layer = layer ;
-    
+
     DDMarlinCED::add_layer_description(colName, layer);
-    
+
     for( int i=0, n=col->getNumberOfElements(); i<n ; i++ ){
-        
+
         SimCalorimeterHit* h = dynamic_cast<SimCalorimeterHit*>( col->getElementAt(i) ) ;
-        
+
         // color code by MCParticle
         //        const int mci = (  h->getNMCContributions() !=0  ?  h->getParticleCont(0)->id()  :  0 ) ;
         const int mci = (  h->getNMCContributions() !=0  && h->getParticleCont(0) ?  h->getParticleCont(0)->id()  :  0 ) ;
         int color = _Colors[  mci % _Colors.size() ] ;
-        
+
         int id =    h->id();
         ced_hit_ID( h->getPosition()[0],
                    h->getPosition()[1],
                    h->getPosition()[2],
                    marker,layer, size*_scaleMarkerSize , color, id ) ;
-        
+
     }
 }
 
@@ -788,9 +788,9 @@ void DDCEDViewer::drawTrackerHit(int& layer, unsigned& np, std::string colName, 
             TrackerHitPlane* h = hits[i] ;
             TVector3 p(h->getPosition()[0] ,  h->getPosition()[1] ,  h->getPosition()[2]);
             ced_hit_ID( p.X(), p.Y(), p.Z(), marker, layer , size*_scaleMarkerSize , color, h->id() );
-            // draw an additional line for strip hits 
+            // draw an additional line for strip hits
             if(  BitSet32( h->getType() )[ ILDTrkHitTypeBit::ONE_DIMENSIONAL ] ) {
-                double strip_half_length = 50. ; //FIXME: need to get the proper strip length (from the surface !?) 
+                double strip_half_length = 50. ; //FIXME: need to get the proper strip length (from the surface !?)
                 TVector3 v(1,1,1);//must be initialized as non zero to set spherical coordinates
                 v.SetMag(strip_half_length);
                 v.SetPhi(h->getV()[1]);
@@ -801,7 +801,7 @@ void DDCEDViewer::drawTrackerHit(int& layer, unsigned& np, std::string colName, 
                            layer , 1. , color, h->id() );
             }
         }
-    }   
+    }
 }
 
 void DDCEDViewer::drawCalorimeterHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size){
@@ -817,15 +817,15 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
     //hauke
     layer = ( layer > -1 ? layer : RECOPARTICLE_LAYER ) ;
     this->drawParameters[np].Layer = layer ;
-    
+
     DDMarlinCED::add_layer_description(colName, layer);
     int nelem = col->getNumberOfElements();
-    
+
     float TotEn = 0.0;
     float TotPX = 0.0;
     float TotPY = 0.0;
     float TotPZ = 0.0;
-    
+
     //Determine the maximal and minimal cluster energy depositions in the event for color scaling (-->when drawing ellipsoids/cylinders).
     double Emin = 99999.; double Emax = 0;
     double pEmin = 99999.; double pEmax = 0;
@@ -841,7 +841,7 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
                 double e = clusterVec[p]->getEnergy();
                 Emin = fmin(Emin, e);
                 Emax = fmax(Emax, e);
-            }   
+            }
         }
     }
     for (int ip(0); ip < nelem; ++ip) {
@@ -852,13 +852,13 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
         unsigned nTracks =  (unsigned)trackVec.size();
         ClusterVec clusterVec = part->getClusters();
         unsigned nClusters = (unsigned)clusterVec.size();
-        
+
         float ene = part->getEnergy();
         float px  = (float)part->getMomentum()[0];
         float py  = (float)part->getMomentum()[1];
         float pz  = (float)part->getMomentum()[2];
         int type = (int)part->getType();
-        
+
         if( _colorEnergy ){
           if( _colorEnergyAuto ){
             color = ColorMap::NumberToTemperature(ene,pEmin,pEmax,_colorEnergySaturation,_colorEnergyValue);
@@ -877,10 +877,10 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
         << " PY = " << py
         << " PZ = " << pz
         << " E  = " << ene << std::endl;
-        
+
         if (nClusters > 0 ) {
-          
-          
+
+
           for (unsigned icluster=0; icluster<nClusters; ++icluster) {
             Cluster * cluster = clusterVec[icluster];
             CalorimeterHitVec hitvec = cluster->getCalorimeterHits();
@@ -897,7 +897,7 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
           //fg: this code below needs some work: the ellipsoids are flat and they should use the cluster
           //    shower parameters really, also this should probably be drawn in a different layer ....
           if( _drawEllipsoidForPFOClusters ) {
-            //refactored Cluster drawing as ellipsoids 
+            //refactored Cluster drawing as ellipsoids
             //by Thorben Quast, CERN Summer Student 2015
             //18 August 2015
             for (unsigned int p=0; p<nClusters; p++) {
@@ -916,13 +916,13 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
               //Energy weighted moments of inertia are calculated. Ultimately, the eigenvalues of the 3x3 matrix will be a measure of the ellipsoids' extensions.
               CalorimeterHitVec hitvec = cluster->getCalorimeterHits();
               int nHits = (int)hitvec.size();
-              double Etot = 0;                
+              double Etot = 0;
               double I[3][3]; for(int i=0; i<3; i++) for(int j=0; j<3; j++) I[i][j] = 0;
               //The angles theta and phi are used to transform the coordinates of each hit into a c.s. in which the x'-axis is parrallel to
               //the ellisoid's intrinsic direction. Note that this does not describe an unambigious system as any rotation along the x'-axis does not touch this constraint.
               //The transformation is achieved by a typical multiplication of rotation matrices: R(theta, phi) = R_y(Pi/2 - theta)*R_z(phi)
-              double R[3][3]; 
-              R[0][0] = cos(phi) * sin(theta); R[1][0] = -sin(phi); R[2][0] = -cos(phi)*cos(theta); R[0][1] = sin(phi)*sin(theta); 
+              double R[3][3];
+              R[0][0] = cos(phi) * sin(theta); R[1][0] = -sin(phi); R[2][0] = -cos(phi)*cos(theta); R[0][1] = sin(phi)*sin(theta);
               R[1][1] = cos(phi); R[2][1] = -sin(phi)*cos(theta); R[0][2] = cos(theta); R[1][2] = 0; R[2][2] = sin(theta);
               double tot_x =0;
               double tot_y =0;
@@ -941,23 +941,23 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
                 tot_x += x*e;
                 tot_y += y*e;
                 tot_z += z*e;
-                
+
                 double new_x = x * R[0][0] + y * R[0][1] + z * R[0][2];
                 double new_y = x * R[1][0] + y * R[1][1] + z * R[1][2];
                 double new_z = x * R[2][0] + y * R[2][1] + z * R[2][2];
                 x = new_x; y = new_y; z = new_z;
                 //calculate moments of inertia
-                I[0][0] += x*x*e; I[1][1] += y*y*e; I[2][2] += z*z*e; 
+                I[0][0] += x*x*e; I[1][1] += y*y*e; I[2][2] += z*z*e;
                 I[0][1] = I[1][0] += x*y*e; I[0][2] = I[2][0] += x*z*e; I[1][2] = I[2][1] += y*z*e;
                 Etot += e;
               }
               //The result of the rotation by the matrix R, the following coordinates correspond with each other:
               //  (component in coordinate system with x' || intrinsic direction)       (system in which ellipsoids are initially placed)
-              //                          x'                                      <-->        z       
-              //                          y'                                      <-->        y       
-              //                          z'                                      <-->       -x   
+              //                          x'                                      <-->        z
+              //                          y'                                      <-->        y
+              //                          z'                                      <-->       -x
               //These assignments are corrected for by a modified rotation of the ellipsoid along its y-axis (see declaration of double rotate[])
-              
+
               //I is not diagonal yet as only one axis was fixed when applying the rotation R.
               //The remaining lengths are determined by the solution of the 2x2 Eigenvalues (p-q formula).
               double lambda1 = 0.5*(I[2][2]+I[1][1]) + sqrt( pow(0.5*(I[2][2]+I[1][1]),2 ) + pow(I[2][1],2)-I[2][2]*I[1][1]);
@@ -966,20 +966,20 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
               sizes[0] = I[0][0]; sizes[1] = lambda1; sizes[2] = lambda2;
               //Remaining: (more or less) Arbitrary rescaling and transformation to a physical length (sqrt + energy division)
               for (int i=0; i<3; i++)  sizes[i] = sqrt(17.727)*sqrt(sizes[i])/Etot;
-              
+
               double alpha = 0.5*asin(2*I[1][2]/fabs(lambda1-lambda2)) * (I[1][1]-I[2][2])/fabs(I[1][1]-I[2][2]);
               //We want to rotate the ellipsoid w.r.t. to the y-axis by 90deg - theta. Due to the rotation by R that maps x' <--> z, it is now
               //upside down such that an additional sign is needed.
               double rotate[] = {alpha, -(90-theta*180/M_PI), phi*180/M_PI};
-              
+
               //The colors (blue and red) are set according the deposited energy in the cluster by comparison to other clusters in the event
               int ellipsoid_color = returnRGBClusterColor(cluster->getEnergy(), Emin, Emax, 256, 'a', 3);
-              
+
               //Draw the ellipsoids, uncommenting the line with cylinders works as well.
-              ced_ellipsoid_r(sizes, cluster_center, rotate, layer, ellipsoid_color); 
-              //ced_geocylinder_r(0.25*(sizes[0]+sizes[1]), sizes[2], cluster_center, rotate, 36, ellipsoid_color, layer); 
+              ced_ellipsoid_r(sizes, cluster_center, rotate, layer, ellipsoid_color);
+              //ced_geocylinder_r(0.25*(sizes[0]+sizes[1]), sizes[2], cluster_center, rotate, 36, ellipsoid_color, layer);
             }
-          } 
+          }
         }
 
         //************
@@ -993,13 +993,13 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
                     << std::endl ;
                     std::copy( trk->getTrackerHits().begin() , trk->getTrackerHits().end() , std::back_inserter(  tHV ) ) ;
                     for( unsigned j=0 ,N = trk->getTracks().size() ; j<N ; ++j ){
-                        const Track* t = trk->getTracks()[j] ; 
+                        const Track* t = trk->getTracks()[j] ;
                         streamlog_out( DEBUG ) << " -- track j= "<< j << " has " <<  t->getTrackerHits().size() << " hits  "
                         << std::endl ;
                         std::copy( t->getTrackerHits().begin() , t->getTrackerHits().end() , std::back_inserter(  tHV ) ) ;
                     }
-                } 
-                const TrackerHitVec& hitvec = (  tHV.empty() ?  trk->getTrackerHits()  :  tHV  ) ; 
+                }
+                const TrackerHitVec& hitvec = (  tHV.empty() ?  trk->getTrackerHits()  :  tHV  ) ;
                 int nHits = (int)hitvec.size();
                 if(nHits > 0){
                     for (int iHit = 0; iHit < nHits; ++iHit) {
@@ -1047,8 +1047,8 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
     << "Energy = " << TotEn
     << " PX = " << TotPX
     << " PY = " << TotPY
-    << " PZ = " << TotPZ 
-    << std::endl 
+    << " PZ = " << TotPZ
+    << std::endl
     << std::endl;
 }
 
@@ -1065,8 +1065,8 @@ void DDCEDViewer::drawJets(dd4hep::Detector& theDetector, int layer, std::string
         streamlog_out( DEBUG )  <<   "     - jet energy " << jet->getEnergy() << std::endl ;
 
         //total momentum of the jet
-        TVector3 v(jet->getMomentum()[0], jet->getMomentum()[1], jet->getMomentum()[2]); 
-        
+        TVector3 v(jet->getMomentum()[0], jet->getMomentum()[1], jet->getMomentum()[2]);
+
         //init relevant objects for looping over all particles in the jet
         const ReconstructedParticleVec & pv = jet->getParticles();
         int N_elements = pv.size();
@@ -1080,7 +1080,7 @@ void DDCEDViewer::drawJets(dd4hep::Detector& theDetector, int layer, std::string
             TVector3 pp_k(pv[k]->getMomentum()[0], pv[k]->getMomentum()[1], pv[k]->getMomentum()[2]);
             pp.push_back(pp_k);
             TVector3 ju = v.Unit();
-            TVector3 pt_k = pp_k - (ju.Dot(pp_k))*ju;  
+            TVector3 pt_k = pp_k - (ju.Dot(pp_k))*ju;
             TVector3 pl_k = pp_k - pt_k;
             pt.push_back(pt_k.Mag());
             pt_tot += pt[k];
@@ -1097,17 +1097,17 @@ void DDCEDViewer::drawJets(dd4hep::Detector& theDetector, int layer, std::string
             //100% * distance = length holds for the entry with highest pt, the others obtain only a respective fraction
             double momLength = (E[k]/E_max)*calculateTrackLength("", theDetector, center_ref[0], center_ref[1], center_ref[2], pp[k].X(), pp[k].Y(), pp[k].Z());                    //line size
             //approximation: all lines start in origin (TODO, if jet origin known)
-            ced_line_ID(center_ref[0], center_ref[1], center_ref[2], momLength*pp[k].X()/pp[k].Mag(), momLength*pp[k].Y()/pp[k].Mag(), momLength*pp[k].Z()/pp[k].Mag(), layer, 1, color, pv[k]->id());     
+            ced_line_ID(center_ref[0], center_ref[1], center_ref[2], momLength*pp[k].X()/pp[k].Mag(), momLength*pp[k].Y()/pp[k].Mag(), momLength*pp[k].Z()/pp[k].Mag(), layer, 1, color, pv[k]->id());
         }
 
         //calculate the parameters of the jet cone
-        //approximation: all lines start in origin (TODO, if jet origin known)            
+        //approximation: all lines start in origin (TODO, if jet origin known)
         double center_c[3] = {0., 0., 0. };
         double rotation_c[3] = { 0.,  v.Theta()*180./M_PI , v.Phi()*180./M_PI };
         double coneHeight = calculateTrackLength("", theDetector, center_c[0], center_c[1], center_c[2], v.X(), v.Y(), v.Z());
         //1. baseline radius, 2. height, 3. origin doublet, 4. rotation triplet,...
-        ced_cone_r_ID( mean_tan_angle * coneHeight , coneHeight , center_c, rotation_c, layer, RGBAcolor,jet->id()); 
-        
+        ced_cone_r_ID( mean_tan_angle * coneHeight , coneHeight , center_c, rotation_c, layer, RGBAcolor,jet->id());
+
     }
 }
 /********************************************************************
@@ -1134,8 +1134,8 @@ double* getYokeExtent(dd4hep::Detector& theDetector){
             continue;
         yoke = calorimeters[i];
         dd4hep::rec::LayeredCalorimeterData* yokeGeo;
-        try{ 
-            yokeGeo = yoke.extension<dd4hep::rec::LayeredCalorimeterData>() ; 
+        try{
+            yokeGeo = yoke.extension<dd4hep::rec::LayeredCalorimeterData>() ;
         } catch(std::runtime_error& e){
             streamlog_out( MESSAGE ) <<  "MC Particles for " << detName << " cannot be drawn"<<std::endl;
             extent[0] = extent[1] = 0;
@@ -1144,7 +1144,7 @@ double* getYokeExtent(dd4hep::Detector& theDetector){
         if (isYokeBarrel)
             extent[0] = yokeGeo->extent[1]/dd4hep::mm;
         if (isYokeEndcap)
-            extent[1] = yokeGeo->extent[3]/dd4hep::mm; 
+            extent[1] = yokeGeo->extent[3]/dd4hep::mm;
     }
     return extent;
 }
@@ -1153,7 +1153,7 @@ double* getYokeExtent(dd4hep::Detector& theDetector){
 CalorimeterDrawParams getCalorimeterParameters(dd4hep::Detector& theDetector, std::string name, bool selfCall){
     CalorimeterDrawParams params;
     if (selfCall)
-        name[1] = tolower(name[1]); 
+        name[1] = tolower(name[1]);
     const std::vector< dd4hep::DetElement>& calorimeters     = theDetector.detectors( "calorimeter" ) ;
     dd4hep::DetElement calo;
     for( unsigned i=0,n=calorimeters.size() ; i<n ; ++i ){
@@ -1163,11 +1163,11 @@ CalorimeterDrawParams getCalorimeterParameters(dd4hep::Detector& theDetector, st
         }
     }
     dd4hep::rec::LayeredCalorimeterData* caloGeo;
-    try{ 
-        caloGeo = calo.extension<dd4hep::rec::LayeredCalorimeterData>() ; 
+    try{
+        caloGeo = calo.extension<dd4hep::rec::LayeredCalorimeterData>() ;
     } catch(std::runtime_error& e){
             if (!selfCall)
-                return getCalorimeterParameters(theDetector, name, true); 
+                return getCalorimeterParameters(theDetector, name, true);
             else{
                 streamlog_out( MESSAGE ) <<  "MC Particles for " << name << " cannot be drawn"<<std::endl;
                 params.delta_z = -1;    //no spatial extension --> no drawing
@@ -1183,8 +1183,8 @@ CalorimeterDrawParams getCalorimeterParameters(dd4hep::Detector& theDetector, st
         params.r_inner = caloGeo->extent[0]/dd4hep::mm;
         params.delta_r = caloGeo->extent[1]/dd4hep::mm - params.r_inner;
         params.z_0 = caloGeo->extent[2]/dd4hep::mm;
-        params.delta_z = (caloGeo->extent[3]/dd4hep::mm - params.z_0);  //we are interested in the full length! 
-                                                                    //CEDGeoTube only requires half length as an argument       
+        params.delta_z = (caloGeo->extent[3]/dd4hep::mm - params.z_0);  //we are interested in the full length!
+                                                                    //CEDGeoTube only requires half length as an argument
     }
 
     return params;
@@ -1210,7 +1210,7 @@ double calculateTrackLength(std::string type, dd4hep::Detector& theDetector, dou
     }
 
     if (barrel.delta_z == -1 || endcap.delta_z == -1) return 0;   //the case if the parameters could not be loaded properly
-    
+
     double length;
     double pt = sqrt(px*px + py*py);
     double pt_over_pz = pt/fabs(pz);
@@ -1221,16 +1221,16 @@ double calculateTrackLength(std::string type, dd4hep::Detector& theDetector, dou
 
     double q = r*r - barrel.r_inner * barrel.r_inner;
     double distance_to_barrel_r = -p/2 + sqrt(p*p/4 - q);
-    
+
     q = r*r - endcap.r_inner * endcap.r_inner;
     double distance_to_endcap_r = -p/2 + sqrt(p*p/4 - q);
-    
+
     double sign_pz = (pz >= 0) ? 1. : -1.;
     double distance_to_barrel_z = barrel.delta_z - sign_pz*z;
     double distance_to_endcap_z = endcap.z_0 - sign_pz*z;
-    
+
     //case 1: barrel only
-    if (pt_over_pz > (distance_to_barrel_r + barrel.delta_r)/distance_to_barrel_z){ 
+    if (pt_over_pz > (distance_to_barrel_r + barrel.delta_r)/distance_to_barrel_z){
         length = rel_X0 * barrel.delta_r + distance_to_barrel_r * sqrt(1. + pow(1./pt_over_pz,2));
     }
     //case 2: barrel + endcap hit
@@ -1251,7 +1251,7 @@ double calculateTrackLength(std::string type, dd4hep::Detector& theDetector, dou
         }
     }
     //case 3: endcap only
-    else if(pt_over_pz > distance_to_endcap_r/distance_to_endcap_z){ 
+    else if(pt_over_pz > distance_to_endcap_r/distance_to_endcap_z){
         length = rel_X0 * endcap.delta_z + distance_to_endcap_z * sqrt(1. + pow(pt_over_pz,2));
     }
     //case 4: part of endcap hit
@@ -1265,7 +1265,7 @@ double calculateTrackLength(std::string type, dd4hep::Detector& theDetector, dou
             length = (distance_to_endcap_z + endcap.delta_z) * sqrt(1. + pow(pt_over_pz,2));
     }
     //case 5: neither the endcap nor a barrel is hit
-    else{  
+    else{
         length = (distance_to_endcap_z + endcap.delta_z) * sqrt(1. + pow(pt_over_pz,2));
     }
     return fabs(length);
