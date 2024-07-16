@@ -121,6 +121,7 @@ class DDCEDViewer : public Processor {
   int _nEvt = 0;
   //lcio options
   bool      _usingParticleGun            = false ;
+  bool      _drawMCParticlesCreatedInSimulation = false;
   int       _drawHelixForTracks          = 0 ;
   int       _colorScheme                 = 10 ;
   bool      _colorEnergy                 = false ;

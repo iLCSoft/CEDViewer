@@ -137,6 +137,11 @@ DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
                                _usingParticleGun ,
                                bool(false) ) ;
 
+    registerProcessorParameter("DrawMCParticlesCreatedInSimulation",
+                               "If set true MCParticles created in the simulation are also drawn. You will have to increase the MCParticleEnergyCut to reduce chaos.",
+                               _drawMCParticlesCreatedInSimulation,
+                               bool(false));
+
     registerProcessorParameter( "UseTrackerExtentForLimitsOfHelix" ,
                                "Use the gear parameters to define the max extent of drawing a helix",
                                //_useTPCForLimitsOfHelix ,
@@ -649,8 +654,12 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
     for(int i=0; i<col->getNumberOfElements() ; i++){
         MCParticle* mcp = dynamic_cast<MCParticle*> ( col->getElementAt( i ) ) ;
         float charge = mcp->getCharge ();
-        if( mcp-> getGeneratorStatus() != 1 && _usingParticleGun == false )
-            continue ; // stable particles only
+        if(mcp->getGeneratorStatus() != 1 // do not draw unstable particles
+           && _usingParticleGun == false  // unless we are in particleGun mode
+           && !(_drawMCParticlesCreatedInSimulation && mcp->isCreatedInSimulation()) // or we want to draw particles created in the simulation
+        ) {
+            continue;
+        }
         if ( mcp->getEnergy() < _mcpECut )
             continue ;           // ECut ?
 
