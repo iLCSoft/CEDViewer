@@ -37,46 +37,46 @@ struct DrawParameters{
 
 
 class DDCEDViewer : public Processor {
-  
+
  public:
   virtual Processor*  newProcessor() { return new DDCEDViewer ; }
-  
+
   DDCEDViewer() ;
   /** Called at the begin of the job before anything is read.
    * Use to initialize the processor, e.g. book histograms.
    */
   virtual void init() ;
-  
+
   /** Called for every run.
    */
   virtual void processRunHeader( LCRunHeader* run ) ;
-  
+
   /** Called for every event - the working horse.
    */
-  virtual void processEvent( LCEvent * evt ) ; 
-  
+  virtual void processEvent( LCEvent * evt ) ;
 
-  virtual void check( LCEvent * evt ) ; 
-  
-  
+
+  virtual void check( LCEvent * evt ) ;
+
+
   /** Called after data processing for clean up.
    */
   virtual void end() ;
 
-  //helpers 
+  //helpers
   void printParticle(int id, LCEvent * evt);
   bool detailledDrawing(std::string detName);
-  
+
 
   /** LCIO collection based viewer function for CED event dislplay (A. Zhelezov).
  *  Define the collection name, marker, size and optionally the layer number in the steering file.
  *  For 'DrawCollection' a default layer number in CED is chosen.
- * 
+ *
  *  @param DrawCollection - collection to be displayed ( ColName, marker type[0-2] )
- *  @param DrawInLayer    - collection to be displayed ( ColName, marker type[0-2], size) 
+ *  @param DrawInLayer    - collection to be displayed ( ColName, marker type[0-2], size)
  *
  *  @author F.Gaede, DESY
- *  @version $Id: CEDViewer.h 4773 2015-02-27 09:01:23Z gaede $ 
+ *  @version $Id: CEDViewer.h 4773 2015-02-27 09:01:23Z gaede $
  *
  * Modified original code by Thorben Quast (CERN Summer Student 2015) on 07 August 2015.
  * - removed GEAR dependence
@@ -93,7 +93,7 @@ class DDCEDViewer : public Processor {
   void drawCalorimeterHit(int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
   void drawReconstructedParticle(dd4hep::Detector& theDetector, int& layer, unsigned& np, std::string colName, int& marker, LCCollection* col, int& size);
   void drawJets(dd4hep::Detector& theDetector, int layer, std::string colName, LCCollection* col);
- 
+
  protected:
 
   constexpr static int ncol = 20 ;
@@ -111,7 +111,7 @@ class DDCEDViewer : public Processor {
   constexpr static int Dark        =   10 ;
   constexpr static int Light       =   11 ;
   constexpr static int Classic     =   12 ;
-  
+
   StringVec _drawCollections{} ;
   StringVec _drawCollectionsLayer{} ;
   std::vector< DrawParameters > drawParameters{} ;
@@ -121,6 +121,7 @@ class DDCEDViewer : public Processor {
   int _nEvt = 0;
   //lcio options
   bool      _usingParticleGun            = false ;
+  bool      _drawMCParticlesCreatedInSimulation = false;
   int       _drawHelixForTracks          = 0 ;
   int       _colorScheme                 = 10 ;
   bool      _colorEnergy                 = false ;
