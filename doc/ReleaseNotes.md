@@ -1,3 +1,11 @@
+# v01-20
+
+* 2024-07-23 tmadlener ([PR#28](https://github.com/iLCSoft/CEDViewer/pull/28))
+  - Add key4hep based CI workflows
+
+* 2024-07-23 Leonhard Reichenbach ([PR#27](https://github.com/iLCSoft/CEDViewer/pull/27))
+  - Added the processor parameter `DrawMCParticlesCreatedInSimulation` to enable drawing of the MCParticles that were created in the simulation.
+
 # v01-19-01
 
 * 2022-06-22 Thomas Madlener ([PR#23](https://github.com/iLCSoft/CEDViewer/pull/23))
