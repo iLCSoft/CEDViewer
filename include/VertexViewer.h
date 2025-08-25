@@ -37,26 +37,26 @@ class VertexViewer : public Processor {
   
  protected:
 
-  int _nRun ;
-  int _nEvt ;
+  int _nRun{-1} ;
+  int _nEvt{0} ;
   
-  std::vector<std::string> _trackerHitCollection;
-  std::string _trueTracksCollection;
-  std::string _tracksCollection;
-  std::string _trueTracksMCPCollection;
-  std::string _tracksMCPCollection;
-  std::vector<std::string> _simTrackerHitCollection;
+  std::vector<std::string> _trackerHitCollection{};
+  std::string _trueTracksCollection{};
+  std::string _tracksCollection{};
+  std::string _trueTracksMCPCollection{};
+  std::string _tracksMCPCollection{};
+  std::vector<std::string> _simTrackerHitCollection{};
   
-  int _layerTrackerHits;
-  int _layerTrueTracks;
-  int _layerTracks;
-  int _layerSimTrackerHits;
+  int _layerTrackerHits{-1};
+  int _layerTrueTracks{-1};
+  int _layerTracks{-1};
+  int _layerSimTrackerHits{-1};
   int returnColor(int counter);
-  float _cutOnD0,_cutOnZ0;
-  float _bField;
+  float _cutOnD0{1e+20f}, _cutOnZ0{1e+20f};
+  float _bField{};
 
-  int _nTPCCut;
-  int _detModel;
+  // int _nTPCCut;
+  int _detModel{0};
 
 } ;
 
