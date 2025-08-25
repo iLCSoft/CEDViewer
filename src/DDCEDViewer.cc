@@ -178,6 +178,26 @@ DDCEDViewer::DDCEDViewer() : Processor("DDCEDViewer") {
                                 _drawEllipsoidForPFOClusters,
                                 0  ) ;
 
+    registerProcessorParameter( "ECalBarrelName" ,
+                                "Set the ECal barrel detector name, as defined in the geometry XML file (default: ECalBarrel) ",
+                                _eCalBarrelName,
+                                std::string("ECalBarrel") ) ;
+
+    registerProcessorParameter( "ECalEndcapName" ,
+                                "Set the ECal endcap detector name, as defined in the geometry XML file (default: ECalEndcap) ",
+                                _eCalEndcapName,
+                                std::string("ECalEndcap") ) ;
+
+    registerProcessorParameter( "HCalBarrelName" ,
+                                "Set the HCal barrel detector name, as defined in the geometry XML file (default: HCalBarrel) ",
+                                _hCalBarrelName,
+                                std::string("HCalBarrel") ) ;
+
+    registerProcessorParameter( "HCalEndcapName" ,
+                                "Set the HCal endcap detector name, as defined in the geometry XML file (default: HCalEndcap) ",
+                                _hCalEndcapName,
+                                std::string("HCalEndcap") ) ;
+
 
     /*****options for detector drawing*****/
     registerProcessorParameter( "DrawDetector" ,
@@ -693,8 +713,8 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
             double _hmr, _hmz;
             switch(std::abs(mcp->getPDG() ) ){
                 case 13:
-                    _hmr = getCalorimeterParameters(theDetector, "HCalBarrel").r_inner + getCalorimeterParameters(theDetector, "HCalBarrel").delta_r;
-                    _hmz = getCalorimeterParameters(theDetector, "HCalEndcap").z_0 + getCalorimeterParameters(theDetector, "HCalEndcap").delta_z;
+                    _hmr = getCalorimeterParameters(theDetector, _hCalBarrelName).r_inner + getCalorimeterParameters(theDetector, _hCalBarrelName).delta_r;
+                    _hmz = getCalorimeterParameters(theDetector, _hCalEndcapName).z_0 + getCalorimeterParameters(theDetector, _hCalEndcapName).delta_z;
                     break;
                 default:
                     _hmr = _helix_max_r;
@@ -711,7 +731,7 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
                 //refactored length calculation (T. Quast 7 Aug 15)
                 case 22:
                     color = 0xf9f920;          // photon
-                    length = calculateTrackLength("ecal", theDetector, x, y, z, px, py, pz);
+                    length = calculateTrackLength(_eCalBarrelName, _eCalEndcapName, theDetector, x, y, z, px, py, pz);
                     break ;
                 case 12:  case 14: case 16: // neutrino
                     color =  0xdddddd  ;
@@ -723,7 +743,7 @@ void DDCEDViewer::drawMCParticle(dd4hep::Detector& theDetector, int& layer, unsi
                     break ;
                 default:
                     color = 0xb900de  ;        // neutral hadron
-                    length = calculateTrackLength("hcal", theDetector, x, y, z, px, py, pz);
+                    length = calculateTrackLength(_hCalBarrelName, _hCalEndcapName, theDetector, x, y, z, px, py, pz);
             }
             //tracks with vertex outside the according calorimeter are not drawn, length is passed as 0
             ced_line_ID( x , y , z ,
@@ -1104,7 +1124,7 @@ void DDCEDViewer::drawJets(dd4hep::Detector& theDetector, int layer, std::string
         for (int k = 0; k<N_elements; ++k){
             float center_ref[3] = {0., 0., 0.};
             //100% * distance = length holds for the entry with highest pt, the others obtain only a respective fraction
-            double momLength = (E[k]/E_max)*calculateTrackLength("", theDetector, center_ref[0], center_ref[1], center_ref[2], pp[k].X(), pp[k].Y(), pp[k].Z());                    //line size
+            double momLength = (E[k]/E_max)*calculateTrackLength(_eCalBarrelName, _eCalEndcapName, theDetector, center_ref[0], center_ref[1], center_ref[2], pp[k].X(), pp[k].Y(), pp[k].Z(), 0);                    //line size
             //approximation: all lines start in origin (TODO, if jet origin known)
             ced_line_ID(center_ref[0], center_ref[1], center_ref[2], momLength*pp[k].X()/pp[k].Mag(), momLength*pp[k].Y()/pp[k].Mag(), momLength*pp[k].Z()/pp[k].Mag(), layer, 1, color, pv[k]->id());
         }
@@ -1113,7 +1133,7 @@ void DDCEDViewer::drawJets(dd4hep::Detector& theDetector, int layer, std::string
         //approximation: all lines start in origin (TODO, if jet origin known)
         double center_c[3] = {0., 0., 0. };
         double rotation_c[3] = { 0.,  v.Theta()*180./M_PI , v.Phi()*180./M_PI };
-        double coneHeight = calculateTrackLength("", theDetector, center_c[0], center_c[1], center_c[2], v.X(), v.Y(), v.Z());
+        double coneHeight = calculateTrackLength(_eCalBarrelName, _eCalEndcapName, theDetector, center_c[0], center_c[1], center_c[2], v.X(), v.Y(), v.Z(), 0);
         //1. baseline radius, 2. height, 3. origin doublet, 4. rotation triplet,...
         ced_cone_r_ID( mean_tan_angle * coneHeight , coneHeight , center_c, rotation_c, layer, RGBAcolor,jet->id());
 
@@ -1201,22 +1221,10 @@ CalorimeterDrawParams getCalorimeterParameters(dd4hep::Detector& theDetector, st
 
 //It suffices to perform the calculations in the first quadrant due to the detector's symmetry.
 //The signs of the tracks' directions are ultimately determined by the momenta.
-double calculateTrackLength(std::string type, dd4hep::Detector& theDetector, double x, double y, double z, double px, double py, double pz){
-    double rel_X0;
-    CalorimeterDrawParams barrel; CalorimeterDrawParams endcap;
-    if (type == "ecal"){
-        barrel = getCalorimeterParameters(theDetector, "ECalBarrel");
-        endcap = getCalorimeterParameters(theDetector, "ECalEndcap");
-        rel_X0 = 0.5;
-    }else if(type == "hcal"){
-        barrel = getCalorimeterParameters(theDetector, "HCalBarrel");
-        endcap = getCalorimeterParameters(theDetector, "HCalEndcap");
-        rel_X0 = 0.5;
-    }else{
-        barrel = getCalorimeterParameters(theDetector, "ECalBarrel");
-        endcap = getCalorimeterParameters(theDetector, "ECalEndcap");
-        rel_X0 = 0.;
-    }
+double calculateTrackLength(std::string barrelName, std::string endcapName, dd4hep::Detector& theDetector, double x, double y, double z, double px, double py, double pz, double rel_X0){
+
+    CalorimeterDrawParams barrel = getCalorimeterParameters(theDetector, barrelName);
+    CalorimeterDrawParams endcap = getCalorimeterParameters(theDetector, endcapName);
 
     if (barrel.delta_z == -1 || endcap.delta_z == -1) return 0;   //the case if the parameters could not be loaded properly
 
