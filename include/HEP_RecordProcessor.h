@@ -33,8 +33,8 @@ namespace marlin {
     virtual void check( LCEvent * evt ) ; 
     virtual void end() ; //  after data processing 
   protected:
-    int _nRun ;
-    int _nEvt ;
+    int _nRun{} ;
+    int _nEvt{} ;
   } ;
 
 }// namespace marlin
