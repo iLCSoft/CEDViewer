@@ -186,6 +186,7 @@ CalorimeterDrawParams getCalorimeterParameters(dd4hep::Detector& theDetector, st
 
 //It suffices to perform the calculations in the first quadrant due to the detector's symmetry.
 //The signs of the tracks' directions are ultimately determined by the momenta.
+//The rel_X0 refers to  mean interaction length traversing the material perpendicularly; must be <= 1 ! For drawing jets is set to 0.
 double calculateTrackLength(std::string barrelName, std::string endcapName, dd4hep::Detector& theDetector, double x, double y, double z, double px, double py, double pz, double rel_X0 = 0.5);
 
 int returnRGBClusterColor(float eneCluster, float cutoff_min, float cutoff_max, int color_steps, char scale, int colorMap);
