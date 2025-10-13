@@ -1,3 +1,12 @@
+# v01-21
+
+* 2025-08-26 Stefano Franchellucci ([PR#30](https://github.com/iLCSoft/CEDViewer/pull/30))
+  -  Configurable naming of calorimeters for  `DDCEDViewer`
+
+* 2025-08-25 Thomas Madlener ([PR#31](https://github.com/iLCSoft/CEDViewer/pull/31))
+  - Update CI workflows to latest stacks
+  - Fix compiler warnings and enforce `-Werror`
+
 # v01-20
 
 * 2024-07-23 tmadlener ([PR#28](https://github.com/iLCSoft/CEDViewer/pull/28))
