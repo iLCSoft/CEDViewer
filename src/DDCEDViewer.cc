@@ -953,9 +953,6 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
               double R[3][3];
               R[0][0] = cos(phi) * sin(theta); R[1][0] = -sin(phi); R[2][0] = -cos(phi)*cos(theta); R[0][1] = sin(phi)*sin(theta);
               R[1][1] = cos(phi); R[2][1] = -sin(phi)*cos(theta); R[0][2] = cos(theta); R[1][2] = 0; R[2][2] = sin(theta);
-              double tot_x =0;
-              double tot_y =0;
-              double tot_z =0;
               for (int q = 0; q < nHits; q++){
                 CalorimeterHit * hit = hitvec[q];
                 float x = hit->getPosition()[0];
@@ -967,9 +964,6 @@ void DDCEDViewer::drawReconstructedParticle(dd4hep::Detector& theDetector, int& 
                 x -= cluster_center[0];
                 y -= cluster_center[1];
                 z -= cluster_center[2];
-                tot_x += x*e;
-                tot_y += y*e;
-                tot_z += z*e;
 
                 double new_x = x * R[0][0] + y * R[0][1] + z * R[0][2];
                 double new_y = x * R[1][0] + y * R[1][1] + z * R[1][2];
