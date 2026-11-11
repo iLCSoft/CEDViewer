@@ -1,3 +1,12 @@
+# v01-22
+
+* 2026-11-11 Juan Miguel Carceller ([PR#34](https://github.com/iLCSoft/CEDViewer/pull/34))
+  - Require CMake 3.10 to fix `Compatibility with CMake < 3.5 has been removed from CMake.`
+
+* 2026-09-10 Thomas Madlener ([PR#33](https://github.com/iLCSoft/CEDViewer/pull/33))
+  - Switch to the latest version of the key4hep-build workflow
+  - Remove dead per-axis energy/position accumulators (e.g. `e_chadrx/y/z`, `tot_x/y/z`) that tripped `-Werror=unused-but-set-variable` on the gcc16 nightly build
+
 # v01-21
 
 * 2025-08-26 Stefano Franchellucci ([PR#30](https://github.com/iLCSoft/CEDViewer/pull/30))
